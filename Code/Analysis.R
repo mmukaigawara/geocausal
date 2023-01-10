@@ -42,5 +42,5 @@ counter.out <- counterfactual(outcome = "Kinetic",
                               multiple = TRUE)
 
 # Plot actual and counterfactual distributions
-plot(counter.out[[1]][[1]]) #Actual
-plot(counter.out[[2]][[1]]) #Counterfactual
+plot(counter.out[[1]][[5]], main = "Actual distribution") #Actual
+plot(counter.out[[2]][[5]], main = "Counterfactual distribution (c = 3)") #Counterfactual
