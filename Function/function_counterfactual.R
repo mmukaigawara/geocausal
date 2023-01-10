@@ -39,15 +39,33 @@ counterfactual <- function(outcome, covariates, data,
     ps_mod <- ppm(as.formula(ps_eq), data)
   }
   
-  # Conditional intensity with the actual distribution
-  ## By default newdata = data and obtain the distribution of the original data
-  ## Set newdata to a different one to obtain counterfactul distribution of the new data
-  fitted_ps <- predict.mppm(ps_mod, type = 'cif', newdata, ngrid = 100)$cif
   
-  # Conditional intensity with a counterfactual distribution (multiplied by counter)
-  fitted_ps_counter <- counter * fitted_ps
+  if (newdata == data){
+    
+    # Conditional intensity with the actual distribution
+    fitted_ps <- predict.mppm(ps_mod, type = "cif", data, ngrid = 100)$cif
+    
+    # Conditional intensity with a counterfactual distribution (multiplied by counter)
+    fitted_ps_counter <- counter * fitted_ps
+    
+    return(list(fitted_ps = fitted_ps,
+                fitted_ps_counter = fitted_ps_counter))
+    
+  } else if (newdata != data){
+    
+    # Conditional intensity with the actual distribution
+    fitted_ps <- predict.mppm(ps_mod, type = "cif", data, ngrid = 100)$cif
+    fitted_ps_newdata <- predict.mppm(ps_mod, type = "cif", newdata, ngrid = 100)$cif
+    
+    # Conditional intensity with a counterfactual distribution (multiplied by counter)
+    fitted_ps_counter <- counter * fitted_ps
+    fitted_ps_counter_newdata <- counter * fitted_ps_newdata
+    
+    return(list(fitted_ps = fitted_ps,
+                fitted_ps_counter = fitted_ps_counter,
+                fitted_ps_newdata = fitted_ps_newdata,
+                fitted_ps_counter_newdata = fitted_ps_counter_newdata))
   
-  return(list(fitted_ps = fitted_ps,
-              fitted_ps_counter = fitted_ps_counter))
+  }
   
 }
