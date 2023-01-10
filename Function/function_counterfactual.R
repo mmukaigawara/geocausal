@@ -20,7 +20,7 @@ counterfactual <- function(outcome, covariates, data,
                            multiple = TRUE,
                            scenario = "intensity"){
   
-  # Diagnostics (data and counterfactual specifications)
+  # Diagnostics (data and counterfactual specifications) -----
   if (class(data)[1] != "hyperframe") {
     cat("Convert data to a hyperframe class object.")
   }
@@ -29,17 +29,17 @@ counterfactual <- function(outcome, covariates, data,
     cat("Set counter > 0.")
   }
   
-  # Formula
+  # Formula -----
   ps_eq <- paste(outcome, "~", paste(ps_covs, collapse = "+"))
   
-  # Fit the model (ppm or mppm)
+  # Fit the model (ppm or mppm) -----
   if (multiple == TRUE){
     ps_mod <- mppm(as.formula(ps_eq), data)
   } else if (multiple == FALSE){
     ps_mod <- ppm(as.formula(ps_eq), data)
   }
   
-  
+  # Actual and counterfactual intensities -----
   if (newdata == data){
     
     # Conditional intensity with the actual distribution
@@ -49,7 +49,7 @@ counterfactual <- function(outcome, covariates, data,
     fitted_ps_counter <- counter * fitted_ps
     
     return(list(fitted_ps = fitted_ps,
-                fitted_ps_counter = fitted_ps_counter))
+                fitted_ps_counter = fitted_ps_counter)) # A list of two elements
     
   } else if (newdata != data){
     
@@ -64,7 +64,7 @@ counterfactual <- function(outcome, covariates, data,
     return(list(fitted_ps = fitted_ps,
                 fitted_ps_counter = fitted_ps_counter,
                 fitted_ps_newdata = fitted_ps_newdata,
-                fitted_ps_counter_newdata = fitted_ps_counter_newdata))
+                fitted_ps_counter_newdata = fitted_ps_counter_newdata)) # A list of four elements
   
   }
   
