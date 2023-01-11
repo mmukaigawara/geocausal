@@ -40,7 +40,7 @@ counterfactual <- function(outcome, covariates, data,
   }
   
   # Actual and counterfactual intensities -----
-  if (newdata == data){
+  if (identical(newdata,data) == TRUE){
     
     # Conditional intensity with the actual distribution
     fitted_ps <- predict.mppm(ps_mod, type = "cif", data, ngrid = 100)$cif
@@ -51,7 +51,7 @@ counterfactual <- function(outcome, covariates, data,
     return(list(fitted_ps = fitted_ps,
                 fitted_ps_counter = fitted_ps_counter)) # A list of two elements
     
-  } else if (newdata != data){
+  } else if (identical(newdata, data) == FALSE){
     
     # Conditional intensity with the actual distribution
     fitted_ps <- predict.mppm(ps_mod, type = "cif", data, ngrid = 100)$cif
