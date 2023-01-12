@@ -1,4 +1,4 @@
-# Function: fitpps
+# Function: fitppm
 
 # This function does the following:
 # 1. Fit a poisson process model
