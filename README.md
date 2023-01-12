@@ -1,11 +1,11 @@
 # geocausal.package
 Package development
 
-# Code
+## Code
 This folder includes all R scripts that are used for analysis. Set the working directory as appropriate when running the code.
 
-# Function
+## Function
 This folder stores functions.
 
-# Data
+## Data
 Data has not been uploaded due to the size (available in a Dropbox folder).
