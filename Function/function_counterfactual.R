@@ -30,13 +30,9 @@ counterfactual <- function(ps_mod,
   cat("Obtaining the conditional intensity.")
   
   if (multiple == TRUE){
-
     fitted_ps <- predict.mppm(ps_mod, type = "cif", newdata, ngrid = 100)$cif
-    
   } else if (multiple == FALSE){
-    
     fitted_ps <- predict.ppm(ps_mod, type = "cif", newdata, ngrid = 100)$cif
-  
   }
 
   ## Conditional intensity with a counterfactual distribution (multiplied by counter)
@@ -47,7 +43,6 @@ counterfactual <- function(ps_mod,
   } else if (counter > 1){ #If not, obtain a counterfactual distribution and return a list
     
     fitted_ps_counter <- counter * fitted_ps
-  
     return(list(fitted_ps = fitted_ps,
                 fitted_ps_counter = fitted_ps_counter)) # A list of two elements
   }
