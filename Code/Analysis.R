@@ -39,7 +39,9 @@ ps_mod <- fitppm(outcome = "Kinetic", covariates = ps_covs,
                  data = ps_dta, multiple = TRUE)
 
 # Obtain actual and counterfactual distributions (function: counterfactual)
-counter.out <- counterfactual(ps_mod, data = ps_dta, counter = 3, 
+counter.out <- counterfactual(ps_mod, 
+                              data = ps_dta, newdata = ps_dta, 
+                              counter = 3, 
                               multiple = TRUE)
 
 # Plot actual and counterfactual distributions
