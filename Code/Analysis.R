@@ -32,7 +32,7 @@ ps_covs <- c('logPopulation', 'prior_rivers', 'prior_roads', 'All_Cities', 'aid'
              sapply('prior_PrevSOF', function(x) paste0(x, '.', use_lags)),
              paste0('time.', 1 : df_time),
              paste0('Settle.IQ.G0', 1 : 9),
-             paste0('Settle.IQ.G', 10 : 18)) #List of covariates
+             paste0('Settle.IQ.G', 10 : 18)) #Vector of covariates
 
 # Fit a Poisson model (function: fitpps)
 ps_mod <- fitpps(outcome = "Kinetic", covariates = ps_covs, 
@@ -43,4 +43,4 @@ counter.out <- counterfactual(ps_mod, data = ps_dta, counter = 3,
                               multiple = TRUE)
 
 # Plot actual and counterfactual distributions
-plot(counter.out[[2]][[5]], main = "Counterfactual distribution (c = 3)") #Counterfactual
+plot(counter.out[[2]][[5]], main = "Counterfactual distribution (c = 3)") #Counterfactual, t = 5
