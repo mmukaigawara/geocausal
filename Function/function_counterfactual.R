@@ -6,14 +6,15 @@
 
 # Specifications:
 # data: data to fit the poisson model
-# newdata: data used for prediction; by default data = newdata
+# newdata: data used for prediction
 # counter: a constant to multiply the baseline density. By default = 1 and returns the original distribution
 # multiple: choice of ppm or mppm
 # scenario: "intensity" or "location"; if "intensity," this fx allows users to consider counterfactuals wrt intensity
 #           if "location", it allows users to consider counterfactuals wrt locations (at this moment, intensity only)
 
-counterfactual <- function(ps_mod, data,
-                           newdata = data,
+counterfactual <- function(ps_mod, 
+                           data,
+                           newdata,
                            counter = counter,
                            multiple = TRUE,
                            scenario = "intensity"){
