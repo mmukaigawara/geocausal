@@ -16,7 +16,7 @@
 
 counterfactual <- function(outcome, covariates, data,
                            newdata = data,
-                           counter = 1,
+                           counter = c,
                            multiple = TRUE,
                            scenario = "intensity"){
   
@@ -45,9 +45,12 @@ counterfactual <- function(outcome, covariates, data,
   fitted_ps <- predict.mppm(ps_mod, type = "cif", newdata, ngrid = 100)$cif
   
   ## Conditional intensity with a counterfactual distribution (multiplied by counter)
-  fitted_ps_counter <- counter * fitted_ps
+  if (c == 1){ #If c = 1, just return fitted_ps
+    return(list(fitted_ps = fitted_ps))
+  } else if (c > 1){ #If not, obtain a counterfactual distribution and return a list
+    fitted_ps_counter <- counter * fitted_ps
+    return(list(fitted_ps = fitted_ps,
+                fitted_ps_counter = fitted_ps_counter)) # A list of two elements
+  }
   
-  return(list(fitted_ps = fitted_ps,
-              fitted_ps_counter = fitted_ps_counter)) # A list of two elements
-    
 }
