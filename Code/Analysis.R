@@ -20,7 +20,7 @@ setwd("~/Dropbox/Research/geocausal.package/")
 ##ps_dta <- subset(dta$ps_dta, date %in% dta$keep_dates)
 
 load("~/Dropbox/Research/geocausal.package/Data/ps_dta.RData")
-source('~/Dropbox/Research/geocausal.package/Function/function_fitpps.R')
+source('~/Dropbox/Research/geocausal.package/Function/function_fitppm.R')
 source('~/Dropbox/Research/geocausal.package/Function/function_counterfactual.R')
 
 # List of covariates
@@ -35,7 +35,7 @@ ps_covs <- c('logPopulation', 'prior_rivers', 'prior_roads', 'All_Cities', 'aid'
              paste0('Settle.IQ.G', 10 : 18)) #Vector of covariates
 
 # Fit a Poisson model (function: fitpps)
-ps_mod <- fitpps(outcome = "Kinetic", covariates = ps_covs, 
+ps_mod <- fitppm(outcome = "Kinetic", covariates = ps_covs, 
                  data = ps_dta, multiple = TRUE)
 
 # Obtain actual and counterfactual distributions (function: counterfactual)
