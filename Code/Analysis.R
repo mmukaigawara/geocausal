@@ -20,19 +20,19 @@ setwd("~/Dropbox/Research/geocausal.package/")
 ##ps_dta <- subset(dta$ps_dta, date %in% dta$keep_dates)
 
 load("~/Dropbox/Research/geocausal.package/Data/ps_dta.RData")
-source('~/Dropbox/Research/geocausal.package/Function/function_fitppm.R')
-source('~/Dropbox/Research/geocausal.package/Function/function_counterfactual.R')
+source("~/Dropbox/Research/geocausal.package/Function/function_fitppm.R")
+source("~/Dropbox/Research/geocausal.package/Function/function_counterfactual.R")
 
 # List of covariates
 use_lags <- c(1, 7, 30) #Lags for lagged interventions
 df_time <- 3
-ps_covs <- c('logPopulation', 'prior_rivers', 'prior_roads', 'All_Cities', 'aid',
-             sapply(c('prior_PrevKinetic', 'prior_PrevAttacks'),
-                    function(x) paste0(x, '.', use_lags)),
-             sapply('prior_PrevSOF', function(x) paste0(x, '.', use_lags)),
-             paste0('time.', 1 : df_time),
-             paste0('Settle.IQ.G0', 1 : 9),
-             paste0('Settle.IQ.G', 10 : 18)) #Vector of covariates
+ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities", "aid",
+             sapply(c("prior_PrevKinetic", "prior_PrevAttacks"),
+                    function(x) paste0(x, ".", use_lags)),
+             sapply("prior_PrevSOF", function(x) paste0(x, ".", use_lags)),
+             paste0("time.", 1 : df_time),
+             paste0("Settle.IQ.G0", 1 : 9),
+             paste0("Settle.IQ.G", 10 : 18)) #Vector of covariates
 
 # Fit a Poisson model (function: fitpps)
 ps_mod <- fitppm(outcome = "Kinetic", covariates = ps_covs, 
