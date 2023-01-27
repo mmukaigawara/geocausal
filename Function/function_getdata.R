@@ -1,23 +1,23 @@
 # Function: getdata
 
 # This function does the following:
-# 1. Let users to generate a hyperframe that can be used for analysis
+# 1. Let users generate a hyperframe that can be used for analysis
 
 ### A copy of GetAnalysisData function in the Iraq paper below ###
 
 # Specifications:
-# outcome: an outcome variable
-# covariates: a vector of names of covariates
-# data: data to fit the poisson model
-# multiple: choice of ppm or mppm
 
-#' Getting the data we analyze in proper format.
-#'
 #' @param subset_dates Start and end date of the period we wish to analyze.
 #' @param trt_lags
+#' @param use_lags The lags of previous treatments and previous outcomes that
+#' are allowed to drive treatment at any time point.
 #' @param sof_priority_coef
 #' @param hist_priority_coefs
-#' @param covs_priority_coefs
+#' @param covs_priority_coefs List of priority coefficients for the
+#' covariates. The elements of the list correspond to distance from cities,
+#' distance from rivers and distance from roads. The first one is a vector
+#' including priority coefficients for cities of different size. The second
+#' and third are numeric. If left NULL, all will be set equal to 2.
 #' @param df_time Number of degrees of freedom for splines.
 #' @param get_history Logical, defaults to TRUE. If TRUE, the history over the
 #' specified lags will be calculated. If FALSE, the history will not be
@@ -31,16 +31,15 @@ GetAnalysisData <- function(subset_dates, use_lags = c(1, 4, 7),
                             covs_priority_coefs = NULL,
                             df_time = 3, clean_data = NULL,
                             iraq_window = NULL,
-                            load_path = NULL, jitter = FALSE,
+                            jitter = FALSE,
                             jitter_amount = 0.0001,
                             get_history = TRUE,
                             get_covariates = TRUE) {
   
-  if (is.null(load_path)) {
-    load_path <- '~/Dropbox/Research/spatiotemporal/Application/Data/'
-  }
-  
+  # Specify the lags
   use_lags <- unique(use_lags)
+  
+  # Distance from cities, rivers, roads, and the settlement -> Need to make this more flexible
   if (is.null(covs_priority_coefs)) {
     covs_priority_coefs <- list(cities = seq(1.5, 6.3, length.out = 5),
                                 rivers = 3, roads = 3, settle = 7.5)
