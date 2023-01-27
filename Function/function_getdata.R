@@ -5,6 +5,8 @@
 
 ### A copy of GetAnalysisData function in the Iraq paper below ###
 
+### This function depends on GetPSdata, CleanData, and ReformData
+
 # Specifications:
 
 #' @param subset_dates Start and end date of the period we wish to analyze.
@@ -25,7 +27,8 @@
 #' patterns faster.
 #' @param get_covariates Logical. Like get_history but for the covariates.
 #'
-GetAnalysisData <- function(subset_dates, use_lags = c(1, 4, 7),
+GetAnalysisData <- function(subset_dates, 
+                            use_lags = c(1, 4, 7),
                             sof_priority_coef = 3,
                             hist_priority_coefs = c(3, 3),
                             covs_priority_coefs = NULL,
@@ -36,7 +39,7 @@ GetAnalysisData <- function(subset_dates, use_lags = c(1, 4, 7),
                             get_history = TRUE,
                             get_covariates = TRUE) {
   
-  # Specify the lags
+  # Specify the lags -> Keep this as it is
   use_lags <- unique(use_lags)
   
   # Distance from cities, rivers, roads, and the settlement -> Need to make this more flexible
@@ -47,9 +50,10 @@ GetAnalysisData <- function(subset_dates, use_lags = c(1, 4, 7),
   
   
   # -------- Getting the Iraq map window ---------- #
+  # -> Need this part within this function but modify this as well for more flexibility
   
   if (is.null(iraq_window) | is.null(clean_data)) {
-    iraq1 <- rgdal::readOGR(dsn = paste0(load_path, "Map_data/Map_Level1/."))
+    iraq1 <- rgdal::readOGR(dsn = paste0(load_path, "Map_data/Map_Level1/.")) #Need a map first
     iraq1@data$id <- iraq1@data$admin1Name
     iraq1.points <- fortify(iraq1, region = "id")
     iraq1.df <- plyr::join(iraq1.points, iraq1@data, by = "id")
@@ -63,8 +67,8 @@ GetAnalysisData <- function(subset_dates, use_lags = c(1, 4, 7),
   # ------- Getting the airstrikes and attacks data --------- #
   
   if (is.null(clean_data)) {
-    airstr <- read.csv(paste0(load_path, 'IraqAirstrikes.csv'))
-    activ <- read.csv(paste0(load_path, 'SIGACTS.csv'))
+    airstr <- read.csv(paste0(load_path, 'IraqAirstrikes.csv')) #Treatment -> include filename as input
+    activ <- read.csv(paste0(load_path, 'SIGACTS.csv')) #Outcome -> same as above
     clean_data <- CleanData(airstr = airstr, activ = activ, iraq = iraq1,
                             subset_dates = subset_dates)
   }
