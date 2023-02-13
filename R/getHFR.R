@@ -33,8 +33,6 @@ getHFR <- function(x, date, coordinates, x.class, x.subtype,
     assign(paste0(i, "_pp"), list())
   }
 
-  remain.x_pp <- list() # Empty lists - if not all subtypes are specified
-  remain.y_pp <- list()
   all.y_pp <- list() # All activities
 
   tt <- 1 # Initiating the counter by 1
@@ -52,7 +50,7 @@ getHFR <- function(x, date, coordinates, x.class, x.subtype,
 
     for(i in x.subtype){
       # Generating data for one date and one subtype, named as variable_ii
-      assign(paste0(i, "_ii"), x_ii[which(x_ii[, x.class] %in% i), ])
+      assign(paste0(i, "_ii"), x_ii[which(x_ii[, x.class] == i), ])
 
       # Turning to point patterns
       temp <- get(paste0(i, "_ii"))
@@ -70,31 +68,6 @@ getHFR <- function(x, date, coordinates, x.class, x.subtype,
       # Adding on to the list
       assign(paste0(i, "_pp"), append(get(paste0(i, "_pp")), list(temp)))
 
-    }
-
-    if(nrow(unique(x[, x.class])) > length(x.subtype)){
-      # If not all subtypes are specified, then combine everything as remainders
-      # and do the same as above
-      `%!in%` = Negate(`%in%`)
-
-      # Generating data for one date and one subtype, named as variable_ii
-      assign(paste0("remain.x", "_ii"), x_ii[which(x_ii[, x.class] %!in% x.subtype), ])
-
-      # Turning to point patterns
-      temp <- get(paste0("remain.x", "_ii"))
-      temp.ppp <- as.ppp(cbind(x = temp[, coordinates[1]],
-                               y = temp[, coordinates[2]]),
-                         W = window)
-      temp <- assign(paste0("remain.x", "_ii"), temp.ppp)
-
-      if (jitter) {
-        # If jitter = true, then jitter by the predefined amount of jittering
-        temp.ppp.j <- spatstat.geom::rjitter(temp, radius = jitter_amount)
-        temp <- assign(paste0("remain.x", "_ii"), temp.ppp.j)
-      }
-
-      # Adding on to the list
-      assign(paste0("remain.x", "_pp"), append(get(paste0("remain.x", "_pp")), list(temp)))
     }
 
     # For the outcome variables -----
@@ -123,7 +96,7 @@ getHFR <- function(x, date, coordinates, x.class, x.subtype,
     # Then subtypes --
     for(i in y.subtype){
       # Generating data for one date and one subtype, named as variable_ii
-      assign(paste0(i, "_ii"), y_ii[which(y_ii[, y.class] %in% i), ])
+      assign(paste0(i, "_ii"), y_ii[which(y_ii[, y.class] == i), ])
 
       # Turning to point patterns
       temp <- get(paste0(i, "_ii"))
@@ -143,30 +116,6 @@ getHFR <- function(x, date, coordinates, x.class, x.subtype,
 
     }
 
-    if(nrow(unique(y[, y.class])) > length(y.subtype)){
-      # If not all subtypes are specified, then combine everything as remainders
-      # and do the same as above
-
-      # Generating data for one date and one subtype, named as variable_ii
-      assign(paste0("remain.y", "_ii"), y_ii[which(y_ii[, y.class] %!in% y.subtype), ])
-
-      # Turning to point patterns
-      temp <- get(paste0("remain.y", "_ii"))
-      temp.ppp <- as.ppp(cbind(x = temp[, coordinates[1]],
-                               y = temp[, coordinates[2]]),
-                         W = window)
-      temp <- assign(paste0("remain.y", "_ii"), temp.ppp)
-
-      if (jitter) {
-        # If jitter = true, then jitter by the predefined amount of jittering
-        temp.ppp.j <- spatstat.geom::rjitter(temp, radius = jitter_amount)
-        temp <- assign(paste0("remain.y", "_ii"), temp.ppp.j)
-      }
-
-      # Adding on to the list
-      assign(paste0("remain.y", "_pp"), append(get(paste0("remain.y", "_pp")), list(temp)))
-    }
-
     tt <- tt + 1 # Adding one to counters
   }
 
@@ -178,14 +127,6 @@ getHFR <- function(x, date, coordinates, x.class, x.subtype,
   }
 
   r[, "all.y"] <- all.y_pp
-
-  if(length(remain.x_pp) > 0){
-    r[, "remain.x"] <- remain.x_pp
-  }
-
-  if(length(remain.y_pp) > 0){
-    r[, "remain.y"] <- remain.y_pp
-  }
 
   r$date <- all_dates
 
