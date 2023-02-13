@@ -15,17 +15,9 @@
 #' @param jitter Indicating whether to jitter; by default TRUE
 #' @param jitter_amount Amount of jittering; by default 0.00001
 
-getHFR <- function(x = airstr, # Dataset for treatment variables
-                   date = "date", # Name of date column in x
-                   coordinates = c("longitude", "latitude"), # Column names for coordinates
-                   x.class = "Type", # Name of the column that specifies subtypes of IVs
-                   x.subtype = c("SOF", "Airstrike"),
-                   y = activ, # Dataset for outcome variables
-                   y.class = "type", # Name of the column that specifies subtypes of DVs
-                   y.subtype = c("IED", "SAF"),
-                   window = iraq_window, # Window
-                   jitter = TRUE, # Jittering (perhaps not necessary)
-                   jitter_amount = 0.0001) {
+getHFR <- function(x, date, coordinates, x.class, x.subtype,
+                   y, y.class, y.subtype, window,
+                   jitter = TRUE, jitter_amount = 0.0001) {
 
   # Checking the class of date column and converting the column to Date objects if necessary
   if (class(x$date) != "Date"){
