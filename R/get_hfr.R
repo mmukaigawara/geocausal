@@ -23,6 +23,10 @@ get_hfr <- function(treatment, treatment_type,
   date_range <- range(as.vector(treatment[, date])[[1]])
   all_dates <- seq(date_range[1], date_range[2], by = 1)
 
+  # Cleaning the data ----------
+  treatment <- treatment %>% dplyr::select(date, treatment_type, coordinates[1], coordinates[2])
+  outcome <- outcome %>% dplyr::select(date, outcome_type, coordinates[1], coordinates[2])
+
   # Converting treatment data to ppp ----------
   cat("Converting the treatment data to ppp objects...\n")
 
