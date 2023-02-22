@@ -20,18 +20,21 @@ get_hfr <- function(treatment, treatment_type,
                     jitter = TRUE, jitter_amount = 0.0001) {
 
   # Getting the range of dates -----------
-  date_range <- range(as.vector(treatment[, date])[[1]])
+  date_range <- base::range(treatment[, date])
   all_dates <- seq(date_range[1], date_range[2], by = 1)
 
   # Cleaning the data ----------
   treatment <- treatment %>% dplyr::select(date, treatment_type, coordinates[1], coordinates[2])
   outcome <- outcome %>% dplyr::select(date, outcome_type, coordinates[1], coordinates[2])
 
+  setDT(treatment)
+  setDT(outcome)
+
   # Converting treatment data to ppp ----------
   cat("Converting the treatment data to ppp objects...\n")
 
   ## Creating empty point process for imputation
-  empty <- data.frame(latitude = double(), longitude = double())
+  empty <- data.table(latitude = double(), longitude = double())
   empty_ppp <- as.ppp(cbind(x = empty$longitude, y = empty$latitude), W = window)
 
   ## Converting data to point process
@@ -59,7 +62,7 @@ get_hfr <- function(treatment, treatment_type,
 
   ## Identifying missing dates
   all_date_type <- expand.grid(date = all_dates,
-                               type = pull(unique(treatment[, treatment_type])))
+                               type = pull(unique(treatment[, ..treatment_type])))
 
   obs_date_type <- treatment %>%
     group_by_at(vars(date, paste0(treatment_type))) %>%
@@ -70,7 +73,7 @@ get_hfr <- function(treatment, treatment_type,
   missing_date_type <- setdiff(all_date_type, obs_date_type)
 
   all_date_type_c <- data.frame(date = all_dates,
-                                type = pull(unique(x_c[, treatment_type])))
+                                type = pull(unique(x_c[, ..treatment_type])))
 
   obs_date_type_c <- x_c %>%
     group_by_at(vars(date, paste0(treatment_type))) %>%
@@ -83,7 +86,7 @@ get_hfr <- function(treatment, treatment_type,
   ## Combining observed and missing data
   x_list <- c(x_ppp, rep(list(empty_ppp), nrow(missing_date_type)))
   x_index <- rbind(obs_date_type, missing_date_type)
-  treatment_types <- pull(unique(treatment[, treatment_type]))
+  treatment_types <- pull(unique(treatment[, ..treatment_type]))
 
   lapply(1:length(treatment_types),
          function(ii){
@@ -148,7 +151,7 @@ get_hfr <- function(treatment, treatment_type,
 
   ## Identifying missing dates
   all_date_type_y <- expand.grid(date = all_dates,
-                                 type = pull(unique(outcome[, outcome_type])))
+                                 type = pull(unique(outcome[, ..outcome_type])))
 
   obs_date_type_y <- outcome %>%
     group_by_at(vars(date, paste0(outcome_type))) %>%
@@ -159,7 +162,7 @@ get_hfr <- function(treatment, treatment_type,
   missing_date_type_y <- setdiff(all_date_type_y, obs_date_type_y)
 
   all_date_type_c_y <- data.frame(date = all_dates,
-                                  type = pull(unique(y_c[, outcome_type])))
+                                  type = pull(unique(y_c[, ..outcome_type])))
 
   obs_date_type_c_y <- y_c %>%
     group_by_at(vars(date, paste0(outcome_type))) %>%
@@ -172,7 +175,7 @@ get_hfr <- function(treatment, treatment_type,
   ## Combining observed and missing data
   y_list <- c(y_ppp, rep(list(empty_ppp), nrow(missing_date_type_y)))
   y_index <- rbind(obs_date_type_y, missing_date_type_y)
-  outcome_types <- pull(unique(outcome[, outcome_type]))
+  outcome_types <- pull(unique(outcome[, ..outcome_type]))
 
   lapply(1:length(outcome_types),
          function(ii){
