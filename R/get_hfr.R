@@ -54,55 +54,49 @@ get_hfr <- function(treatment, treatment_type,
   cat("Converting the treatment data to a hyperframe...\n")
 
   ## Identifying missing dates
-  treatment_dates_types <- treatment %>%
+  all_date_type <- expand.grid(date = all_dates,
+                               type = pull(unique(treatment[, treatment_type])))
+
+  obs_date_type <- treatment %>%
     group_by_at(vars(date, paste0(treatment_type))) %>%
     dplyr::select(date, paste0(treatment_type)) %>%
-    distinct()
+    distinct() %>%
+    rename(type = treatment_type)
 
-  treatment_dates_types_c <- x_c %>%
-    group_by_at(vars(date, paste0(treatment_type))) %>%
-    dplyr::select(date, paste0(treatment_type)) %>%
-    distinct()
-
-  all_date_type <- expand.grid(date = all_dates, type = pull(unique(treatment[, treatment_type])))
-  obs_date_type <- data.frame(date = pull(treatment_dates_types[, 1]),
-                              type = pull(treatment_dates_types[, 2]))
   missing_date_type <- setdiff(all_date_type, obs_date_type)
 
-  all_date_type_c <- data.frame(date = all_dates, type = pull(unique(x_c[, treatment_type])))
-  obs_date_type_c <- data.frame(date = pull(treatment_dates_types_c[, 1]),
-                                type = pull(treatment_dates_types_c[, 2]))
+  all_date_type_c <- data.frame(date = all_dates,
+                                type = pull(unique(x_c[, treatment_type])))
+
+  obs_date_type_c <- x_c %>%
+    group_by_at(vars(date, paste0(treatment_type))) %>%
+    dplyr::select(date, paste0(treatment_type)) %>%
+    distinct() %>%
+    rename(type = treatment_type)
+
   missing_date_type_c <- setdiff(all_date_type_c, obs_date_type_c)
 
   ## Combining observed and missing data
-  x_hfr <- rbind(hyperframe(date = pull(treatment_dates_types[, 1]),
-                            type = pull(treatment_dates_types[, 2]),
-                            ppp = x_ppp),
-                 hyperframe(date = missing_date_type$date,
-                            type = missing_date_type$type,
-                            ppp = empty_ppp)
-  )
+  x_list <- c(x_ppp, rep(list(empty_ppp), nrow(missing_date_type)))
+  x_index <- rbind(obs_date_type, missing_date_type)
+  treatment_types <- pull(unique(treatment[, treatment_type]))
 
-  x_hfr_out <- hyperframe(date = all_dates)
-  for (i in pull(unique(treatment[, treatment_type]))) { ### NEED TO WORK ON THIS
-    x_hfr_out[, i] <- subset(x_hfr, type == i)[order(subset(x_hfr, type == i)$date)]$ppp
+  lapply(1:length(treatment_types),
+         function(ii){
+           x_list[which(x_index$type == treatment_types[ii])]
+         }) -> x_list
+
+  x_hyperframe <- hyperframe(date = all_dates)
+
+  for(jj in 1:length(treatment_types)){
+    x_hyperframe[, treatment_types[jj]] <-
+      x_list[[jj]][order(subset(x_index, type == treatment_types[[1]])$date)]
   }
 
-  rm(list = c("x_hfr"))
+  x_list_c <- c(x_c_ppp, rep(list(empty_ppp), nrow(missing_date_type_c)))
+  x_index_c <- rbind(obs_date_type_c, missing_date_type_c)
 
-  x_hfr_c <- rbind(hyperframe(date = pull(treatment_dates_types_c[, 1]),
-                              type = pull(treatment_dates_types_c[, 2]),
-                              ppp = x_c_ppp),
-                   hyperframe(date = missing_date_type_c$date,
-                              type = missing_date_type_c$type,
-                              ppp = empty_ppp)
-  )
-  x_hfr_out_c <- hyperframe(date = all_dates,
-                            all_treatment = x_hfr_c[order(x_hfr_c$date)]$ppp)
-
-  x_hyperframe <- cbind.hyperframe(x_hfr_out, x_hfr_out_c[, -1])
-
-  rm(list = c("x_hfr_out_c"))
+  x_hyperframe[, "all_treatment"] <- x_list_c[order(x_index_c$date)]
 
   # Converting outcome data to ppp ----------
   cat("Converting the outcome data to ppp objects...\n")
@@ -149,55 +143,49 @@ get_hfr <- function(treatment, treatment_type,
                         ppp = y_c_ppp)
 
   ## Identifying missing dates
-  outcome_dates_types_y <- outcome %>%
+  all_date_type_y <- expand.grid(date = all_dates,
+                                 type = pull(unique(outcome[, outcome_type])))
+
+  obs_date_type_y <- outcome %>%
     group_by_at(vars(date, paste0(outcome_type))) %>%
     dplyr::select(date, paste0(outcome_type)) %>%
-    distinct()
+    distinct() %>%
+    rename(type = outcome_type)
 
-  outcome_dates_types_c_y <- y_c %>%
-    group_by_at(vars(date, paste0(outcome_type))) %>%
-    dplyr::select(date, paste0(outcome_type)) %>%
-    distinct()
-
-  all_date_type_y <- expand.grid(date = all_dates, type = pull(unique(outcome[, outcome_type])))
-  obs_date_type_y <- data.frame(date = pull(outcome_dates_types_y[, 1]),
-                                type = pull(outcome_dates_types_y[, 2]))
   missing_date_type_y <- setdiff(all_date_type_y, obs_date_type_y)
 
-  all_date_type_c_y <- data.frame(date = all_dates, type = pull(unique(y_c[, outcome_type])))
-  obs_date_type_c_y <- data.frame(date = pull(outcome_dates_types_c_y[, 1]),
-                                  type = pull(outcome_dates_types_c_y[, 2]))
+  all_date_type_c_y <- data.frame(date = all_dates,
+                                  type = pull(unique(y_c[, outcome_type])))
+
+  obs_date_type_c_y <- y_c %>%
+    group_by_at(vars(date, paste0(outcome_type))) %>%
+    dplyr::select(date, paste0(outcome_type)) %>%
+    distinct() %>%
+    rename(type = outcome_type)
+
   missing_date_type_c_y <- setdiff(all_date_type_c_y, obs_date_type_c_y)
 
   ## Combining observed and missing data
-  y_hfr <- rbind(hyperframe(date = pull(outcome_dates_types_y[, 1]),
-                            type = pull(outcome_dates_types_y[, 2]),
-                            ppp = y_ppp),
-                 hyperframe(date = missing_date_type_y$date,
-                            type = missing_date_type_y$type,
-                            ppp = empty_ppp)
-  )
+  y_list <- c(y_ppp, rep(list(empty_ppp), nrow(missing_date_type_y)))
+  y_index <- rbind(obs_date_type_y, missing_date_type_y)
+  outcome_types <- pull(unique(outcome[, outcome_type]))
 
-  y_hfr_out <- hyperframe(date = all_dates)
-  for (i in pull(unique(outcome[, outcome_type]))) {
-    y_hfr_out[, i] <- subset(y_hfr, type == i)[order(subset(y_hfr, type == i)$date)]$ppp
+  lapply(1:length(outcome_types),
+         function(ii){
+           y_list[which(y_index$type == outcome_types[ii])]
+         }) -> y_list
+
+  y_hyperframe <- hyperframe(date = all_dates)
+
+  for(jj in 1:length(outcome_types)){
+    y_hyperframe[, outcome_types[jj]] <-
+      y_list[[jj]][order(subset(y_index, type == outcome_types[[1]])$date)]
   }
 
-  rm(list = c("y_hfr"))
+  y_list_c <- c(y_c_ppp, rep(list(empty_ppp), nrow(missing_date_type_c_y)))
+  y_index_c <- rbind(obs_date_type_c_y, missing_date_type_c_y)
 
-  y_hfr_c <- rbind(hyperframe(date = pull(outcome_dates_types_c_y[, 1]),
-                              type = pull(outcome_dates_types_c_y[, 2]),
-                              ppp = y_c_ppp),
-                   hyperframe(date = missing_date_type_c_y$date,
-                              type = missing_date_type_c_y$type,
-                              ppp = empty_ppp)
-  )
-  y_hfr_out_c <- hyperframe(date = all_dates,
-                            all_outcome = y_hfr_c[order(y_hfr_c$date)]$ppp)
-
-  y_hyperframe <- cbind.hyperframe(y_hfr_out, y_hfr_out_c[, -1])
-
-  rm(list = c("y_hfr_out_c"))
+  y_hyperframe[, "all_outcome"] <- y_list_c[order(y_index_c$date)]
 
   # Finalizing the hyperframe ----------
   cat("Generating a hyperframe of treatment and outcome point processes...\n")
