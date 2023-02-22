@@ -12,12 +12,13 @@
 #' @param coordinates Names of columns for coordinates. By default, x = longitude and y = latitude
 #' @param jitter Indicating whether to jitter; by default TRUE
 #' @param jitter_amount Amount of jittering; by default 0.00001
+#' @param combined Whether to generate output for all treatment and all outcomes combined. By default TRUE
 
 get_hfr <- function(treatment, treatment_type,
                     outcome, outcome_type, window,
                     date = "date",
                     coordinates = c("longitude", "latitude"),
-                    jitter = TRUE, jitter_amount = 0.0001) {
+                    jitter = TRUE, jitter_amount = 0.0001, combined = TRUE) {
 
   # Getting the range of dates -----------
   date_range <- base::range(treatment[, date])
@@ -29,6 +30,16 @@ get_hfr <- function(treatment, treatment_type,
 
   setDT(treatment)
   setDT(outcome)
+
+  if (combined){
+    treatment_c <- treatment
+    treatment_c[, treatment_type] <- "all_treatment"
+    treatment <- rbind(treatment, treatment_c)
+
+    outcome_c <- outcome
+    outcome_c[, outcome_type] <- "all_outcome"
+    outcome <- rbind(outcome, outcome_c)
+  }
 
   # Converting treatment data to ppp ----------
   cat("Converting the treatment data to ppp objects...\n")
@@ -44,18 +55,8 @@ get_hfr <- function(treatment, treatment_type,
                             y = .x[, coordinates[2]]),
                       W = window))
 
-  ## Generating data and point process with all treatment combined
-  x_c <- treatment
-  x_c[, treatment_type] <- "all_treatment"
-  x_c_ppp <- x_c %>%
-    group_by_at(vars(date, paste0(treatment_type))) %>%
-    group_map(~as.ppp(cbind(x = .x[, coordinates[1]],
-                            y = .x[, coordinates[2]]),
-                      W = window))
-
   if (jitter) {
-    x_ppp <- purrr::map(x_ppp, spatstat.geom::rjitter, radius = jitter_amount)
-    x_c_ppp <- purrr::map(x_c_ppp, spatstat.geom::rjitter, radius = jitter_amount)
+    x_ppp <- map(x_ppp, spatstat.geom::rjitter, radius = jitter_amount)
   }
 
   cat("Converting the treatment data to a hyperframe...\n")
@@ -71,17 +72,6 @@ get_hfr <- function(treatment, treatment_type,
     rename(type = treatment_type)
 
   missing_date_type <- setdiff(all_date_type, obs_date_type)
-
-  all_date_type_c <- data.frame(date = all_dates,
-                                type = pull(unique(x_c[, ..treatment_type])))
-
-  obs_date_type_c <- x_c %>%
-    group_by_at(vars(date, paste0(treatment_type))) %>%
-    dplyr::select(date, paste0(treatment_type)) %>%
-    distinct() %>%
-    rename(type = treatment_type)
-
-  missing_date_type_c <- setdiff(all_date_type_c, obs_date_type_c)
 
   ## Combining observed and missing data
   x_list <- c(x_ppp, rep(list(empty_ppp), nrow(missing_date_type)))
@@ -100,11 +90,6 @@ get_hfr <- function(treatment, treatment_type,
       x_list[[jj]][order(subset(x_index, type == treatment_types[[1]])$date)]
   }
 
-  x_list_c <- c(x_c_ppp, rep(list(empty_ppp), nrow(missing_date_type_c)))
-  x_index_c <- rbind(obs_date_type_c, missing_date_type_c)
-
-  x_hyperframe[, "all_treatment"] <- x_list_c[order(x_index_c$date)]
-
   # Converting outcome data to ppp ----------
   cat("Converting the outcome data to ppp objects...\n")
 
@@ -115,39 +100,11 @@ get_hfr <- function(treatment, treatment_type,
                             y = .x[, coordinates[2]]),
                       W = window))
 
-  ## Generating data and point process with all treatment combined
-  y_c <- outcome
-  y_c[, outcome_type] <- "all_outcome"
-  y_c_ppp <- y_c %>%
-    group_by_at(vars(date, paste0(outcome_type))) %>%
-    group_map(~as.ppp(cbind(x = .x[, coordinates[1]],
-                            y = .x[, coordinates[2]]),
-                      W = window))
-
   if (jitter) {
-    y_ppp <- purrr::map(y_ppp, spatstat.geom::rjitter, radius = jitter_amount)
-    y_c_ppp <- purrr::map(y_c_ppp, spatstat.geom::rjitter, radius = jitter_amount)
+    y_ppp <- map(y_ppp, spatstat.geom::rjitter, radius = jitter_amount)
   }
 
   cat("Converting the outcome data to a hyperframe...\n")
-
-  outcome_dates_types_y <- outcome %>%
-    group_by_at(vars(date, paste0(outcome_type))) %>%
-    dplyr::select(date, paste0(outcome_type)) %>%
-    distinct()
-
-  y_hfr <- hyperframe(date = pull(outcome_dates_types_y[, 1]),
-                      type = pull(outcome_dates_types_y[, 2]),
-                      ppp = y_ppp)
-
-  outcome_dates_types_c_y <- y_c %>%
-    group_by_at(vars(date, paste0(outcome_type))) %>%
-    dplyr::select(date, paste0(outcome_type)) %>%
-    distinct()
-
-  y_hfr_c <- hyperframe(date = pull(outcome_dates_types_c_y[, 1]),
-                        type = pull(outcome_dates_types_c_y[, 2]),
-                        ppp = y_c_ppp)
 
   ## Identifying missing dates
   all_date_type_y <- expand.grid(date = all_dates,
@@ -160,17 +117,6 @@ get_hfr <- function(treatment, treatment_type,
     rename(type = outcome_type)
 
   missing_date_type_y <- setdiff(all_date_type_y, obs_date_type_y)
-
-  all_date_type_c_y <- data.frame(date = all_dates,
-                                  type = pull(unique(y_c[, ..outcome_type])))
-
-  obs_date_type_c_y <- y_c %>%
-    group_by_at(vars(date, paste0(outcome_type))) %>%
-    dplyr::select(date, paste0(outcome_type)) %>%
-    distinct() %>%
-    rename(type = outcome_type)
-
-  missing_date_type_c_y <- setdiff(all_date_type_c_y, obs_date_type_c_y)
 
   ## Combining observed and missing data
   y_list <- c(y_ppp, rep(list(empty_ppp), nrow(missing_date_type_y)))
@@ -188,11 +134,6 @@ get_hfr <- function(treatment, treatment_type,
     y_hyperframe[, outcome_types[jj]] <-
       y_list[[jj]][order(subset(y_index, type == outcome_types[[1]])$date)]
   }
-
-  y_list_c <- c(y_c_ppp, rep(list(empty_ppp), nrow(missing_date_type_c_y)))
-  y_index_c <- rbind(obs_date_type_c_y, missing_date_type_c_y)
-
-  y_hyperframe[, "all_outcome"] <- y_list_c[order(y_index_c$date)]
 
   # Finalizing the hyperframe ----------
   cat("Generating a hyperframe of treatment and outcome point processes...\n")
