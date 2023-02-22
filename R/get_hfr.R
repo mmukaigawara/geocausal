@@ -1,7 +1,7 @@
 #' Function: get_hfr
 #'
-#' A function that takes the dataframes with coordinates
-#' and reforms them to a hyperframe with point patterns
+#' A function that takes dataframes with coordinates
+#' and generates a hyperframe with point patterns
 #'
 #' @param treatment Data for treatment
 #' @param treatment_type Name of the column that speficies subtypes of treatment in dataset x
