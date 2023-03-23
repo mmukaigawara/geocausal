@@ -5,9 +5,9 @@
 #'
 #' @param data Data to convert
 #' @param subtype_column Name of the column that speficies subtypes
-#' @param window Window, should be saved as an owin object
+#' @param window Window, which should be saved as an owin object
 #' @param date Name of the column for dates in the treatment dataset
-#' @param date_range Range of dates
+#' @param date_range Range of dates with min and max dates
 #' @param coordinates Names of columns for coordinates. By default, x = longitude and y = latitude
 #' @param combined Whether to generate output for all treatment and all outcomes combined. By default TRUE
 
