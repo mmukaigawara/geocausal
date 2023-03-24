@@ -17,12 +17,12 @@ get_smoothed_outcome <- function(data_interest,
 
   all_points_coords <- rbindlist(map(data_interest, as.data.frame.ppp))
 
-  # Fit the mixture Gaussian model (mclust) -----
+  # Fit the Gaussian mixture model (mclust) -----
 
   if (method == "mclust") {
 
     ## Identify the number of components (EII model)
-    cat("Fitting the mixture Gaussian model\n")
+    cat("Fitting the Gaussian mixture model\n")
 
     if (initialization == TRUE) {
 
