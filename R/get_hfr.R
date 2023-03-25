@@ -4,27 +4,27 @@
 #' and generates a hyperframe with point patterns
 #'
 #' @param data Data to convert
-#' @param subtype_column Name of the column that speficies subtypes
+#' @param subtype_column Name of the column that specifies subtypes
 #' @param window Window, which should be saved as an owin object
-#' @param date Name of the column for dates in the treatment dataset
-#' @param date_range Range of dates with min and max dates
+#' @param time_column Name of the column for time. By default, dates
+#' @param time_range Range of time with min and max. By default, dates
 #' @param coordinates Names of columns for coordinates. By default, x = longitude and y = latitude
 #' @param combined Whether to generate output for all treatment and all outcomes combined. By default TRUE
 
 get_hfr <- function(data, subtype_column,
                     window,
-                    date = "date",
-                    date_range = c("2001-01-01", "2001-12-31"),
+                    time_column = "date",
+                    time_range = c("2007-02-23", "2008-07-05"),
                     coordinates = c("longitude", "latitude"),
                     combined = TRUE) {
 
   # Getting the range of dates -----------
-  all_dates <- seq(as.Date(date_range[1]), as.Date(date_range[2]), by = 1)
+  all_time <- seq(as.Date(time_range[1]), as.Date(time_range[2]), by = 1)
 
   # Cleaning the data ----------
   data <- data %>%
-    dplyr::select(date, subtype_column, coordinates[1], coordinates[2])
-  colnames(data) <- c("date", "type", "longitude", "latitude")
+    dplyr::select(time_column, subtype_column, coordinates[1], coordinates[2])
+  colnames(data) <- c("time", "type", "longitude", "latitude")
   setDT(data)
 
   if (combined){
@@ -44,21 +44,21 @@ get_hfr <- function(data, subtype_column,
   as.list(
     data[, .(list(as.ppp(cbind(x = .SD$longitude, y = .SD$latitude),
                          W = window))),
-         by = list(date, type)]
+         by = list(time, type)]
   ) -> x_ppp
 
   cat("Converting the data to a hyperframe...\n")
 
   ## Identifying missing dates
-  all_date_type <- expand.grid(date = all_dates,
+  all_time_type <- expand.grid(time = all_time,
                                type = unique(data[, type]))
-  obs_date_type <- data.table(date = x_ppp$date,
+  obs_time_type <- data.table(time = x_ppp$time,
                               type = x_ppp$type)
-  missing_date_type <- setdiff(all_date_type, obs_date_type)
+  missing_time_type <- setdiff(all_time_type, obs_time_type)
 
   ## Combining observed and missing data
-  x_list <- c(x_ppp$V1, rep(list(empty_ppp), nrow(missing_date_type)))
-  x_index <- rbind(obs_date_type, missing_date_type)
+  x_list <- c(x_ppp$V1, rep(list(empty_ppp), nrow(missing_time_type)))
+  x_index <- rbind(obs_time_type, missing_time_type)
   data_types <- unique(data[, type])
 
   lapply(1:length(data_types),
@@ -66,11 +66,11 @@ get_hfr <- function(data, subtype_column,
            x_list[which(x_index$type == data_types[ii])]
          }) -> x_list
 
-  x_hyperframe <- hyperframe(date = all_dates)
+  x_hyperframe <- hyperframe(time = all_time)
 
   for(jj in 1:length(data_types)){
     x_hyperframe[, data_types[jj]] <-
-      x_list[[jj]][order(subset(x_index, type == data_types[[jj]])$date)]
+      x_list[[jj]][order(subset(x_index, type == data_types[[jj]])$time)]
   }
 
   # Finalizing the hyperframe ----------
