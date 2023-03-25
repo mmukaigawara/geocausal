@@ -1,21 +1,20 @@
-#' Function: get_smoothed
+#' Function: get_smoothed_outcome
 #'
-#' A function that takes a column of hyperframes
-#' and generates a smoothed ppp
+#' A function that takes a column of hyperframes and generates a smoothed ppp
 #'
 #' @param data_interest Data to convert; should be in the form of "hyperframe$column"
 #' @param method Methods for smoothing. Either "mclust" or "abramson"
-#' @param initialization Whether to use smaller samples to initialize mclust. By default = TRUE, using 5% of data
-#' @param seed A seed for initialization. By default, 02138
+#' @param initialization Whether to use smaller samples to initialize mclust. Need to set seed for reproduction. By default = TRUE
+#' @param sampling Determines the proportion of data to use for initialization. By default = 0.05
 
 get_smoothed_outcome <- function(data_interest,
                                  method,
                                  initialization = TRUE,
-                                 seed = 02138) {
+                                 sampling = 0.05) {
 
   # Obtain coordinates of interest -----
 
-  all_points_coords <- rbindlist(map(data_interest, as.data.frame.ppp))
+  all_points_coords <- rbindlist(purrr::map(data_interest, as.data.frame.ppp))
 
   # Fit the Gaussian mixture model (mclust) -----
 
@@ -26,10 +25,8 @@ get_smoothed_outcome <- function(data_interest,
 
     if (initialization == TRUE) {
 
-      set.seed(seed)
-
       ## Prepare for initialization
-      M <- round(nrow(all_points_coords)/20, digits = 0) #Use 5% for initialization
+      M <- round((nrow(all_points_coords)*sampling), digits = 0)
       init <- list(subset = sample(1:nrow(all_points_coords), size = M))
 
       ## Fit the mixture Gaussian model
