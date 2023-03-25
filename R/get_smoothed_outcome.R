@@ -14,7 +14,7 @@ get_smoothed_outcome <- function(data_interest,
 
   # Obtain coordinates of interest -----
 
-  all_points_coords <- rbindlist(purrr::map(data_interest, as.data.frame.ppp))
+  all_points_coords <- rbindlist(purrr::map(data_interest, spatstat.geom::as.data.frame.ppp))
 
   # Fit the Gaussian mixture model (mclust) -----
 
