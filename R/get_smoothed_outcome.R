@@ -3,7 +3,7 @@
 #' A function that takes a column of hyperframes and generates a smoothed ppp
 #'
 #' @param data_interest Data to convert; should be in the form of "hyperframe$column"
-#' @param method Methods for smoothing. Either "mclust" or "abramson"
+#' @param method Methods for smoothing. Either "mclust" (fixed) or "abramson" (adaptive)
 #' @param initialization Whether to use smaller samples to initialize mclust. Need to set seed for reproduction. By default = TRUE
 #' @param sampling Determines the proportion of data to use for initialization. By default = 0.05, ie using 5% of samples first
 
@@ -64,9 +64,10 @@ get_smoothed_outcome <- function(data_interest,
     all_points <- as.ppp(cbind(x = all_points_coords$x,
                                y = all_points_coords$y), W = window)
 
-    scott_bw <- bw.scott(X = all_points, isotropic = FALSE)
+    ## Use Scott's rule of thumb to obtain h0
+    scott_bw <- bw.scott(X = all_points, isotropic = FALSE) # Two h0 for each coordinate
     use_h0 <- as.numeric(scott_bw)
-    pilot_dens <- density(all_points, use_h0)
+    pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
 
     him_points <- bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens)
     num_points <- as.numeric(purrr::map(as.list(data_interest), 2, .default = NA) %>% unlist())
