@@ -15,5 +15,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(geocausal)
+devtools::load_all()
+#library(geocausal)
 ```
