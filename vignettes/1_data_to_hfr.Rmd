@@ -1,11 +1,35 @@
 ---
-title: "1. Converting data to hyperframes"
-output: rmarkdown::html_vignette
+title: "Step 1. Converting data to hyperframes"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{1_data_to_hfr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+<style type = "text/css">
+h1.title {
+  font-size: 30px;
+}
+h1 { /* Header 1 */
+  font-size: 26px;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 16px;
+}
+div#TOC li {
+    list-style:none;
+    background-image:none;
+    background-repeat:none;
+    background-position:0; 
+}
+</style>
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -28,8 +52,6 @@ devtools::load_all()
 #library(geocausal)
 ```
 
-## Goals
-
 The purpose of this vignette is letting users convert dataframes with spatiotemporal dimensions to hyperframes with point process data. By the end of this vignette, users will be able to do the following tasks:
 
 - task 1
@@ -39,7 +61,7 @@ The functions that are introduced in this vignette are as follows:
 
 - <tt>get_hfr</tt>
 
-## 1-1. Loading data
+# Loading data
 
 We will use two csv files: <tt>activ.csv</tt> and <tt>airstr.csv</tt>. 
 
@@ -48,7 +70,7 @@ We will use two csv files: <tt>activ.csv</tt> and <tt>airstr.csv</tt>.
 
 Let's first check what these datasets look like.
 
-### Outcome data
+## Outcome data
 
 In the dataset <tt>activ</tt>, locations of insurgencies are summarized by their latitudes and longitudes, with their onset captured by dates.
 
@@ -66,7 +88,7 @@ There are three subtypes of insurgencies (column <tt>type_out</tt>):
 table(activ$type_out)
 ```
 
-### Treatment data
+## Treatment data
 
 The treatment data is similar, except for the fact that subtypes are now captured by column <tt>Type</tt>.
 
@@ -83,11 +105,13 @@ There are two sub-categories of airstrikes:
 table(airstr$Type)
 ```
 
-## 1-2. Converting the data to hyperframes
+# Converting the data to hyperframes
 
-Our first task is to convert data to a collection of point processes. Intuitively, we want to generate maps of all the locations of airstrikes and insurgencies for all subtypes of and all dates of our interest.
+Our first task is to convert data to a collection of point processes. Intuitively, we want to generate maps of all the locations of airstrikes and insurgencies for all subtypes and all dates. For dates and subtypes with no observations, we want to get an empty map.
 
 [Figure here]
+
+To do this, we use <tt>get_hfr</tt> function.
 
 ```{r, warning = FALSE}
 # Treatment
