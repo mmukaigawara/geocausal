@@ -1,5 +1,5 @@
 ---
-title: "1. Converting dataframes to hyperframes"
+title: "1. Converting data to hyperframes"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{my-vignette}
@@ -12,9 +12,91 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+library(readr)
+library(dplyr)
+library(spatstat)
+library(data.table)
+library(purrr)
+library(furrr)
+library(mclust)
+
+load("~/Dropbox/Research/geocausal/Data/airstr.csv")
+load("~/Dropbox/Research/geocausal/Data/activ.csv")
+load("~/Dropbox/Research/geocausal/Data/iraq_window.Rda")
 ```
 
-```{r setup}
+```{r setup, include = FALSE}
 devtools::load_all()
 #library(geocausal)
+```
+
+## Goals
+
+The purpose of this vignette is letting users convert dataframes with spatiotemporal dimensions to hyperframes with point process data. By the end of this vignette, users will be able to do the following tasks:
+
+- task 1
+- task 2
+
+The functions that are introduced in this vignette are as follows:
+
+- <tt>get_hfr</tt>
+
+## 1-1. Loading data
+
+We will use two csv files: <tt>activ.csv</tt> and <tt>airstr.csv</tt>. 
+
+- <tt>activ.csv</tt>: spatiotemporal information of outcomes (i.e., insurgencies) 
+- <tt>airstr.csv</tt>: spatiotemporal information of treatment (i.e., airstrikes)
+
+Let's first check what these datasets look like.
+
+### Outcome data
+
+In the dataset <tt>activ</tt>, locations of insurgencies are summarized by their latitudes and longitudes, with their onset captured by dates.
+
+```{r}
+head(activ[, c("latitude", "longitude", "date", "type_out")])
+```
+
+There are three sub-categories of insurgencies (column <tt>type_out</tt>): 
+
+- improvised explosive devices (IED),
+- small arms fire (SAF), and 
+- other outcomes. 
+
+```{r}
+table(activ$type_out)
+```
+
+### Treatment data
+
+The treatment data is similar, except for the fact that subtypes are now captured by column <tt>Type</tt>.
+
+```{r}
+head(airstr[, c("latitude", "longitude", "date", "Type")])
+```
+
+There are two sub-categories of airstrikes: 
+
+- airstrikes and 
+- shows of force (SOF: simulated airstrikes where no weapons are released).
+
+```{r}
+table(airstr$Type)
+```
+
+Our first task is to convert these data to point processes.
+
+## 1-2. Converting the data to hyperframes
+
+```{r}
+# Treatment
+#treatment_hfr <- get_hfr(data = airstr,
+#                         subtype_column = "Type",
+#                         window = iraq_window,
+#                         time = "date",
+#                         time_range = c("2007-02-23", "2008-07-05"),
+#                         coordinates = c("longitude", "latitude"),
+#                         combined = TRUE)
 ```
