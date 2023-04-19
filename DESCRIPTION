@@ -3,7 +3,7 @@ Type: Package
 Title: Causal Inference with Spatio-Temporal Data
 Version: 0.1.0
 Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Maintainer: Mitsuru Mukaigawara <mitsuru_mukaigawara@g.harvard.edu>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: `use_mit_license()`
@@ -13,3 +13,9 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Imports:
+    spatstat,
+    data.table,
+    purrr,
+    furrr,
+    mclust
