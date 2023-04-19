@@ -15,6 +15,7 @@ Suggests:
 VignetteBuilder: knitr
 Imports:
     spatstat,
+    dplyr,
     data.table,
     purrr,
     furrr,
