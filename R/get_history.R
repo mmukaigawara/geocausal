@@ -19,7 +19,7 @@ get_history <- function(tt, Xt, Yt, lag, window, x_only = FALSE) {
   up_to_time <- sapply(lags, function(x) max(1, tt - x))
 
   # Creating history -----
-  Xt_hist <- as.ppp(X = matrix(0, nrow = 0, ncol = 2), W = window)
+  Xt_hist <- spatstat.geom::as.ppp(X = matrix(0, nrow = 0, ncol = 2), W = window)
   start_time <- tt - 1
 
   # If the time period is one time point, then this is the time point we use,
@@ -43,7 +43,7 @@ get_history <- function(tt, Xt, Yt, lag, window, x_only = FALSE) {
   } else {
 
     # Creating outcome history -----
-    Yt_hist <- as.ppp(X = matrix(0, nrow = 0, ncol = 2), W = window)
+    Yt_hist <- spatstat.geom::as.ppp(X = matrix(0, nrow = 0, ncol = 2), W = window)
     if (tt > 1) {
 
       Yt_hist <- Yt[[start_time]]
