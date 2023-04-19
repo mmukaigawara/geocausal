@@ -14,12 +14,6 @@ knitr::opts_chunk$set(
 )
 
 library(readr)
-library(dplyr)
-library(spatstat)
-library(data.table)
-library(purrr)
-library(furrr)
-library(mclust)
 
 load("~/Dropbox/Research/geocausal/Data/airstr.csv")
 load("~/Dropbox/Research/geocausal/Data/activ.csv")
@@ -62,7 +56,7 @@ In the dataset <tt>activ</tt>, locations of insurgencies are summarized by their
 head(activ)
 ```
 
-There are three sub-categories of insurgencies (column <tt>type_out</tt>): 
+There are three subtypes of insurgencies (column <tt>type_out</tt>): 
 
 - improvised explosive devices (IED),
 - small arms fire (SAF), and 
@@ -89,17 +83,19 @@ There are two sub-categories of airstrikes:
 table(airstr$Type)
 ```
 
-Our first task is to convert these data to point processes.
-
 ## 1-2. Converting the data to hyperframes
 
-```{r}
+Our first task is to convert data to a collection of point processes. Intuitively, we want to generate maps of all the locations of airstrikes and insurgencies for all subtypes of and all dates of our interest.
+
+[Figure here]
+
+```{r, warning = FALSE}
 # Treatment
-#treatment_hfr <- get_hfr(data = airstr,
-#                         subtype_column = "Type",
-#                         window = iraq_window,
-#                         time = "date",
-#                         time_range = c("2007-02-23", "2008-07-05"),
-#                         coordinates = c("longitude", "latitude"),
-#                         combined = TRUE)
+treatment_hfr <- get_hfr(data = airstr,
+                         subtype_column = "Type",
+                         window = iraq_window,
+                         time_column = "date",
+                         time_range = c("2007-02-23", "2008-07-05"),
+                         coordinates = c("longitude", "latitude"),
+                         combined = TRUE)
 ```
