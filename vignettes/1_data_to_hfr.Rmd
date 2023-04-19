@@ -2,7 +2,7 @@
 title: "1. Converting data to hyperframes"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{my-vignette}
+  %\VignetteIndexEntry{1_data_to_hfr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,6 +24,9 @@ library(mclust)
 load("~/Dropbox/Research/geocausal/Data/airstr.csv")
 load("~/Dropbox/Research/geocausal/Data/activ.csv")
 load("~/Dropbox/Research/geocausal/Data/iraq_window.Rda")
+
+activ <- activ[, c("latitude", "longitude", "date", "type_out")]
+airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
 ```
 
 ```{r setup, include = FALSE}
@@ -56,7 +59,7 @@ Let's first check what these datasets look like.
 In the dataset <tt>activ</tt>, locations of insurgencies are summarized by their latitudes and longitudes, with their onset captured by dates.
 
 ```{r}
-head(activ[, c("latitude", "longitude", "date", "type_out")])
+head(activ)
 ```
 
 There are three sub-categories of insurgencies (column <tt>type_out</tt>): 
@@ -74,7 +77,7 @@ table(activ$type_out)
 The treatment data is similar, except for the fact that subtypes are now captured by column <tt>Type</tt>.
 
 ```{r}
-head(airstr[, c("latitude", "longitude", "date", "Type")])
+head(airstr)
 ```
 
 There are two sub-categories of airstrikes: 
