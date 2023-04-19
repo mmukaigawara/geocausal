@@ -1,3 +1,4 @@
 exportPattern("^[[:alpha:]]+")
 importFrom(dplyr, "%>%")
 importFrom(data.table, ".SD")
+importFrom(data.table, "data.table")
