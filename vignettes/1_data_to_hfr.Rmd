@@ -111,7 +111,33 @@ Our first task is to convert data to a collection of point processes. Intuitivel
 
 [Figure here]
 
-To do this, we use <tt>get_hfr</tt> function.
+## <tt>get_hfr</tt> function
+
+The key function here is <tt>get_hfr</tt> function. This function does the following:
+
+1. aggregating all observations of each data and subtype, and converting them to a point process;
+2. identifying dates with zero observations and generating an empty map for those dates; and
+3. sorting everything and creating a hyperframe.
+
+A hyperframe is just like a dataframe but each element can be anything, such as point processes and pixel images. That said, <tt>get_hfr</tt> function generates a summarized output of point processes as one hyperframe.
+
+[Figure here]
+
+To use this function, all you need to specify is the following arguments:
+
+- <tt>data</tt>: the name of the dataframe that you want to pre-process;
+- <tt>subtype_column</tt>: the name of the column that specifies subtypes (of treatment or outcome);
+- <tt>window</tt>: an <tt>owin</tt> element (essentially, a map of your interest);
+- <tt>time_column</tt>: the name of the column for time;
+- <tt>time_range</tt>: the range of time periods of your interest;
+- <tt>coordinates</tt>: the names of columns for longitudes and latitudes (in this order); and
+- <tt>combined</tt>: an argument for generating a combined output.
+
+If you set <tt>combined =  TRUE</tt>, then this function also returns point processes for each date, with every subtype combined. This is useful if you are interested in mapping all treatment or outcomes as one map.
+
+## Converting data to hyperframes
+
+So let's try it out. We first convert treatment data to a hyperframe.
 
 ```{r, warning = FALSE}
 # Treatment
@@ -123,3 +149,58 @@ treatment_hfr <- get_hfr(data = airstr,
                          coordinates = c("longitude", "latitude"),
                          combined = TRUE)
 ```
+
+If you have multiple observations at the same time, then you will receive a warning message saying <tt>data contain duplicated points</tt>. This is a generic message that an internal function generates. As long as the data truly contains multiple observations happening at the same time, you can ignore this warning message.
+
+The output of this function is a hyperframe, with each element being a point process, denoted as <tt>(ppp)</tt> in the output. 
+```{r, warning = FALSE}
+head(treatment_hfr)
+```
+
+Since we set <tt>combined = TRUE</tt>, we have a new column <tt>all_combined</tt>, which combines <tt>Airstrike</tt> and <tt>SOF</tt> for each day and returns an aggregated point process.
+
+## Visualizing point processes
+
+So how does each ppp look like? One way to visualize this is to treat this hyperframe just like a dataframe and plot each observation. For example, if you are interested in airstrikes on March 2, 2007, then you can plot it as follows.
+
+```{r, warning = FALSE, out.height=400, out.width=600, fig.dim = c(9, 6)}
+plot(treatment_hfr[which(treatment_hfr$time == "2007-03-02"), "Airstrike"],
+     main = "Airstrikes on March 2, 2007")
+```
+
+In this plot, each circle represents an airstrike, and the boundaries show the borders of Iraq (as defined by the window).
+
+This looks fine, but we understand that you may be interested in plotting airstrikes over several days, either aggregating data over several days or simply visualizing them separately. In this case, function...
+
+[r code]
+
+## Combining hyperframes
+
+Now that we understand what hyperframes and point processes look like, we can proceed to converting outcome data and combine the two hyperframes.
+
+```{r, warning = FALSE}
+# Outcome
+outcome_hfr <- get_hfr(data = activ,
+                       subtype_column = "type_out",
+                       window = iraq_window,
+                       time_column = "date",
+                       time_range = c("2007-02-23", "2008-07-05"),
+                       coordinates = c("longitude", "latitude"),
+                       combined = TRUE)
+
+# Combine the two
+dat_hfr <- spatstat.geom::cbind.hyperframe(treatment_hfr, outcome_hfr[, -1])
+names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
+names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
+
+head(dat_hfr)
+```
+
+With this hyperframe, we can then proceed to smoothing point processes.
+
+
+
+
+
+
+
