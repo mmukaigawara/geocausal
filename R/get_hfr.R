@@ -25,7 +25,7 @@ get_hfr <- function(data, subtype_column,
   data <- data %>%
     dplyr::select(time_column, subtype_column, coordinates[1], coordinates[2])
   colnames(data) <- c("time", "type", "longitude", "latitude")
-  setDT(data)
+  data.table::setDT(data)
 
   if (combined){
     data_c <- data
@@ -37,13 +37,13 @@ get_hfr <- function(data, subtype_column,
   cat("Converting the data to ppp objects...\n")
 
   ## Creating empty point process for imputation
-  empty <- data.table(latitude = double(), longitude = double())
-  empty_ppp <- as.ppp(cbind(x = empty$longitude, y = empty$latitude), W = window)
+  empty <- data.table::data.table(latitude = double(), longitude = double())
+  empty_ppp <- spatstat.geom::as.ppp(cbind(x = empty$longitude, y = empty$latitude), W = window)
 
   ## Converting data to point process
   as.list(
-    data[, .(list(as.ppp(cbind(x = .SD$longitude, y = .SD$latitude),
-                         W = window))),
+    data[, .(list(spatstat.geom::as.ppp(cbind(x = .SD$longitude, y = .SD$latitude),
+                                        W = window))),
          by = list(time, type)]
   ) -> x_ppp
 
@@ -51,13 +51,17 @@ get_hfr <- function(data, subtype_column,
 
   ## Identifying missing dates
   all_time_type <- expand.grid(time = all_time,
-                               type = unique(data[, type]))
-  obs_time_type <- data.table(time = x_ppp$time,
-                              type = x_ppp$type)
-  missing_time_type <- setdiff(all_time_type, obs_time_type)
+                               type = as.character(unique(data[, type])),
+                               KEEP.OUT.ATTRS = FALSE)
+  all_time_type$type <- as.character(all_time_type$type)
+  data.table::setDT(all_time_type)
+
+  obs_time_type <- data.table::data.table(time = x_ppp$time, type = x_ppp$type)
+
+  missing_time_type <- all_time_type[!obs_time_type, on = c("time", "type")]
 
   ## Combining observed and missing data
-  x_list <- c(x_ppp$V1, rep(list(empty_ppp), nrow(missing_time_type)))
+  x_list <- c(x_ppp$V1, rep(list(empty_ppp), length(missing_time_type[[1]])))
   x_index <- rbind(obs_time_type, missing_time_type)
   data_types <- unique(data[, type])
 
@@ -66,7 +70,7 @@ get_hfr <- function(data, subtype_column,
            x_list[which(x_index$type == data_types[ii])]
          }) -> x_list
 
-  x_hyperframe <- hyperframe(time = all_time)
+  x_hyperframe <- spatstat.geom::hyperframe(time = all_time)
 
   for(jj in 1:length(data_types)){
     x_hyperframe[, data_types[jj]] <-
