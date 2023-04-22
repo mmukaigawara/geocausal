@@ -162,11 +162,11 @@ Since we set <tt>combined = TRUE</tt>, we have a new column <tt>all_combined</tt
 
 ## Visualizing point processes
 
-So how does each ppp look like? One way to visualize this is to treat this hyperframe just like a dataframe and plot each observation. For example, if you are interested in airstrikes on March 2, 2007, then you can plot it as follows.
+So how does each ppp look like? One way to visualize this is to treat this hyperframe just like a dataframe and plot each observation. For example, if you are interested in airstrikes on February 23, 2007, then you can plot it as follows.
 
 ```{r, warning = FALSE, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(treatment_hfr[which(treatment_hfr$time == "2007-03-02"), "Airstrike"],
-     main = "Airstrikes on March 2, 2007")
+plot(treatment_hfr[which(treatment_hfr$time == "2007-02-23"), "Airstrike"],
+     main = "")
 ```
 
 In this plot, each circle represents an airstrike, and the boundaries show the borders of Iraq (as defined by the window).
