@@ -204,7 +204,7 @@ vis_hfr(hfr = treatment_hfr,
 
 By setting <tt>combined = FALSE</tt>, you can also use this function to generate separate plots for all dates.
 
-```{r, out.height=400, out.width=500, fig.dim = c(9, 6)}
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 vis_hfr(hfr = treatment_hfr,
         subtype_column = "Airstrike",
         time_column = "time",
