@@ -48,8 +48,7 @@ airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
 ```
 
 ```{r setup, include = FALSE}
-devtools::load_all()
-#library(geocausal)
+library(geocausal)
 ```
 
 The purpose of this vignette is letting users convert dataframes with spatiotemporal dimensions to hyperframes with point process data. By the end of this vignette, users will be able to do the following tasks:
