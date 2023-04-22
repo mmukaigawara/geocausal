@@ -48,7 +48,8 @@ airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
 ```
 
 ```{r setup, include = FALSE}
-library(geocausal)
+devtools::load_all()
+#library(geocausal)
 ```
 
 The purpose of this vignette is letting users convert dataframes with spatiotemporal dimensions to hyperframes with point process data. By the end of this vignette, users will be able to do the following tasks:
@@ -169,9 +170,46 @@ plot(treatment_hfr[which(treatment_hfr$time == "2007-03-02"), "Airstrike"],
 
 In this plot, each circle represents an airstrike, and the boundaries show the borders of Iraq (as defined by the window).
 
-This looks fine, but we understand that you may be interested in plotting airstrikes over several days, either aggregating data over several days or simply visualizing them separately. In this case, function...
+This looks fine, but we understand that you may be interested in plotting airstrikes over several days, either aggregating data over several days or simply visualizing them separately. In this case, <tt>vis_hfr</tt> function is useful.
 
-[r code]
+All you need to specify is the following:
+
+- <tt>hfr</tt>: the name of the hyperframe;
+- <tt>subtype_column</tt>: the name of the column that specifies subtypes (of treatment or outcome);
+- <tt>time_column</tt>: the name of the column for time;
+- <tt>time_range</tt>: the range of time periods of your interest;
+- <tt>combined</tt>: whether you want to combine all observations as one plot; and
+- <tt>marks</tt>: whether to use the same mark (if combined = TRUE).
+
+```{r}
+vis_hfr(hfr = treatment_hfr,
+        subtype_column = "Airstrike",
+        time_column = "time",
+        time_range = c("2007-02-23", "2007-02-28"),
+        combined = TRUE,
+        marks = TRUE) 
+```
+
+If you specify <tt>marks = FALSE</tt>, then each day is represented by different shapes.
+
+```{r}
+vis_hfr(hfr = treatment_hfr,
+        subtype_column = "Airstrike",
+        time_column = "time",
+        time_range = c("2007-02-23", "2007-02-28"),
+        combined = TRUE,
+        marks = FALSE)
+```
+
+By setting <tt>combined = FALSE</tt>, you can also use this function to generate separate plots for all dates.
+
+```{r}
+vis_hfr(hfr = treatment_hfr,
+        subtype_column = "Airstrike",
+        time_column = "time",
+        time_range = c("2007-02-23", "2007-02-28"),
+        combined = FALSE) 
+```
 
 ## Combining hyperframes
 
@@ -195,7 +233,7 @@ names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
 head(dat_hfr)
 ```
 
-With this hyperframe, we can then proceed to smoothing point processes.
+With this hyperframe, we can then smooth point processes.
 
 
 
