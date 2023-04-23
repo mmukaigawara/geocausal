@@ -234,11 +234,4 @@ names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
 head(dat_hfr)
 ```
 
-With this hyperframe, we can then smooth point processes.
-
-
-
-
-
-
 
