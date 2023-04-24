@@ -1,0 +1,168 @@
+---
+title: "Step 2. Smoothing outcomes"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{2_smoothing_outcomes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type = "text/css">
+h1.title {
+  font-size: 30px;
+}
+h1 { /* Header 1 */
+  font-size: 26px;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 16px;
+}
+div#TOC li {
+    list-style:none;
+    background-image:none;
+    background-repeat:none;
+    background-position:0; 
+}
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(readr)
+```
+
+```{r setup, include = FALSE}
+devtools::load_all()
+#library(geocausal)
+```
+
+```{r load data, include = FALSE}
+load("~/Dropbox/Research/geocausal/Data/airstr.csv")
+load("~/Dropbox/Research/geocausal/Data/activ.csv")
+load("~/Dropbox/Research/geocausal/Data/iraq_window.Rda")
+
+activ <- activ[, c("latitude", "longitude", "date", "type_out")]
+airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
+
+# Treatment
+treatment_hfr <- get_hfr(data = airstr,
+                         subtype_column = "Type",
+                         window = iraq_window,
+                         time_column = "date",
+                         time_range = c("2007-02-23", "2008-07-05"),
+                         coordinates = c("longitude", "latitude"),
+                         combined = TRUE)
+
+# Outcome
+outcome_hfr <- get_hfr(data = activ,
+                       subtype_column = "type_out",
+                       window = iraq_window,
+                       time_column = "date",
+                       time_range = c("2007-02-23", "2008-07-05"),
+                       coordinates = c("longitude", "latitude"),
+                       combined = TRUE)
+
+# Combine the two
+dat_hfr <- spatstat.geom::cbind.hyperframe(treatment_hfr, outcome_hfr[, -1])
+names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
+names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
+```
+
+The purpose of this vignette is letting users smooth the point processes. 
+
+By the end of this vignette, users will understand the usage of <tt>get_smoothed_outcome</tt>.
+
+# Smoothing outcomes
+
+A key step of spatiotemporal causal inference is to transform outcomes (point processes) to smoothed outcomes. To do so, we use <tt>get_smoothed_outcome</tt> function. This function has following arguments:
+
+- <tt>data_interest</tt>: a hyperframe column that you want to convert (in the form of <tt>hyperframe$column</tt>); and
+- <tt>method</tt>: a method of smoothing (either <tt>mclust</tt> or <tt>abram</tt>).
+
+## Option 1: Gaussian mixture model
+
+Let's first use the Gaussian mixture model, which is the simplest method for smoothing.
+
+This method does the following:
+
+- task 1
+- task 2
+
+[Figure here]
+
+The key advantage of choosing the Gaussian mixture model is its computational speed. Since our function assumes EII (equal volume, round shape), it is much faster than the adaptive smoothing.
+
+To use this method, users first need to set <tt>method = "mclust"</tt> and then specify the <tt>initialization</tt> argument. By setting <tt>initialization = TRUE</tt>, the function uses a small fraction of data to obtain the common variance, which makes the process even faster.
+
+For example, if you want to use 5% of data for initialization, then you can run the following code.
+
+```{r}
+smooth_IED <- get_smoothed_outcome(data_interest = dat_hfr$IED,
+                                   method = "mclust", initialization = TRUE,
+                                   sampling = 0.05)
+```
+
+It takes some time to complete this process, so it is highly recommended that you save the output.
+
+Now, let's take a look at the output. it is a list of pixel images, each representing smoothed outcomes (in this case, IED) of each date.
+
+```{r}
+head(smooth_IED)
+```
+
+To visualize this, you can simply use <tt>plot</tt> function. For example, if you want to visualize the first day, you can run the following.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+plot(smooth_IED[[1]])
+```
+
+Additionally, just as we did for the hyperframe, we can run <tt>vis_hfr</tt> function. To do so, save the output as a column of the hyperframe that we generated. Since we are visualizing pixel images, you can now specify the maximum value for scaling by specifying the argument <tt>scale_max</tt>.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+# Save the output as a column of the hyperframe
+dat_hfr$smooth_IED <- smooth_IED
+
+# Run vis_hfr function (combined, max scale = 200)
+vis_hfr(hfr = dat_hfr,
+        subtype_column = "smooth_IED",
+        time_column = "time",
+        time_range = c("2007-02-23", "2007-02-28"),
+        combined = TRUE,
+        scale_max = 200)
+
+# Run vis_hfr function (not combined, max scale = 50)
+vis_hfr(hfr = dat_hfr,
+        subtype_column = "smooth_IED",
+        time_column = "time",
+        time_range = c("2007-02-23", "2007-02-28"),
+        combined = FALSE,
+        scale_max = 50) 
+```
+
+
+```{r}
+#smooth_SAF <- get_smoothed_outcome(data_interest = dat_hfr$SAF,
+#                                   method = "mclust", initialization = TRUE,
+#                                   sampling = 0.05)
+
+#smooth_other <- get_smoothed_outcome(data_interest = dat_hfr$other_outcome,
+#                                     method = "mclust", initialization = TRUE,
+#                                     sampling = 0.05)
+
+#smooth_allout <- get_smoothed_outcome(data_interest = dat_hfr$all_outcome,
+#                                      method = "mclust", initialization = TRUE,
+#                                      sampling = 0.05)
+
+```
+
+## Option 2: Abramson's adaptive smoothing
+
