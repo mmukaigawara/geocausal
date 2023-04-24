@@ -52,10 +52,7 @@ devtools::load_all()
 #library(geocausal)
 ```
 
-The purpose of this vignette is letting users convert dataframes with spatiotemporal dimensions to hyperframes with point process data. By the end of this vignette, users will be able to do the following tasks:
-
-- task 1
-- task 2
+The purpose of this vignette is letting users convert dataframes with spatiotemporal dimensions to hyperframes with point process data. By the end of this vignette, users will be able to convert data to a hyperframe. 
 
 The functions that are introduced in this vignette are as follows:
 
