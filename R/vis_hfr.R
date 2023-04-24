@@ -37,11 +37,13 @@ vis_hfr <- function(hfr,
 
     if (combined == FALSE) {
 
-      plot_out <- lapply(hfr_temp[, "targetcol"], plot,
-                         main = paste0(subtype_column, " from ",
-                                       time_range[1], " to ", time_range[2]), zlim = c(0, scale_max))
+      plot_out <- plot(hfr_temp[, "targetcol"],
+                       main = paste0(subtype_column, " from ", time_range[1], " to ", time_range[2]),
+                       zlim = c(0, scale_max))
 
     } else if (combined == TRUE) {
+
+      hfr_temp_selected <- hfr_temp[1, "targetcol"]
 
       # First add up smoothed outcomes (add v of all density.ppp outputs)
       smoothed_base <- hfr_temp$targetcol[[1]]$v
@@ -51,11 +53,11 @@ vis_hfr <- function(hfr,
       }
 
       # Then use it for visualization
-      hfr_temp$targetcol[[1]]$v <- smoothed_base
+      hfr_temp_selected$targetcol[[1]]$v <- smoothed_base
 
-      plot_out <- plot(hfr_temp$targetcol[[1]],
-                       main = paste0(subtype_column, " from ",
-                                     time_range[1], " to ", time_range[2]), zlim = c(0, scale_max))
+      plot_out <- plot(hfr_temp_selected[, "targetcol"],
+                       main = paste0(subtype_column, " from ", time_range[1], " to ", time_range[2]),
+                       zlim = c(0, scale_max))
 
     }
 
@@ -65,9 +67,8 @@ vis_hfr <- function(hfr,
 
   if (combined == FALSE) {
 
-    plot_out <- lapply(hfr_temp[, "targetcol"], plot,
-                       main = paste0(subtype_column, " from ",
-                                     time_range[1], " to ", time_range[2]))
+    plot_out <- plot(hfr_temp[, "targetcol"],
+                     main = paste0(subtype_column, " from ", time_range[1], " to ", time_range[2]))
 
   } else if (combined == TRUE) {
 
