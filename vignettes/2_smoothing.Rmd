@@ -135,7 +135,7 @@ dat_hfr$smooth_IED <- smooth_IED
 vis_hfr(hfr = dat_hfr,
         subtype_column = "smooth_IED",
         time_column = "time",
-        time_range = c("2007-02-23", "2007-02-28"),
+        range = c("2007-02-23", "2007-02-28"),
         combined = TRUE,
         scale_max = 200)
 
@@ -143,7 +143,7 @@ vis_hfr(hfr = dat_hfr,
 vis_hfr(hfr = dat_hfr,
         subtype_column = "smooth_IED",
         time_column = "time",
-        time_range = c("2007-02-23", "2007-02-28"),
+        range = c("2007-02-23", "2007-02-28"),
         combined = FALSE,
         scale_max = 50) 
 ```
