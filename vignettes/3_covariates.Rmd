@@ -76,27 +76,71 @@ By the end of this vignette, users will understand the usage of ...
 # Preparing covariates
 
 ```{r}
-# Covariates -----
+# 1. cities_dist
+head(cities_dist)
 
-## 1. cities_dist
-all_covariates[[1]]$Points
-all_covariates[[1]]$distance
+vis_hfr(hfr = cities_dist,
+        subtype_column = "Points",
+        time_column = NA,
+        range = c(1, 6),
+        combined = TRUE) 
 
-## 2. ethnicity
-all_covariates[[2]]
+vis_hfr(hfr = cities_dist,
+        subtype_column = "distance",
+        time_column = NA,
+        range = c(1, 6),
+        combined = FALSE,
+        scale_max = 10) 
+```
 
-## 3. Distances from rivers
-plot(all_covariates[[3]])
+```{r}
+# 2. ethnicity
+ethnicity
 
-## 4. Distances from roads
-plot(all_covariates[[4]])
+plot(ethnicity$Shia, main = "Shia")
+plot(ethnicity$Sunni, main = "Sunni")
+plot(ethnicity$Christians, main = "Christians")
+plot(ethnicity$Turcomans, main = "Turcomans")
+plot(ethnicity$Mixed_ShSu, main = "Mixed Shia/Sunni")
+plot(ethnicity$total_pop, main = "Total population")
+```
 
-## 5. Distances from rivers
-all_covariates[[5]]
 
-## 6. Aid
-all_covariates[[6]]
 
+```{r}
+# 3. Distances from rivers
+plot(rivers_dist, main = "Distance from rivers")
+```
+
+```{r}
+# 4. Distances from roads
+plot(routes_dist, main = "Distance from routes")
+```
+
+```{r}
+# 5. Distances from settlements
+head(settle_dist)
+
+vis_hfr(hfr = settle_dist,
+        subtype_column = "Points",
+        time_column = NA,
+        range = c(1, 18),
+        combined = FALSE) 
+
+vis_hfr(hfr = settle_dist,
+        subtype_column = "distance",
+        time_column = NA,
+        range = c(1, 18),
+        combined = FALSE,
+        scale_max = 10) 
+```
+
+```{r}
+# 6. Aid
+head(aid_district)
+```
+
+```{r}
 # Convert covariates -----
 
 ## Ethnicity and population
