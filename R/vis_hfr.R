@@ -12,7 +12,7 @@
 vis_hfr <- function(hfr,
                     subtype_column,
                     time_column = "time",
-                    time_range,
+                    range,
                     combined = TRUE,
                     marks = FALSE,
                     scale_max = 100) {
@@ -20,14 +20,23 @@ vis_hfr <- function(hfr,
   # Clean the data ----------
   hfr_temp <- hfr
 
-  time_id <- which(names(hfr_temp) == time_column)
-  targetcol_id <- which(names(hfr_temp) == subtype_column)
+  if (is.na(time_column) == FALSE) {
 
-  names(hfr_temp)[time_id] <- "time"
+    time_id <- which(names(hfr_temp) == time_column)
+    names(hfr_temp)[time_id] <- "time"
+    min_row <- which(hfr_temp$time == range[1])
+    max_row <- which(hfr_temp$time == range[2])
+
+  } else {
+    # If no time is specified, then simply use row IDs
+    min_row <- range[1]
+    max_row <- range[2]
+
+  }
+
+  targetcol_id <- which(names(hfr_temp) == subtype_column)
   names(hfr_temp)[targetcol_id] <- "targetcol"
 
-  min_row <- which(hfr_temp$time == time_range[1])
-  max_row <- which(hfr_temp$time == time_range[2])
   all_rows <- seq(min_row, max_row, by = 1)
 
   hfr_temp <- hfr_temp[all_rows, ]
@@ -38,7 +47,7 @@ vis_hfr <- function(hfr,
     if (combined == FALSE) {
 
       plot_out <- plot(hfr_temp[, "targetcol"],
-                       main = paste0(subtype_column, " from ", time_range[1], " to ", time_range[2]),
+                       main = paste0(subtype_column, " from ", range[1], " to ", range[2]),
                        zlim = c(0, scale_max))
 
     } else if (combined == TRUE) {
@@ -56,7 +65,7 @@ vis_hfr <- function(hfr,
       hfr_temp_selected$targetcol[[1]]$v <- smoothed_base
 
       plot_out <- plot(hfr_temp_selected[, "targetcol"],
-                       main = paste0(subtype_column, " from ", time_range[1], " to ", time_range[2]),
+                       main = paste0(subtype_column, " from ", range[1], " to ", range[2]),
                        zlim = c(0, scale_max))
 
     }
@@ -68,7 +77,7 @@ vis_hfr <- function(hfr,
   if (combined == FALSE) {
 
     plot_out <- plot(hfr_temp[, "targetcol"],
-                     main = paste0(subtype_column, " from ", time_range[1], " to ", time_range[2]))
+                     main = paste0(subtype_column, " from ", range[1], " to ", range[2]))
 
   } else if (combined == TRUE) {
 
@@ -80,7 +89,7 @@ vis_hfr <- function(hfr,
       }
 
     plot_out <- plot(out, main = paste0(subtype_column, " from ",
-                                        time_range[1], " to ", time_range[2]))
+                                        range[1], " to ", range[2]))
 
   }
 
