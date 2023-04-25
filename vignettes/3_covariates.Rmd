@@ -1,0 +1,160 @@
+---
+title: "Step 3. Preparing covariates"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{3_preparing_covariates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type = "text/css">
+h1.title {
+  font-size: 30px;
+}
+h1 { /* Header 1 */
+  font-size: 26px;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 16px;
+}
+div#TOC li {
+    list-style:none;
+    background-image:none;
+    background-repeat:none;
+    background-position:0; 
+}
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(readr)
+```
+
+```{r setup, include = FALSE}
+devtools::load_all()
+#library(geocausal)
+```
+
+```{r load data, include = FALSE}
+load_path <- "~/Dropbox/Research/spatiotemporal/Application/Data/"
+
+load(paste0(load_path, "image_covariates/cities_dist.dat"))
+load(paste0(load_path, "image_covariates/ethnicity.dat"))
+load(paste0(load_path, "image_covariates/rivers_dist.dat"))
+load(paste0(load_path, "image_covariates/routes_dist.dat"))
+load(paste0(load_path, "image_covariates/settle_dist.dat"))
+load(paste0(load_path, "covariates/spending_data/aid_district.dat"))
+
+subset_dates <- as.Date(c("2007/01/20", "2010/01/20"))
+
+aid_district <- subset(aid_district, USE_DATE >= subset_dates[1] &
+                         USE_DATE <= subset_dates[2])
+
+## List of covariates
+all_covariates <- list(cities_dist = cities_dist, #Hyperframe of ppp and image
+                       ethnicity = ethnicity, #list of ppp and image
+                       rivers_dist = rivers_dist, #im
+                       routes_dist = routes_dist, #im
+                       settle_dist = settle_dist, #hyperframe of ppp and image
+                       aid_district = aid_district) #data table
+```
+
+The purpose of this vignette is ... 
+
+By the end of this vignette, users will understand the usage of ...
+
+# Preparing covariates
+
+```{r}
+# Covariates -----
+
+## 1. cities_dist
+all_covariates[[1]]$Points
+all_covariates[[1]]$distance
+
+## 2. ethnicity
+all_covariates[[2]]
+
+## 3. Distances from rivers
+plot(all_covariates[[3]])
+
+## 4. Distances from roads
+plot(all_covariates[[4]])
+
+## 5. Distances from rivers
+all_covariates[[5]]
+
+## 6. Aid
+all_covariates[[6]]
+
+# Convert covariates -----
+
+## Ethnicity and population
+dat_hfr$Shia <- as.im(all_covariates$ethnicity[[1]], dimyx = 200)
+dat_hfr$Sunni <- as.im(all_covariates$ethnicity[[2]], dimyx = 200)
+dat_hfr$Christians <- as.im(all_covariates$ethnicity[[3]], dimyx = 200)
+dat_hfr$Turcomans <- as.im(all_covariates$ethnicity[[4]], dimyx = 200)
+dat_hfr$MixedShSu <- as.im(all_covariates$ethnicity[[5]], dimyx = 200)
+dat_hfr$logPopulation <- as.im(log(all_covariates$ethnicity[[6]]), dimyx = 200)
+
+## Distance from roads and rivers
+dat_hfr$prior_rivers <- exp(- covs_priority_coefs[[2]] * all_covariates$rivers_dist)
+dat_hfr$prior_roads <-  exp(- covs_priority_coefs[[3]] * all_covariates$routes_dist)
+
+## Distance from cities
+for (jj in 1 : 5) {
+  this_coef <- covs_priority_coefs[[1]][jj]
+  dat_hfr$Extra <- exp(- this_coef * all_covariates$cities_dist$distance[[jj]])
+  names(dat_hfr)[length(names(dat_hfr))] <- paste0("Cities.", jj)
+}
+dat_hfr$All_Cities <- (dat_hfr$Cities.1 + dat_hfr$Cities.2 + dat_hfr$Cities.3 +
+                         dat_hfr$Cities.4 + dat_hfr$Cities.5)
+
+## Distance from settlements
+for (jj in 1 : 18) {
+  this_coef <- covs_priority_coefs$settle
+  dat_hfr$Extra <- exp(- this_coef * all_covariates$settle_dist$distance[[jj]])
+  col_name <- paste0('Settle.', rownames(all_covariates$settle_dist)[jj])
+  names(dat_hfr)[length(names(dat_hfr))] <- col_name
+}
+
+## Aid spending
+iraq3 <- rgdal::readOGR(dsn = "~/Dropbox/Research/spatiotemporal/Application/Data/Map_data/Iraq Districts/.")
+dat_hfr$aid <- NULL #Modified
+
+for (ii in 1 : nrow(dat_hfr)) {
+
+  this_iraq3 <- iraq3
+  this_date <- dat_hfr$date[[ii]]
+  this_aid <- subset(all_covariates$aid_district, USE_DATE == this_date)
+  this_aid[, USE_DATE := NULL]
+  this_iraq3@data <- merge(this_iraq3@data, this_aid, by.x = "ADM3NAME",
+                           by.y = "District", all.x = TRUE)
+  this_iraq3@data$log_construct[is.na(this_iraq3@data$log_construct)] <- 0
+
+  r <- raster(ncol = 128, nrow = 128)
+  extent(r) <- extent(this_iraq3)
+  rp <- rasterize(this_iraq3, r, "log_construct")
+
+  rpim <- as.im(rp)
+  Window(rpim) <- iraq_window
+  dat_hfr$aid[[ii]] <- rpim
+}
+
+## Splines of time:
+time_splines <- splines::ns(1 : nrow(dat_hfr), df = df_time)
+for (jj in 1 : df_time) {
+  dat_hfr$Extra <- time_splines[, jj]
+  names(dat_hfr)[ncol(dat_hfr)] <- paste0('time.', jj)
+}
+```
