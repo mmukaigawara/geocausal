@@ -1,0 +1,183 @@
+---
+title: "Step 4. Getting histories"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{4_getting_histories}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type = "text/css">
+h1.title {
+  font-size: 30px;
+}
+h1 { /* Header 1 */
+  font-size: 26px;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 16px;
+}
+div#TOC li {
+    list-style:none;
+    background-image:none;
+    background-repeat:none;
+    background-position:0; 
+}
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+
+library(readr)
+library(ggplot2)
+library(furrr)
+library(spatstat)
+```
+
+```{r setup, include = FALSE}
+devtools::load_all()
+#library(geocausal)
+```
+
+```{r load data, include = FALSE}
+dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_3.rds")
+
+load("~/geocausal/Data/iraq_window.Rda")
+
+ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities",
+             "aid", "prior_PrevKinetic.1", "prior_PrevKinetic.7", "prior_PrevKinetic.30",
+             "prior_PrevAttacks.1", "prior_PrevAttacks.7", "prior_PrevAttacks.30",
+             "prior_PrevSOF.1", "prior_PrevSOF.7", "prior_PrevSOF.30",
+             "time.1", "time.2", "time.3",
+             "Settle.IQ.G01", "Settle.IQ.G02", "Settle.IQ.G03", "Settle.IQ.G04",
+             "Settle.IQ.G05", "Settle.IQ.G06", "Settle.IQ.G07", "Settle.IQ.G08",
+             "Settle.IQ.G09", "Settle.IQ.G10", "Settle.IQ.G11", "Settle.IQ.G12",
+             "Settle.IQ.G13", "Settle.IQ.G14", "Settle.IQ.G15", "Settle.IQ.G16",
+             "Settle.IQ.G17", "Settle.IQ.G18")
+```
+
+As a final step of data preparation, we obtain histories of treatment and outcomes.
+
+# History of treatment and outcomes
+
+We consider the history of treatment and outcomes as covariates. To create columns for the treatment and outcome history, we aggregate treatment and outcomes over 1, 7, and 30 days. To do so, we use <tt>get_history</tt> function by specifying data to convert, the lag, and the window. 
+
+For example, if you want to convert all outcomes (saved as <tt>dat_hfr\$all_outcome</tt>) aggregated over the past 30 days in Iraq, then you set <tt>Xt = dat_hfr\$all_outcome</tt>, <tt>lag = 30</tt>, and <tt>window = iraq_window</tt> (the window is saved as <tt>iraq_window</tt> in our case).
+
+```{r, warning = FALSE}
+lags <- c(1, 7, 30)
+time_interval <- 1:nrow(dat_hfr)
+
+# History of all outcomes
+
+## Point process
+hist_allout_1 <- lapply(time_interval, get_history,
+                        Xt = dat_hfr$all_outcome,
+                        lag = lags[1], window = iraq_window)
+hist_allout_7 <- lapply(time_interval, get_history,
+                        Xt = dat_hfr$all_outcome,
+                        lag = lags[2], window = iraq_window)
+hist_allout_30 <- lapply(time_interval, get_history,
+                         Xt = dat_hfr$all_outcome,
+                         lag = lags[3], window = iraq_window)
+
+dat_hfr$hist_allout_1 <- purrr::map(hist_allout_1, 1)
+dat_hfr$hist_allout_7 <- purrr::map(hist_allout_7, 1)
+dat_hfr$hist_allout_30 <- purrr::map(hist_allout_30, 1)
+
+## Smoothing
+dat_hfr$hist_allout_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_1,
+                                              method = "mclust", initialization = TRUE,
+                                              sampling = 0.05)
+dat_hfr$hist_allout_7 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_7,
+                                              method = "mclust", initialization = TRUE,
+                                              sampling = 0.05)
+dat_hfr$hist_allout_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_30,
+                                               method = "mclust", initialization = TRUE,
+                                               sampling = 0.05)
+
+rm(hist_allout_1, hist_allout_7, hist_allout_30)
+```
+
+```{r, warning = FALSE}
+# History of airstrikes
+
+## Point process
+hist_kinetic_1  <- lapply(time_interval, get_history,
+                          Xt = dat_hfr$Airstrike,
+                          lag = lags[1], window = iraq_window)
+hist_kinetic_7  <- lapply(time_interval, get_history,
+                          Xt = dat_hfr$Airstrike,
+                          lag = lags[2], window = iraq_window)
+hist_kinetic_30  <- lapply(time_interval, get_history,
+                           Xt = dat_hfr$Airstrike,
+                           lag = lags[3], window = iraq_window)
+
+dat_hfr$hist_kinetic_1 <- purrr::map(hist_kinetic_1, 1)
+dat_hfr$hist_kinetic_7 <- purrr::map(hist_kinetic_7, 1)
+dat_hfr$hist_kinetic_30 <- purrr::map(hist_kinetic_30, 1)
+
+## Smoothing
+dat_hfr$hist_kinetic_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kinetic_1,
+                                               method = "mclust", initialization = TRUE,
+                                               sampling = 0.05)
+dat_hfr$hist_kinetic_7 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kinetic_7,
+                                               method = "mclust", initialization = TRUE,
+                                               sampling = 0.05)
+dat_hfr$hist_kinetic_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kinetic_30,
+                                                method = "mclust", initialization = TRUE,
+                                                sampling = 0.05)
+
+rm(hist_kinetic_1, hist_kinetic_7, hist_kinetic_30)
+```
+
+```{r, warning = FALSE}
+# History of SOFs
+
+## Point process
+hist_SOF_1  <- lapply(time_interval, get_history,
+                      Xt = dat_hfr$SOF,
+                      lag = lags[1], window = iraq_window)
+hist_SOF_7  <- lapply(time_interval, get_history,
+                      Xt = dat_hfr$SOF,
+                      lag = lags[2], window = iraq_window)
+hist_SOF_30  <- lapply(time_interval, get_history,
+                       Xt = dat_hfr$SOF,
+                       lag = lags[3], window = iraq_window)
+
+dat_hfr$hist_SOF_1 <- purrr::map(hist_SOF_1, 1)
+dat_hfr$hist_SOF_7 <- purrr::map(hist_SOF_7, 1)
+dat_hfr$hist_SOF_30 <- purrr::map(hist_SOF_30, 1)
+
+## Smoothing
+dat_hfr$hist_SOF_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_SOF_1,
+                                           method = "mclust", initialization = TRUE,
+                                           sampling = 0.05)
+dat_hfr$hist_SOF_7 <- get_smoothed_outcome(data_interest = dat_hfr$hist_SOF_7,
+                                           method = "mclust", initialization = TRUE,
+                                           sampling = 0.05)
+dat_hfr$hist_SOF_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_SOF_30,
+                                            method = "mclust", initialization = TRUE,
+                                            sampling = 0.05)
+
+rm(hist_SOF_1, hist_SOF_7, hist_SOF_30)
+```
+Now the hyperframe contains all the necessary data to estimate the causal effects of treatment.
+
+```{r}
+head(dat_hfr)
+```
+
+```{r, include = FALSE}
+saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_4.rds")
+```
