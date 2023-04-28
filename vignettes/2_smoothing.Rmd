@@ -46,12 +46,7 @@ devtools::load_all()
 ```
 
 ```{r load data, include = FALSE}
-load("~/geocausal/Data/airstr.csv")
-load("~/geocausal/Data/activ.csv")
-load("~/geocausal/Data/iraq_window.Rda")
-
-activ <- activ[, c("latitude", "longitude", "date", "type_out")]
-airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
+dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_1.rds")
 ```
 
 By the end of this vignette, users will be able to smooth the point process data and understand the usage of <tt>get_smoothed_outcome</tt> function.
@@ -72,7 +67,7 @@ Let's first use the Gaussian mixture model, which is the simplest method for smo
 This method does the following:
 
 - performing model-based clustering;
-- obtaining the common variance (i.e., modeling all clusters by the same variance);
+- obtaining the common variance (i.e., modeling all clusters with the common variance);
 - using the common variance as the variance of the isotropic smoothing kernel; and
 - performing smoothing of the point processes.
 
@@ -101,7 +96,7 @@ head(smooth_IED)
 To visualize this, you can simply use <tt>plot</tt> function. For example, if you want to visualize the first day, you can run the following.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(smooth_IED[[1]])
+plot(smooth_IED[[1]], main = "Smoothed IED (2007-02-23)")
 ```
 
 Additionally, just as we did for the hyperframe, we can run <tt>vis_hfr</tt> function. To do so, save the output as a column of the hyperframe that we generated. Since we are visualizing pixel images, you can now specify the maximum value for scaling by specifying the argument <tt>scale_max</tt>.
@@ -148,8 +143,17 @@ dat_hfr$smooth_allout <- smooth_allout
 ```
 
 ```{r, include = FALSE}
-#saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_1.RData")
+#saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_2.rds")
+rm(smooth_IED, smooth_SAF, smooth_other, smooth_allout)
 ```
 
 ## Option 2: Abramson's adaptive smoothing
+
+The Gaussian mixture model is a fixed-bandwidth smoothing approach. This approach, therefore, is problematic when the true intensity varies across regions because it over- or under-smoothes some regions. To incorporate the variation in intensity functions, we need to adaptively smooth point processes. 
+
+Long stories short, we assume that the bandwidth is inversely proportional to the square root of the target densities. The function <tt>get_smoothed_outcome</tt> follows Abramson (1982) to estimate the target densities. Users can employ this option by setting <tt>method = "abram"</tt>.
+
+
+
+
 
