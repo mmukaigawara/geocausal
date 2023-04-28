@@ -226,6 +226,6 @@ head(dat_hfr)
 ```
 
 ```{r, include = FALSE}
-saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_1.rds")
+#saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_1.rds")
 rm(activ, airstr, treatment_hfr, outcome_hfr)
 ```
