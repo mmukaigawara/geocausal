@@ -94,8 +94,6 @@ In this vignette, we will walk through the covariates. Our example considers the
 - <tt>settle_dist</tt>: distances from local settlements in each of the Iraqi districts; and
 - <tt>aid_district</tt>: the amount of aid spent (in U.S. dollars) in each Iraqi district in the past month.
 
-Additionally, we consider histories of treatment and outcomes as covariates. We generate histories of treatment and outcomes over previous 1, 7, and 30 days, and save them as columns of the hyperframe.
-
 # Covariates
 
 ## The population (logged, in 2003) and settlement patterns
