@@ -34,55 +34,55 @@ vis_hfr <- function(hfr,
 
   }
 
-  targetcol_id <- which(names(hfr_temp) == subtype_column)
-  names(hfr_temp)[targetcol_id] <- "targetcol"
+  Outcome_id <- which(names(hfr_temp) == subtype_column)
+  names(hfr_temp)[Outcome_id] <- "Outcome"
 
   all_rows <- seq(min_row, max_row, by = 1)
 
   hfr_temp <- hfr_temp[all_rows, ]
 
   # If the object is smoothed outcomes (ie, pixel images) ----------
-  if (class(hfr_temp$targetcol)[1] == "imlist") {
+  if (class(hfr_temp$Outcome)[1] == "imlist") {
 
     if (combined == FALSE) {
 
-      plot_out <- plot(hfr_temp[, "targetcol"],
+      plot_out <- plot(hfr_temp[, "Outcome"],
                        main = paste0(subtype_column, " from ", range[1], " to ", range[2]),
                        zlim = c(0, scale_max))
 
     } else if (combined == TRUE) {
 
-      hfr_temp_selected <- hfr_temp[1, "targetcol"]
+      hfr_temp_selected <- hfr_temp[1, "Outcome"]
 
       # First add up smoothed outcomes (add v of all density.ppp outputs)
-      smoothed_base <- hfr_temp$targetcol[[1]]$v
+      smoothed_base <- hfr_temp$Outcome[[1]]$v
 
       for (ii in 2 : length(all_rows)) {
-        smoothed_base <- smoothed_base + hfr_temp$targetcol[[ii]]$v
+        smoothed_base <- smoothed_base + hfr_temp$Outcome[[ii]]$v
       }
 
       # Then use it for visualization
-      hfr_temp_selected$targetcol[[1]]$v <- smoothed_base
+      hfr_temp_selected$Outcome[[1]]$v <- smoothed_base
 
-      plot_out <- plot(hfr_temp_selected[, "targetcol"],
-                       main = paste0(subtype_column, " from ", range[1], " to ", range[2]),
+      plot_out <- plot(hfr_temp_selected[, "Outcome"],
+                       main = paste0(subtype_column, "\n(", range[1], " - ", range[2], ")"),
                        zlim = c(0, scale_max))
 
     }
 
   # If the object is point processes (ie, ppp) ----------
 
-  } else if (class(hfr_temp$targetcol)[1] == "ppplist")
+  } else if (class(hfr_temp$Outcome)[1] == "ppplist")
 
   if (combined == FALSE) {
 
-    plot_out <- plot(hfr_temp[, "targetcol"],
+    plot_out <- plot(hfr_temp[, "Outcome"],
                      main = paste0(subtype_column, " from ", range[1], " to ", range[2]))
 
   } else if (combined == TRUE) {
 
     out <- do.call(eval(parse(text = "spatstat.geom::superimpose")),
-                   hfr_temp$targetcol)
+                   hfr_temp$Outcome)
 
     if (marks == TRUE) {
       out$marks <- NULL # If marks = TRUE, use the same shape for all dates
