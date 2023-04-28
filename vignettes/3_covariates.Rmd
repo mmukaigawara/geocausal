@@ -48,6 +48,7 @@ devtools::load_all()
 ```{r load data, include = FALSE}
 load_path <- "~/geocausal/Data/covariates"
 
+load("~/geocausal/Data/iraq_window.Rda")
 load(paste0(load_path, "/cities_dist.dat"))
 load(paste0(load_path, "/ethnicity.dat"))
 load(paste0(load_path, "/rivers_dist.dat"))
@@ -60,41 +61,8 @@ subset_dates <- as.Date(c("2007/01/20", "2010/01/20"))
 aid_district <- subset(aid_district, USE_DATE >= subset_dates[1] &
                          USE_DATE <= subset_dates[2])
 
-## List of covariates
-all_covariates <- list(cities_dist = cities_dist, #Hyperframe of ppp and image
-                       ethnicity = ethnicity, #list of ppp and image
-                       rivers_dist = rivers_dist, #im
-                       routes_dist = routes_dist, #im
-                       settle_dist = settle_dist, #hyperframe of ppp and image
-                       aid_district = aid_district) #data table
-
 ## Prepare dat_hfr
-load("~/geocausal/Data/airstr.csv")
-load("~/geocausal/Data/activ.csv")
-load("~/geocausal/Data/iraq_window.Rda")
-
-activ <- activ[, c("latitude", "longitude", "date", "type_out")]
-airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
-
-treatment_hfr <- get_hfr(data = airstr,
-                         subtype_column = "Type",
-                         window = iraq_window,
-                         time_column = "date",
-                         time_range = c("2007-02-23", "2008-07-05"),
-                         coordinates = c("longitude", "latitude"),
-                         combined = TRUE)
-
-outcome_hfr <- get_hfr(data = activ,
-                       subtype_column = "type_out",
-                       window = iraq_window,
-                       time_column = "date",
-                       time_range = c("2007-02-23", "2008-07-05"),
-                       coordinates = c("longitude", "latitude"),
-                       combined = TRUE)
-
-dat_hfr <- spatstat.geom::cbind.hyperframe(treatment_hfr, outcome_hfr[, -1])
-names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
-names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
+dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_2.rds")
 
 sof_priority_coef <- 6  # For current SOFs
 hist_priority_coefs <- c(6, 6, 6)  # For previous airstrikes, outcomes, SOFs
@@ -104,64 +72,150 @@ covs_priority_coefs <- list(cities = seq(2, 10, length.out = 5),
 df_time <- 3
 ```
 
-The purpose of this vignette is ... 
+In this vignette, we will walk through the covariates. Our example considers the following covariates:
 
-By the end of this vignette, users will understand the usage of ...
+- <tt>ethnicity</tt>: settlement patterns and the population (logged, in 2003) of the governorate in which the airstrikes took place;
+- <tt>cities_dist</tt>: distances from major cities;
+- <tt>rivers_dist</tt>: distances from rivers;
+- <tt>routes_dist</tt>: distances from road networks;
+- <tt>settle_dist</tt>: distances from local settlements in each of the Iraqi districts; and
+- <tt>aid_district</tt>: the amount of aid spent (in U.S. dollars) in each Iraqi district in the past month.
 
-# Preparing covariates
+Additionally, we consider histories of treatment and outcomes as covariates. We generate histories of treatment and outcomes over previous 1, 7, and 30 days, and save them as columns of the hyperframe.
+
+# Covariates
+
+## The population (logged, in 2003) and settlement patterns
+
+The data <tt>ethnicity</tt> is a collection of pixel images.
 
 ```{r}
-# 1. cities_dist
-head(cities_dist)
-
-vis_hfr(hfr = cities_dist,
-        subtype_column = "Points",
-        time_column = NA,
-        range = c(1, 6),
-        combined = TRUE) 
-
-vis_hfr(hfr = cities_dist,
-        subtype_column = "distance",
-        time_column = NA,
-        range = c(1, 6),
-        combined = FALSE,
-        scale_max = 10) 
+ethnicity
 ```
 
-```{r}
-# 2. ethnicity
-ethnicity
+For each ethnic group (Shia, Sunni, Christians, Turcomans, and Shia/Sunni mixed), we have a map of settlement patterns.
 
+```{r}
 plot(ethnicity$Shia, main = "Shia")
 plot(ethnicity$Sunni, main = "Sunni")
 plot(ethnicity$Christians, main = "Christians")
 plot(ethnicity$Turcomans, main = "Turcomans")
 plot(ethnicity$Mixed_ShSu, main = "Mixed Shia/Sunni")
+```
+
+For the population, we have logged population in 2003 of each of the Iraqi districts as a pixel image.
+
+```{r}
 plot(ethnicity$total_pop, main = "Total population")
 ```
 
-
+Let's save each of them as a separate column of the hyperframe.
 
 ```{r}
-# 3. Distances from rivers
-plot(rivers_dist, main = "Distance from rivers")
+dat_hfr$Shia <- spatstat.geom::as.im(ethnicity$Shia, dimyx = 200)
+dat_hfr$Sunni <- spatstat.geom::as.im(ethnicity$Sunni, dimyx = 200)
+dat_hfr$Christians <- spatstat.geom::as.im(ethnicity$Christians, dimyx = 200)
+dat_hfr$Turcomans <- spatstat.geom::as.im(ethnicity$Turcomans, dimyx = 200)
+dat_hfr$MixedShSu <- spatstat.geom::as.im(ethnicity$Mixed_ShSu, dimyx = 200)
+dat_hfr$logPopulation <- spatstat.geom::as.im(log(ethnicity$total_pop), dimyx = 200)
 ```
 
-```{r}
-# 4. Distances from roads
-plot(routes_dist, main = "Distance from routes")
-```
+## Distances from major cities
+
+<tt>cities_dist</tt> is a hyperframe of point processes and pixel images.
 
 ```{r}
-# 5. Distances from settlements
+head(cities_dist)
+```
+
+The point processes summarize the locations of major cities based on the population size.
+
+```{r}
+vis_hfr(hfr = cities_dist,
+        subtype_column = "Points",
+        time_column = NA,
+        range = c(1, 6),
+        combined = TRUE)
+```
+
+The pixel images show the distances from major cities.
+
+```{r}
+vis_hfr(hfr = cities_dist,
+        subtype_column = "distance",
+        time_column = NA,
+        range = c(1, 6),
+        combined = FALSE,
+        scale_max = 8) 
+```
+
+We save these distances after multiplying by some constants and exponentiating them. We ignore small cities whose population < 50k. Additionally, we combine all five pixel images as one map and save it as a map that shows distances from all types of cities.
+
+```{r}
+covs <- c(2, 4, 6, 8, 10)
+
+for (jj in 1 : 5) {
+  dat_hfr$Extra <- exp(- covs[jj] * cities_dist$distance[[jj]])
+  names(dat_hfr)[length(names(dat_hfr))] <- paste0("Cities.", jj)
+}
+
+dat_hfr$All_Cities <- dat_hfr$Cities.1 + dat_hfr$Cities.2 + dat_hfr$Cities.3 +
+  dat_hfr$Cities.4 + dat_hfr$Cities.5
+
+plot(dat_hfr$All_Cities[1], main = "Distances from all cities")
+```
+
+## Distances from rivers
+
+<tt>rivers_dist</tt> is a pixel image that shows distances from major rivers.
+
+```{r}
+plot(rivers_dist, main = "Distance from rivers", zlim = c(0, 3))
+```
+
+Let's save it as a column of the hyperframe. For purely visualization purposes, we multiply the distances by -3 and then exponentiate it before saving it.
+
+```{r}
+plot(exp(- 3 * rivers_dist))
+dat_hfr$prior_rivers <- exp(- 3 * rivers_dist)
+```
+
+## Distances from roads
+
+<tt>routes_dist</tt> is also a pixel image that shows distances from road networks.
+
+```{r}
+plot(routes_dist, main = "Distance from routes", zlim = c(0, 2))
+```
+
+Similarly, save it as a column after multiplying it by -3 and exponentiating it.
+
+```{r}
+plot(exp(-3 * routes_dist))
+dat_hfr$prior_roads <- exp(-3 * routes_dist)
+```
+
+## Distances from settlements
+
+The structure of <tt>settle_dist</tt> is similar to <tt>cities_dist</tt>. It is a hyperframe with point processes and pixel images.
+
+```{r}
 head(settle_dist)
+```
 
+The point processes show the locations of settlements in each Governorate in Iraq.
+
+```{r}
 vis_hfr(hfr = settle_dist,
         subtype_column = "Points",
         time_column = NA,
         range = c(1, 18),
         combined = FALSE) 
+```
 
+Additionally, pixel images show the distances from the settlements.
+
+```{r}
 vis_hfr(hfr = settle_dist,
         subtype_column = "distance",
         time_column = NA,
@@ -170,52 +224,34 @@ vis_hfr(hfr = settle_dist,
         scale_max = 10) 
 ```
 
+We save each of these after multiplying by some constants and then exponentiating them.
+
 ```{r}
-# 6. Aid
+for (jj in 1 : 18) {
+  dat_hfr$Extra <- exp(- 12 * settle_dist$distance[[jj]])
+  col_name <- paste0('Settle.', rownames(settle_dist)[jj])
+  names(dat_hfr)[length(names(dat_hfr))] <- col_name
+}
+```
+
+## The amount of aid spent (in U.S. dollars)
+
+The aid data <tt>aid_district</tt> is summarized as the amount spent in the previous month in a district.
+
+```{r}
 head(aid_district)
 ```
 
+We then convert it to pixel images.
+
 ```{r}
-# Convert covariates -----
-
-## Ethnicity and population
-dat_hfr$Shia <- spatstat.geom::as.im(all_covariates$ethnicity[[1]], dimyx = 200)
-dat_hfr$Sunni <- spatstat.geom::as.im(all_covariates$ethnicity[[2]], dimyx = 200)
-dat_hfr$Christians <- spatstat.geom::as.im(all_covariates$ethnicity[[3]], dimyx = 200)
-dat_hfr$Turcomans <- spatstat.geom::as.im(all_covariates$ethnicity[[4]], dimyx = 200)
-dat_hfr$MixedShSu <- spatstat.geom::as.im(all_covariates$ethnicity[[5]], dimyx = 200)
-dat_hfr$logPopulation <- spatstat.geom::as.im(log(all_covariates$ethnicity[[6]]), dimyx = 200)
-
-## Distance from roads and rivers
-dat_hfr$prior_rivers <- exp(- covs_priority_coefs[[2]] * all_covariates$rivers_dist)
-dat_hfr$prior_roads <-  exp(- covs_priority_coefs[[3]] * all_covariates$routes_dist)
-
-## Distance from cities
-for (jj in 1 : 5) {
-  this_coef <- covs_priority_coefs[[1]][jj]
-  dat_hfr$Extra <- exp(- this_coef * all_covariates$cities_dist$distance[[jj]])
-  names(dat_hfr)[length(names(dat_hfr))] <- paste0("Cities.", jj)
-}
-dat_hfr$All_Cities <- (dat_hfr$Cities.1 + dat_hfr$Cities.2 + dat_hfr$Cities.3 +
-                         dat_hfr$Cities.4 + dat_hfr$Cities.5)
-
-## Distance from settlements
-for (jj in 1 : 18) {
-  this_coef <- covs_priority_coefs$settle
-  dat_hfr$Extra <- exp(- this_coef * all_covariates$settle_dist$distance[[jj]])
-  col_name <- paste0('Settle.', rownames(all_covariates$settle_dist)[jj])
-  names(dat_hfr)[length(names(dat_hfr))] <- col_name
-}
-
-## Aid spending
 iraq3 <- rgdal::readOGR(dsn = "~/geocausal/Data/covariates/Iraq Districts/.")
 dat_hfr$aid <- NULL #Modified
 
 for (ii in 1 : nrow(dat_hfr)) {
-
   this_iraq3 <- iraq3
   this_date <- dat_hfr$date[[ii]]
-  this_aid <- subset(all_covariates$aid_district, USE_DATE == this_date)
+  this_aid <- subset(aid_district, USE_DATE == this_date)
   this_aid[, USE_DATE := NULL]
   this_iraq3@data <- merge(this_iraq3@data, this_aid, by.x = "ADM3NAME",
                            by.y = "District", all.x = TRUE)
@@ -229,8 +265,13 @@ for (ii in 1 : nrow(dat_hfr)) {
   spatstat.geom::Window(rpim) <- iraq_window
   dat_hfr$aid[[ii]] <- rpim
 }
+```
 
-## Splines of time:
+## Splines of time
+
+Additionally, we have splines of time as a covariate.
+
+```{r}
 time_splines <- splines::ns(1 : nrow(dat_hfr), df = df_time)
 for (jj in 1 : df_time) {
   dat_hfr$Extra <- time_splines[, jj]
