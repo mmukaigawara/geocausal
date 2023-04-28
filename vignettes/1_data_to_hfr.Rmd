@@ -37,6 +37,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+options(rmarkdown.html_vignette.check_title = FALSE)
+
 library(readr)
 
 load("~/geocausal/Data/airstr.csv")
