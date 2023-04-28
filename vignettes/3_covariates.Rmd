@@ -100,6 +100,8 @@ sof_priority_coef <- 6  # For current SOFs
 hist_priority_coefs <- c(6, 6, 6)  # For previous airstrikes, outcomes, SOFs
 covs_priority_coefs <- list(cities = seq(2, 10, length.out = 5),
                             rivers = 3, roads = 3, settle = 12)
+
+df_time <- 3
 ```
 
 The purpose of this vignette is ... 
