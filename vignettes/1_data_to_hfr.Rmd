@@ -39,9 +39,9 @@ knitr::opts_chunk$set(
 
 library(readr)
 
-load("~/Dropbox/Research/geocausal/Data/airstr.csv")
-load("~/Dropbox/Research/geocausal/Data/activ.csv")
-load("~/Dropbox/Research/geocausal/Data/iraq_window.Rda")
+load("~/geocausal/Data/airstr.csv")
+load("~/geocausal/Data/activ.csv")
+load("~/geocausal/Data/iraq_window.Rda")
 
 activ <- activ[, c("latitude", "longitude", "date", "type_out")]
 airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
@@ -183,7 +183,7 @@ All you need to specify is the following:
 vis_hfr(hfr = treatment_hfr,
         subtype_column = "Airstrike",
         time_column = "time",
-        time_range = c("2007-02-23", "2007-02-28"),
+        range = c("2007-02-23", "2007-02-28"),
         combined = TRUE,
         marks = TRUE) 
 ```
@@ -194,7 +194,7 @@ If you specify <tt>marks = FALSE</tt>, then each day is represented by different
 vis_hfr(hfr = treatment_hfr,
         subtype_column = "Airstrike",
         time_column = "time",
-        time_range = c("2007-02-23", "2007-02-28"),
+        range = c("2007-02-23", "2007-02-28"),
         combined = TRUE,
         marks = FALSE)
 ```
@@ -205,7 +205,7 @@ By setting <tt>combined = FALSE</tt>, you can also use this function to generate
 vis_hfr(hfr = treatment_hfr,
         subtype_column = "Airstrike",
         time_column = "time",
-        time_range = c("2007-02-23", "2007-02-28"),
+        range = c("2007-02-23", "2007-02-28"),
         combined = FALSE) 
 ```
 
