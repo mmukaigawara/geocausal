@@ -46,14 +46,14 @@ devtools::load_all()
 ```
 
 ```{r load data, include = FALSE}
-load_path <- "~/Dropbox/Research/spatiotemporal/Application/Data/"
+load_path <- "~/geocausal/Data/covariates"
 
-load(paste0(load_path, "image_covariates/cities_dist.dat"))
-load(paste0(load_path, "image_covariates/ethnicity.dat"))
-load(paste0(load_path, "image_covariates/rivers_dist.dat"))
-load(paste0(load_path, "image_covariates/routes_dist.dat"))
-load(paste0(load_path, "image_covariates/settle_dist.dat"))
-load(paste0(load_path, "covariates/spending_data/aid_district.dat"))
+load(paste0(load_path, "/cities_dist.dat"))
+load(paste0(load_path, "/ethnicity.dat"))
+load(paste0(load_path, "/rivers_dist.dat"))
+load(paste0(load_path, "/routes_dist.dat"))
+load(paste0(load_path, "/settle_dist.dat"))
+load(paste0(load_path, "/aid_district.dat"))
 
 subset_dates <- as.Date(c("2007/01/20", "2010/01/20"))
 
@@ -67,6 +67,39 @@ all_covariates <- list(cities_dist = cities_dist, #Hyperframe of ppp and image
                        routes_dist = routes_dist, #im
                        settle_dist = settle_dist, #hyperframe of ppp and image
                        aid_district = aid_district) #data table
+
+## Prepare dat_hfr
+load("~/geocausal/Data/airstr.csv")
+load("~/geocausal/Data/activ.csv")
+load("~/geocausal/Data/iraq_window.Rda")
+
+activ <- activ[, c("latitude", "longitude", "date", "type_out")]
+airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
+
+treatment_hfr <- get_hfr(data = airstr,
+                         subtype_column = "Type",
+                         window = iraq_window,
+                         time_column = "date",
+                         time_range = c("2007-02-23", "2008-07-05"),
+                         coordinates = c("longitude", "latitude"),
+                         combined = TRUE)
+
+outcome_hfr <- get_hfr(data = activ,
+                       subtype_column = "type_out",
+                       window = iraq_window,
+                       time_column = "date",
+                       time_range = c("2007-02-23", "2008-07-05"),
+                       coordinates = c("longitude", "latitude"),
+                       combined = TRUE)
+
+dat_hfr <- spatstat.geom::cbind.hyperframe(treatment_hfr, outcome_hfr[, -1])
+names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
+names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
+
+sof_priority_coef <- 6  # For current SOFs
+hist_priority_coefs <- c(6, 6, 6)  # For previous airstrikes, outcomes, SOFs
+covs_priority_coefs <- list(cities = seq(2, 10, length.out = 5),
+                            rivers = 3, roads = 3, settle = 12)
 ```
 
 The purpose of this vignette is ... 
@@ -144,12 +177,12 @@ head(aid_district)
 # Convert covariates -----
 
 ## Ethnicity and population
-dat_hfr$Shia <- as.im(all_covariates$ethnicity[[1]], dimyx = 200)
-dat_hfr$Sunni <- as.im(all_covariates$ethnicity[[2]], dimyx = 200)
-dat_hfr$Christians <- as.im(all_covariates$ethnicity[[3]], dimyx = 200)
-dat_hfr$Turcomans <- as.im(all_covariates$ethnicity[[4]], dimyx = 200)
-dat_hfr$MixedShSu <- as.im(all_covariates$ethnicity[[5]], dimyx = 200)
-dat_hfr$logPopulation <- as.im(log(all_covariates$ethnicity[[6]]), dimyx = 200)
+dat_hfr$Shia <- spatstat.geom::as.im(all_covariates$ethnicity[[1]], dimyx = 200)
+dat_hfr$Sunni <- spatstat.geom::as.im(all_covariates$ethnicity[[2]], dimyx = 200)
+dat_hfr$Christians <- spatstat.geom::as.im(all_covariates$ethnicity[[3]], dimyx = 200)
+dat_hfr$Turcomans <- spatstat.geom::as.im(all_covariates$ethnicity[[4]], dimyx = 200)
+dat_hfr$MixedShSu <- spatstat.geom::as.im(all_covariates$ethnicity[[5]], dimyx = 200)
+dat_hfr$logPopulation <- spatstat.geom::as.im(log(all_covariates$ethnicity[[6]]), dimyx = 200)
 
 ## Distance from roads and rivers
 dat_hfr$prior_rivers <- exp(- covs_priority_coefs[[2]] * all_covariates$rivers_dist)
@@ -173,7 +206,7 @@ for (jj in 1 : 18) {
 }
 
 ## Aid spending
-iraq3 <- rgdal::readOGR(dsn = "~/Dropbox/Research/spatiotemporal/Application/Data/Map_data/Iraq Districts/.")
+iraq3 <- rgdal::readOGR(dsn = "~/geocausal/Data/covariates/Iraq Districts/.")
 dat_hfr$aid <- NULL #Modified
 
 for (ii in 1 : nrow(dat_hfr)) {
@@ -186,12 +219,12 @@ for (ii in 1 : nrow(dat_hfr)) {
                            by.y = "District", all.x = TRUE)
   this_iraq3@data$log_construct[is.na(this_iraq3@data$log_construct)] <- 0
 
-  r <- raster(ncol = 128, nrow = 128)
-  extent(r) <- extent(this_iraq3)
-  rp <- rasterize(this_iraq3, r, "log_construct")
+  r <- raster::raster(ncol = 128, nrow = 128)
+  raster::extent(r) <- raster::extent(this_iraq3)
+  rp <- raster::rasterize(this_iraq3, r, "log_construct")
 
-  rpim <- as.im(rp)
-  Window(rpim) <- iraq_window
+  rpim <- maptools::as.im.RasterLayer(rp)
+  spatstat.geom::Window(rpim) <- iraq_window
   dat_hfr$aid[[ii]] <- rpim
 }
 

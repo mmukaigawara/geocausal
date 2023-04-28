@@ -46,9 +46,9 @@ devtools::load_all()
 ```
 
 ```{r load data, include = FALSE}
-load("~/Dropbox/Research/geocausal/Data/airstr.csv")
-load("~/Dropbox/Research/geocausal/Data/activ.csv")
-load("~/Dropbox/Research/geocausal/Data/iraq_window.Rda")
+load("~/geocausal/Data/airstr.csv")
+load("~/geocausal/Data/activ.csv")
+load("~/geocausal/Data/iraq_window.Rda")
 
 activ <- activ[, c("latitude", "longitude", "date", "type_out")]
 airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
