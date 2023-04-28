@@ -52,41 +52,18 @@ load("~/geocausal/Data/iraq_window.Rda")
 
 activ <- activ[, c("latitude", "longitude", "date", "type_out")]
 airstr <- airstr[, c("latitude", "longitude", "date", "Type")]
-
-# Treatment
-treatment_hfr <- get_hfr(data = airstr,
-                         subtype_column = "Type",
-                         window = iraq_window,
-                         time_column = "date",
-                         time_range = c("2007-02-23", "2008-07-05"),
-                         coordinates = c("longitude", "latitude"),
-                         combined = TRUE)
-
-# Outcome
-outcome_hfr <- get_hfr(data = activ,
-                       subtype_column = "type_out",
-                       window = iraq_window,
-                       time_column = "date",
-                       time_range = c("2007-02-23", "2008-07-05"),
-                       coordinates = c("longitude", "latitude"),
-                       combined = TRUE)
-
-# Combine the two
-dat_hfr <- spatstat.geom::cbind.hyperframe(treatment_hfr, outcome_hfr[, -1])
-names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
-names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
 ```
 
-The purpose of this vignette is letting users smooth the point processes. 
-
-By the end of this vignette, users will understand the usage of <tt>get_smoothed_outcome</tt>.
+By the end of this vignette, users will be able to smooth the point process data and understand the usage of <tt>get_smoothed_outcome</tt> function.
 
 # Smoothing outcomes
 
-A key step of spatiotemporal causal inference is to transform outcomes (point processes) to smoothed outcomes. To do so, we use <tt>get_smoothed_outcome</tt> function. This function has following arguments:
+A key step of spatiotemporal causal inference is the smoothing of outcomes. To do so, we use <tt>get_smoothed_outcome</tt> function. This function has following arguments:
 
-- <tt>data_interest</tt>: a hyperframe column that you want to convert (in the form of <tt>hyperframe$column</tt>); and
+- <tt>data_interest</tt>: a hyperframe column that you want to convert; and
 - <tt>method</tt>: a method of smoothing (either <tt>mclust</tt> or <tt>abram</tt>).
+
+We have two methodological options for smoothing, which we will walk through below.
 
 ## Option 1: Gaussian mixture model
 
@@ -94,14 +71,16 @@ Let's first use the Gaussian mixture model, which is the simplest method for smo
 
 This method does the following:
 
-- task 1
-- task 2
+- performing model-based clustering;
+- obtaining the common variance (i.e., modeling all clusters by the same variance);
+- using the common variance as the variance of the isotropic smoothing kernel; and
+- performing smoothing of the point processes.
 
 [Figure here]
 
 The key advantage of choosing the Gaussian mixture model is its computational speed. Since our function assumes EII (equal volume, round shape), it is much faster than the adaptive smoothing.
 
-To use this method, users first need to set <tt>method = "mclust"</tt> and then specify the <tt>initialization</tt> argument. By setting <tt>initialization = TRUE</tt>, the function uses a small fraction of data to obtain the common variance, which makes the process even faster.
+To use this method, users first need to set <tt>method = "mclust"</tt> and then specify the <tt>initialization</tt> argument. By setting <tt>initialization = TRUE</tt>, the function uses a small fraction of data to obtain the common variance, which makes the entire process even faster.
 
 For example, if you want to use 5% of data for initialization, then you can run the following code.
 
@@ -166,7 +145,10 @@ smooth_allout <- get_smoothed_outcome(data_interest = dat_hfr$all_outcome,
 dat_hfr$smooth_SAF <- smooth_SAF
 dat_hfr$smooth_other <- smooth_other
 dat_hfr$smooth_allout <- smooth_allout
-#saveRDS(dat_hfr, file = "dat_hfr.RData")
+```
+
+```{r, include = FALSE}
+#saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_1.RData")
 ```
 
 ## Option 2: Abramson's adaptive smoothing
