@@ -10,7 +10,7 @@
 #' @param window Window, should be saved as an owin object
 #' @param x_only Whether to generate treatment history only; by default, FALSE
 
-get_history <- function(tt, Xt, Yt, lag, window, x_only = FALSE) {
+get_history <- function(tt, Xt, Yt = NA, lag, window, x_only = TRUE) {
 
   lags <- rep(lag, 2)
 
@@ -30,7 +30,8 @@ get_history <- function(tt, Xt, Yt, lag, window, x_only = FALSE) {
 
   } else if (start_time > up_to_time[1]) {
 
-    Xt_hist <- do.call("superimpose", Xt[start_time : up_to_time[1]])
+    Xt_hist <- do.call(eval(parse(text = "spatstat.geom::superimpose")), 
+                       Xt[start_time : up_to_time[1]])
     Xt_hist$marks <- NULL # Change the shapes of points
 
   }
@@ -38,7 +39,7 @@ get_history <- function(tt, Xt, Yt, lag, window, x_only = FALSE) {
   # If x_only = TRUE, then stop here
   if (x_only) {
 
-    return(list(Xt_hist = Xt_hist))
+    return(list(Xt_hist))
 
   } else {
 
@@ -50,7 +51,8 @@ get_history <- function(tt, Xt, Yt, lag, window, x_only = FALSE) {
 
       if (start_time > up_to_time[2]) {
 
-        Yt_hist <- do.call("superimpose", Yt[start_time : up_to_time[2]])
+        Yt_hist <- do.call(eval(parse(text = "spatstat.geom::superimpose")), 
+                           Yt[start_time : up_to_time[2]])
         Yt_hist$marks <- NULL
 
       }
