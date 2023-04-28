@@ -122,6 +122,7 @@ vis_hfr(hfr = dat_hfr,
         scale_max = 50) 
 ```
 
+Finally, we do the same for other types of outcomes and save each of them as a column of the hyperframe that we created.
 
 ```{r}
 smooth_SAF <- get_smoothed_outcome(data_interest = dat_hfr$SAF,
