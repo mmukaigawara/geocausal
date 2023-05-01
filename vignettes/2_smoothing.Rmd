@@ -1,11 +1,11 @@
 ---
-title: "Step 2. Smoothing outcomes"
+title: "Step 2. Smoothing point process data"
 output: 
   rmarkdown::html_vignette:
     toc: true
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{2_smoothing_outcomes}
+  %\VignetteIndexEntry{2_smoothing_data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
