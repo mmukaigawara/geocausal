@@ -76,6 +76,8 @@ Let's first check what these datasets look like.
 head(activ)
 ```
 
+It should be noted that location information is saved in the decimal degree format. If the original data is not in the decimal degree format, then it is recommended that you convert it to the decimal degree format.
+
 There are three subtypes of insurgencies (column <tt>type_out</tt>): 
 
 - improvised explosive devices (IED),
