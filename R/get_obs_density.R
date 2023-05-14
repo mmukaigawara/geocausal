@@ -4,15 +4,15 @@
 #' ie, propensity scores; the denominators of the equation
 #'
 #' @param hfr
-#' @param outcome
-#' @param cov_list
+#' @param treatment
+#' @param rhs_list
 #' @param ngrid
 #' @param window
 
-get_obs_density <- function(hfr, outcome, cov_list, ngrid = 100, window) {
+get_obs_density <- function(hfr, treatment, rhs_list, ngrid = 100, window) {
 
   # Define function -----
-  text_form <- paste0(outcome, " ~ ", paste(cov_list, collapse = " + "))
+  text_form <- paste0(treatment, " ~ ", paste(rhs_list, collapse = " + "))
   cat("Fitting the model...\n")
   ps_mod <- mppm(as.formula(text_form), data = hfr) #Fit mppm
   ps_coefs <- as.numeric(summary(ps_mod)$coef) #Coefficients
