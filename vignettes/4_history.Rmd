@@ -78,7 +78,7 @@ For example, if you want to convert all outcomes (saved as <tt>dat_hfr\$all_outc
 lags <- c(1, 7, 30)
 time_interval <- 1:nrow(dat_hfr)
 
-# History of all outcomes
+# History of all outcomes (allout = Activity in the original code)
 
 ## Point process
 hist_allout_1 <- lapply(time_interval, get_history,
@@ -95,6 +95,8 @@ dat_hfr$hist_allout_1 <- purrr::map(hist_allout_1, 1)
 dat_hfr$hist_allout_7 <- purrr::map(hist_allout_7, 1)
 dat_hfr$hist_allout_30 <- purrr::map(hist_allout_30, 1)
 
+rm(hist_allout_1, hist_allout_7, hist_allout_30)
+
 ## Smoothing
 dat_hfr$hist_allout_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_1,
                                               method = "mclust", initialization = TRUE,
@@ -105,8 +107,6 @@ dat_hfr$hist_allout_7 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allou
 dat_hfr$hist_allout_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_30,
                                                method = "mclust", initialization = TRUE,
                                                sampling = 0.05)
-
-rm(hist_allout_1, hist_allout_7, hist_allout_30)
 ```
 
 ```{r, warning = FALSE}
@@ -127,6 +127,8 @@ dat_hfr$hist_kinetic_1 <- purrr::map(hist_kinetic_1, 1)
 dat_hfr$hist_kinetic_7 <- purrr::map(hist_kinetic_7, 1)
 dat_hfr$hist_kinetic_30 <- purrr::map(hist_kinetic_30, 1)
 
+rm(hist_kinetic_1, hist_kinetic_7, hist_kinetic_30)
+
 ## Smoothing
 dat_hfr$hist_kinetic_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kinetic_1,
                                                method = "mclust", initialization = TRUE,
@@ -134,11 +136,10 @@ dat_hfr$hist_kinetic_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kine
 dat_hfr$hist_kinetic_7 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kinetic_7,
                                                method = "mclust", initialization = TRUE,
                                                sampling = 0.05)
-dat_hfr$hist_kinetic_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kinetic_30,
-                                                method = "mclust", initialization = TRUE,
-                                                sampling = 0.05)
-
-rm(hist_kinetic_1, hist_kinetic_7, hist_kinetic_30)
+#dat_hfr$hist_kinetic_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kinetic_30,
+#                                                method = "mclust", initialization = TRUE,
+#                                                sampling = 0.05)
+## Returns an error "cannot allocate vector of size 38.6 Gb" but the memory size is infty
 ```
 
 ```{r, warning = FALSE}
@@ -159,6 +160,8 @@ dat_hfr$hist_SOF_1 <- purrr::map(hist_SOF_1, 1)
 dat_hfr$hist_SOF_7 <- purrr::map(hist_SOF_7, 1)
 dat_hfr$hist_SOF_30 <- purrr::map(hist_SOF_30, 1)
 
+rm(hist_SOF_1, hist_SOF_7, hist_SOF_30)
+
 ## Smoothing
 dat_hfr$hist_SOF_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_SOF_1,
                                            method = "mclust", initialization = TRUE,
@@ -169,8 +172,6 @@ dat_hfr$hist_SOF_7 <- get_smoothed_outcome(data_interest = dat_hfr$hist_SOF_7,
 dat_hfr$hist_SOF_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_SOF_30,
                                             method = "mclust", initialization = TRUE,
                                             sampling = 0.05)
-
-rm(hist_SOF_1, hist_SOF_7, hist_SOF_30)
 ```
 Now the hyperframe contains all the necessary data to estimate the causal effects of treatment.
 
