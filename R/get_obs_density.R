@@ -29,9 +29,10 @@ get_obs_density <- function(hfr, treatment, rhs_list, ngrid = 100, window) {
     return(r)
   })
 
-  return(list(ps_covs = ps_covs, #List of covariates
+  return(list(ps_covs = ps_covs, #List of RHS variables
               ps_coefs = ps_coefs, #Coefficients
-              cif_integral = cif_integral, #Propensity scores
+              fitted_ps = fitted_ps, #Integrated intensity as images
+              cif_integral = cif_integral, #Counts
               sum_log_cif = sum_log_cif)) #Sum of log(intensity) for each time period
 
 }
