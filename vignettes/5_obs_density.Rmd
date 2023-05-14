@@ -1,0 +1,71 @@
+---
+title: "Step 5. Obtaining observed densities"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{5_obs_density}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type = "text/css">
+h1.title {
+  font-size: 30px;
+}
+h1 { /* Header 1 */
+  font-size: 26px;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 16px;
+}
+div#TOC li {
+    list-style:none;
+    background-image:none;
+    background-repeat:none;
+    background-position:0; 
+}
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+
+library(readr)
+library(ggplot2)
+library(furrr)
+library(spatstat)
+```
+
+```{r setup, include = FALSE}
+devtools::load_all()
+#library(geocausal)
+```
+
+```{r load data, include = FALSE}
+dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
+colnames(dat_hfr)
+load("~/geocausal/Data/iraq_window.Rda")
+
+ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities",
+             "aid", "prior_PrevKinetic.1", "prior_PrevKinetic.7", "prior_PrevKinetic.30",
+             "prior_PrevAttacks.1", "prior_PrevAttacks.7", "prior_PrevAttacks.30",
+             "prior_PrevSOF.1", "prior_PrevSOF.7", "prior_PrevSOF.30",
+             "time.1", "time.2", "time.3",
+             "Settle.IQ.G01", "Settle.IQ.G02", "Settle.IQ.G03", "Settle.IQ.G04",
+             "Settle.IQ.G05", "Settle.IQ.G06", "Settle.IQ.G07", "Settle.IQ.G08",
+             "Settle.IQ.G09", "Settle.IQ.G10", "Settle.IQ.G11", "Settle.IQ.G12",
+             "Settle.IQ.G13", "Settle.IQ.G14", "Settle.IQ.G15", "Settle.IQ.G16",
+             "Settle.IQ.G17", "Settle.IQ.G18")
+```
+
+```{r}
+
+```
