@@ -53,17 +53,6 @@ devtools::load_all()
 dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_3.rds")
 
 load("~/geocausal/Data/iraq_window.Rda")
-
-ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities",
-             "aid", "prior_PrevKinetic.1", "prior_PrevKinetic.7", "prior_PrevKinetic.30",
-             "prior_PrevAttacks.1", "prior_PrevAttacks.7", "prior_PrevAttacks.30",
-             "prior_PrevSOF.1", "prior_PrevSOF.7", "prior_PrevSOF.30",
-             "time.1", "time.2", "time.3",
-             "Settle.IQ.G01", "Settle.IQ.G02", "Settle.IQ.G03", "Settle.IQ.G04",
-             "Settle.IQ.G05", "Settle.IQ.G06", "Settle.IQ.G07", "Settle.IQ.G08",
-             "Settle.IQ.G09", "Settle.IQ.G10", "Settle.IQ.G11", "Settle.IQ.G12",
-             "Settle.IQ.G13", "Settle.IQ.G14", "Settle.IQ.G15", "Settle.IQ.G16",
-             "Settle.IQ.G17", "Settle.IQ.G18")
 ```
 
 As a final step of data preparation, we obtain histories of treatment and outcomes.
