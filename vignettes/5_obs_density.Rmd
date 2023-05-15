@@ -191,7 +191,12 @@ plot_compare_res_residual
 
 # Out-of-sample prediction
 
-One thought experiment...
+Thought experiment:
+
+- Dividing into test and training set
+- Use the entire data to model, and then apply it to a subset of the data (eg, Baghdad)
+
+## Using a subset of data to fit the model
 
 ```{r}
 # 80% training
@@ -254,5 +259,90 @@ plot_out_of_sample_residual <- data.frame(days = c(31:499),
 plot_out_of_sample_residual
 ```
 
+## Using the entire data to fit the model, and then integrate over a subset of the data
+
+- Set ratio = 1 and change the window
+- First use Baghdad
+
+```{r}
+# Baghdad
+obs_density_baghdad <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
+                                           ps_covs, ngrid = 100, window = sets_B$Baghdad)
+predicted_baghdad <- obs_density_baghdad$cif_integral
+
+## Calculate the actual count
+airstrikes <- dat_hfr$Airstrike
+
+for(i in 1:nrow(dat_hfr)){
+  spatstat.geom::Window(airstrikes[[i]]) <- sets_B$Baghdad
+}
+
+actual_baghdad <- unlist(purrr::map(airstrikes, function(x) x$n))
+
+# Plot (Baghdad)
+plot_compare_bag <- data.frame(days = c(31:499),
+                               actual_baghdad, predicted_baghdad) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = actual_baghdad), color = "darkgray") +
+  geom_line(aes(x = days, y = predicted_baghdad), color = "red") +
+  theme_bw() +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 400, y = 70, size = 5, color = "red") +
+  labs(title = "Actual vs. predicted counts of airstrikes (Baghdad)", x = "Days", y = "Count") + ylim(0, 100)
+
+plot_compare_bag
+```
+
+```{r}
+plot_baghdad_residual <- data.frame(days = c(31:499),
+                                        res_bag = predicted_baghdad - actual_baghdad) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = res_bag), color = "red") +
+  theme_bw() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(title = "Residual plot (Baghdad)", x = "Days", y = "Residual") + ylim(-100, 100)
+
+plot_baghdad_residual
+```
 
 
+```{r}
+# Outside of Baghdad
+obs_density_out_bag <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
+                                           ps_covs, ngrid = 100, window = sets_B$outside_Baghdad)
+predicted_out_bag <- obs_density_out_bag$cif_integral
+
+## Calculate the actual count
+airstrikes <- dat_hfr$Airstrike
+
+for(i in 1:nrow(dat_hfr)){
+  spatstat.geom::Window(airstrikes[[i]]) <- sets_B$outside_Baghdad
+}
+
+actual_out_bag <- unlist(purrr::map(airstrikes, function(x) x$n))
+
+# Plot (Outside of baghdad)
+plot_compare_out_bag <- data.frame(days = c(31:499),
+                                   actual_out_bag, predicted_out_bag) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = actual_out_bag), color = "darkgray") +
+  geom_line(aes(x = days, y = predicted_out_bag), color = "blue") +
+  theme_bw() +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 400, y = 40, size = 5, color = "blue") +
+  labs(title = "Actual vs. predicted counts of airstrikes (Outside of Baghdad)", x = "Days", y = "Count")  +  ylim(0, 100)
+
+plot_compare_out_bag
+```
+
+```{r}
+plot_out_bag_residual <- data.frame(days = c(31:499),
+                                        res_out_bag = predicted_out_bag - actual_out_bag) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = res_out_bag), color = "blue") +
+  theme_bw() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(title = "Residual plot (Outside of Baghdad)", x = "Days", y = "Residual") + ylim(-100, 100)
+
+plot_out_bag_residual
+```
