@@ -54,21 +54,9 @@ devtools::load_all()
 dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
 
 load("~/geocausal/Data/iraq_window.Rda")
-load("~/geocausal/Data/sets_B.rds")
+load("~/geocausal/Data/windows.RData")
 
-ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities", "aid", 
-             "hist_kinetic_1", "hist_kinetic_7", "hist_kinetic_30",
-             "hist_allout_1", "hist_allout_7", "hist_allout_30", #Previously named as attacks
-             "hist_SOF_1", "hist_SOF_7", "hist_SOF_30",
-             "time.1", "time.2", "time.3",
-             "Settle.IQ.G01", "Settle.IQ.G02", "Settle.IQ.G03", "Settle.IQ.G04",
-             "Settle.IQ.G05", "Settle.IQ.G06", "Settle.IQ.G07", "Settle.IQ.G08",
-             "Settle.IQ.G09", "Settle.IQ.G10", "Settle.IQ.G11", "Settle.IQ.G12",
-             "Settle.IQ.G13", "Settle.IQ.G14", "Settle.IQ.G15", "Settle.IQ.G16",
-             "Settle.IQ.G17", "Settle.IQ.G18")
-
-setdiff(colnames(dat_hfr), ps_covs) #Not included in the covariates
-
+## Note: all_out previously named as attacks
 ```
 
 # 1. Obtaining observed densities
@@ -78,8 +66,8 @@ Now that we have all the required data, let's move on to obtain the observed den
 The function that we use here is <tt>get_obs_density</tt>. This function has the following arguments.
 
 - <tt>hfr</tt>: The hyperframe that we want to use
-- <tt>treatment</tt>: The variable of interest
-- <tt>rhs_list</tt>: A list of RHS variables
+- <tt>indep_var</tt>: The variable of interest (i.e., treatment)
+- <tt>dep_var</tt>: A vector of names of dependent variables
 - <tt>ngrid</tt>: The number of grids (by default, 100)
 - <tt>window</tt>: The window
 
@@ -92,19 +80,19 @@ The function that we use here is <tt>get_obs_density</tt>. This function has the
 
 The output of this function is a list of the following.
 
-- <tt>ps_covs</tt>: A vector of the names of RHS variables
-- <tt>ps_coefs</tt>: Coefficients of the model
-- <tt>fitted_ps</tt>: Intensities as images for each time period
-- <tt>cif_integral</tt>: Integrated intensities, which is the number of estimated outcome events for each time period
-- <tt>sum_log_cif</tt>: The sum of log intensities of all observations for each time period
+- <tt>independent_variables</tt>: A vector of the names of RHS variables
+- <tt>coefficients</tt>: Coefficients of the model
+- <tt>intensity_grid_cells</tt>: Intensities as images for each time period
+- <tt>estimated_counts</tt>: Integrated intensities, which is the number of estimated outcome events for each time period
+- <tt>sum_log_intensity</tt>: The sum of log intensities of all observations for each time period
 
-For the estimation of causal events, we will use <tt>sum_log_cif</tt>, but <tt>cif_integral</tt> and <tt>fitted_ps</tt> are also useful to evaluate how well our model estimates the number of outcome events.
+For the estimation of causal events, we will use <tt>sum_log_intensity</tt>, but <tt>estimated_counts</tt> and <tt>intensity_grid_cells</tt> are also useful to evaluate how well our model estimates the number of outcome events.
 
 Let's use the function <tt>get_obs_density</tt>. Since estimating the intensities over the entire window is computationally demanding, we use $\text{ngrid} = 100$.
 
-```{r}
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # List of RHS variables
-ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities", "aid", 
+rhs_var <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities", "aid", 
              "hist_kinetic_1", "hist_kinetic_7", "hist_kinetic_30",
              "hist_allout_1", "hist_allout_7", "hist_allout_30",
              "hist_SOF_1", "hist_SOF_7", "hist_SOF_30",
@@ -116,26 +104,27 @@ ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities", "aid"
              "Settle.IQ.G17", "Settle.IQ.G18")
 
 # Get observed density over the entire window, for the entire period
-obs_density <- get_obs_density(dat_hfr, "Airstrike", ps_covs, ngrid = 100, iraq_window)
+obs_density <- get_obs_density(dat_hfr, "Airstrike", rhs_var, 
+                               ngrid = 100, window = iraq_window)
 ##saveRDS(obs_density, file = "~/geocausal/Data/obs_density.rds")
 ```
 
 Again, the output is a list of five elements that are summarized above. To see how each estimated intensities look like visually, we use plot function and select the date of interest. For example, if we are interested in the intensities of the first date of the data, then we can do the following. (We truncate the first 30 days from the original data, which is why the row ID is 31.)
 
-```{r}
-plot(obs_density$fitted_ps[1])
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+plot(obs_density$intensity_grid_cells[1])
 ```
 
 Also, we can compare the estimated and actual count measures by plotting them. 
 
-In the original hyperframe <tt>dat_hfr</tt>, the column <tt>Airstrike</tt> is a list of ppp objects. In ppp objects, the number of points is saved as <tt>n</tt>. Also, the predicted number of airstrikes is saved as <tt>cif_integral</tt> of the output <tt>obs_density</tt>. Hence, we can do the following to compare the actual and predicted number of airstrikes. 
+In the original hyperframe <tt>dat_hfr</tt>, the column <tt>Airstrike</tt> is a list of ppp objects. In ppp objects, the number of points is saved as <tt>n</tt>. Also, the predicted number of airstrikes is saved as <tt>estimated_counts</tt> of the output <tt>obs_density</tt>. Hence, we can do the following to compare the actual and predicted number of airstrikes. 
 
-```{r}
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Actual count
 actual_counts <- unlist(purrr::map(dat_hfr$Airstrike, function(x) x$n))
 
 # Predicted count
-predicted_counts <- obs_density$cif_integral
+predicted_counts <- obs_density$estimated_counts
 
 plot_compare <- data.frame(days = c(31:499),
                            actual_counts, predicted_counts) %>%
@@ -152,11 +141,11 @@ plot_compare
 
 The predicted results follow the actual trend. Just in case, even if we increase the number of grid cells from 100 to 200, the results do not differ substantially.
 
-```{r}
-obs_density_res <- get_obs_density(dat_hfr, "Airstrike", ps_covs, ngrid = 200, iraq_window)
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+obs_density_res <- get_obs_density(dat_hfr, "Airstrike", rhs_var, ngrid = 200, iraq_window)
 ##saveRDS(obs_density_res, file = "~/geocausal/Data/obs_density_res.rds")
 
-predicted_counts_res <- obs_density_res$cif_integral
+predicted_counts_res <- obs_density_res$estimated_counts
 
 plot_compare_res <- data.frame(days = c(31:499),
                                actual_counts, predicted_counts, predicted_counts_res) %>%
@@ -173,7 +162,15 @@ plot_compare_res <- data.frame(days = c(31:499),
 plot_compare_res
 ```
 
-```{r}
+Why do results remain the same? This can be easily understood by visualizing the grid-cell-level intensities. As you can see, the intensity is almost the same as the one we obtained by setting <tt>ngrid = 100</tt>.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+plot(obs_density_res$intensity_grid_cells[1])
+```
+
+And here's the residual plot.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_compare_res_residual <- data.frame(days = c(31:499),
                                         res_ng_100 = predicted_counts - actual_counts,
                                         res_ng_200 = predicted_counts_res - actual_counts) %>%
@@ -191,23 +188,29 @@ plot_compare_res_residual
 
 # Out-of-sample prediction
 
-Thought experiment:
+Now, let's turn to do some out-of-sample prediction. In this vignette, we do the following experiments.
 
-- Dividing into test and training set
-- Use the entire data to model, and then apply it to a subset of the data (eg, Baghdad)
+1. Dividing into test and training set and fitting the model to the training set
+2. Using the entire data to fit the model, and then applying it to a subset of the data (eg, Baghdad)
+
+To do this, we use a function called <tt>predict_obs_density</tt>. This function is basically the same as <tt>get_obs_density</tt> function, except for the fact that now we have <tt>ratio</tt> argument.
 
 ## Using a subset of data to fit the model
 
-```{r}
+When you want to use a fraction of data as a training set, then you set the ratio argument of <tt>predict_obs_density</tt>. For example, if you set <tt>ratio = 0.8</tt>, then it uses the first 80% of observations as a training set and fits the model.
+
+We use 70% and 80% of the data (first 70% and 80% observations) as training sets. Since we have a spike in the dataset, the 70% one fails to perform out-of-sample prediction.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # 80% training
 out_obs_density_8 <- predict_obs_density(dat_hfr, ratio = 0.8, "Airstrike", 
-                                         ps_covs, ngrid = 100, iraq_window)
-predicted_out_8 <- out_obs_density_8$cif_integral
+                                         rhs_var, ngrid = 100, iraq_window)
+predicted_out_8 <- out_obs_density_8$estimated_counts
 
 # 70% training
 out_obs_density_7 <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike", 
-                                         ps_covs, ngrid = 100, iraq_window)
-predicted_out_7 <- out_obs_density_7$cif_integral
+                                         rhs_var, ngrid = 100, iraq_window)
+predicted_out_7 <- out_obs_density_7$estimated_counts
 
 ##out_obs_density <- list(out_obs_density_8, out_obs_density_7)
 ##saveRDS(out_obs_density, file = "~/geocausal/Data/out_obs_density.rds")
@@ -215,7 +218,7 @@ predicted_out_7 <- out_obs_density_7$cif_integral
 # Plot
 plot_out_of_sample <- data.frame(days = c(31:499),
                                  actual_counts, predicted_counts, 
-                                 predicted_out_8, predicted_out_5) %>%
+                                 predicted_out_8, predicted_out_7) %>%
   ggplot() +
   geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
   geom_line(aes(x = days, y = predicted_counts), color = "red") +
@@ -234,10 +237,9 @@ plot_out_of_sample <- data.frame(days = c(31:499),
 plot_out_of_sample
 ```
 
+The resudual plot can be found below.
 
-
-
-```{r}
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_out_of_sample_residual <- data.frame(days = c(31:499),
                                           res_pred = predicted_counts - actual_counts,
                                           res_out_8 = predicted_out_8 - actual_counts,
@@ -261,20 +263,21 @@ plot_out_of_sample_residual
 
 ## Using the entire data to fit the model, and then integrate over a subset of the data
 
-- Set ratio = 1 and change the window
-- First use Baghdad
+Now, let's use the fitted model to predict the number of airstrikes in a sub-region. In this case, we continue to use <tt>predict_obs_density</tt> function, but this time set <tt>ratio = 1</tt> and set <tt>window = windows\$Baghdad</tt>. That is, we use the entire dataset to fit the model, and then predict the counts in a window, this time Baghdad and outside of Baghdad. The window objects of Baghdad and outside of Baghdad are saved as <tt>windows\$Baghdad</tt> and <tt>windows\$outside_Baghdad</tt>, respectively.
 
-```{r}
+Let's take a look at Baghdad first.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Baghdad
 obs_density_baghdad <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
-                                           ps_covs, ngrid = 100, window = sets_B$Baghdad)
-predicted_baghdad <- obs_density_baghdad$cif_integral
+                                           rhs_var, ngrid = 100, window = windows$Baghdad)
+predicted_baghdad <- obs_density_baghdad$estimated_counts
 
 ## Calculate the actual count
 airstrikes <- dat_hfr$Airstrike
 
 for(i in 1:nrow(dat_hfr)){
-  spatstat.geom::Window(airstrikes[[i]]) <- sets_B$Baghdad
+  spatstat.geom::Window(airstrikes[[i]]) <- windows$Baghdad
 }
 
 actual_baghdad <- unlist(purrr::map(airstrikes, function(x) x$n))
@@ -293,7 +296,7 @@ plot_compare_bag <- data.frame(days = c(31:499),
 plot_compare_bag
 ```
 
-```{r}
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_baghdad_residual <- data.frame(days = c(31:499),
                                         res_bag = predicted_baghdad - actual_baghdad) %>%
   ggplot() +
@@ -305,18 +308,19 @@ plot_baghdad_residual <- data.frame(days = c(31:499),
 plot_baghdad_residual
 ```
 
+Then outside of Baghdad.
 
-```{r}
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Outside of Baghdad
 obs_density_out_bag <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
-                                           ps_covs, ngrid = 100, window = sets_B$outside_Baghdad)
-predicted_out_bag <- obs_density_out_bag$cif_integral
+                                           rhs_var, ngrid = 100, window = windows$outside_Baghdad)
+predicted_out_bag <- obs_density_out_bag$estimated_counts
 
 ## Calculate the actual count
 airstrikes <- dat_hfr$Airstrike
 
 for(i in 1:nrow(dat_hfr)){
-  spatstat.geom::Window(airstrikes[[i]]) <- sets_B$outside_Baghdad
+  spatstat.geom::Window(airstrikes[[i]]) <- windows$outside_Baghdad
 }
 
 actual_out_bag <- unlist(purrr::map(airstrikes, function(x) x$n))
@@ -335,9 +339,9 @@ plot_compare_out_bag <- data.frame(days = c(31:499),
 plot_compare_out_bag
 ```
 
-```{r}
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_out_bag_residual <- data.frame(days = c(31:499),
-                                        res_out_bag = predicted_out_bag - actual_out_bag) %>%
+                                    res_out_bag = predicted_out_bag - actual_out_bag) %>%
   ggplot() +
   geom_line(aes(x = days, y = res_out_bag), color = "blue") +
   theme_bw() +
