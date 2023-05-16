@@ -22,7 +22,7 @@ predict_obs_density <- function(hfr, ratio,
   # Define function -----
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
   cat("Fitting the model...\n")
-  mod <- mppm(as.formula(text_form), data = hfr) #Fit mppm
+  mod <- spatstat.model::mppm(as.formula(text_form), data = hfr) #Fit mppm
   coefficients <- as.numeric(summary(mod)$coef) #Coefficients
   
   # Obtain fitted values of the propensity score -----
