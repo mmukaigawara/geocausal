@@ -218,7 +218,7 @@ predicted_out_7 <- out_obs_density_7$estimated_counts
 # Plot
 plot_out_of_sample <- data.frame(days = c(31:499),
                                  actual_counts, predicted_counts, 
-                                 predicted_out_8, predicted_out_5) %>%
+                                 predicted_out_8, predicted_out_7) %>%
   ggplot() +
   geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
   geom_line(aes(x = days, y = predicted_counts), color = "red") +
@@ -270,7 +270,7 @@ Let's take a look at Baghdad first.
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Baghdad
 obs_density_baghdad <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
-                                           ps_covs, ngrid = 100, window = windows$Baghdad)
+                                           rhs_var, ngrid = 100, window = windows$Baghdad)
 predicted_baghdad <- obs_density_baghdad$estimated_counts
 
 ## Calculate the actual count
@@ -313,7 +313,7 @@ Then outside of Baghdad.
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Outside of Baghdad
 obs_density_out_bag <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
-                                           ps_covs, ngrid = 100, window = windows$outside_Baghdad)
+                                           rhs_var, ngrid = 100, window = windows$outside_Baghdad)
 predicted_out_bag <- obs_density_out_bag$estimated_counts
 
 ## Calculate the actual count
@@ -341,7 +341,7 @@ plot_compare_out_bag
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_out_bag_residual <- data.frame(days = c(31:499),
-                                        res_out_bag = predicted_out_bag - actual_out_bag) %>%
+                                    res_out_bag = predicted_out_bag - actual_out_bag) %>%
   ggplot() +
   geom_line(aes(x = days, y = res_out_bag), color = "blue") +
   theme_bw() +
