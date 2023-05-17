@@ -139,7 +139,41 @@ plot_compare <- data.frame(days = c(31:499),
 plot_compare
 ```
 
-The predicted results follow the actual trend. Just in case, even if we increase the number of grid cells from 100 to 200, the results do not differ substantially.
+The predicted results follow the actual trend. Yet the surge around days 300-350 seems to drive our results. This is somehow expected because we know that the new troops arrived in Baghdad on February 14, 2007 and left on July 13, 2008. Much of the actual combat was over by January 1, 2008. Hence, it would make sense to include an indicator variable for the surge. Let's try it.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+# Add indicator variables
+min(dat_hfr$time) #The min is March 25, 2007
+max(dat_hfr$time) #The max is July 5, 2008, hence the dataset is within the range of the surge
+
+dat_hfr$surge <- ifelse(dat_hfr$time <= "2008-01-01", 1, 0)
+
+rhs_var_surge <-  c(rhs_var, "surge")
+
+# Get observed density over the entire window, for the entire period
+obs_density_surge <- get_obs_density(dat_hfr, "Airstrike", rhs_var_surge, 
+                                     ngrid = 100, window = iraq_window)
+
+# Plot
+predicted_counts_surge <- obs_density_surge$estimated_counts
+
+plot_compare_surge <- data.frame(days = c(31:499),
+                                 actual_counts, predicted_counts, predicted_counts_surge) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
+  geom_line(aes(x = days, y = predicted_counts), color = "red") +
+  geom_line(aes(x = days, y = predicted_counts_surge), color = "blue") +
+  theme_bw() +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
+  annotate("text", label = "Predicted\n(original)", x = 400, y = 70, size = 5, color = "red") +
+  annotate("text", label = "Predicted\n(controlling for the surge)", x = 200, y = 70, size = 5, color = "blue") +
+  labs(title = "Actual vs. predicted counts of airstrikes", x = "Days", y = "Count")
+
+plot_compare_surge
+```
+
+
+Just in case, let's try if the changes in the number of grid cells can affect the estimates. Even if we increase the number of grid cells from 100 to 200, the results do not differ substantially.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 obs_density_res <- get_obs_density(dat_hfr, "Airstrike", rhs_var, ngrid = 200, iraq_window)
