@@ -172,6 +172,77 @@ plot_compare_surge <- data.frame(days = c(31:499),
 plot_compare_surge
 ```
 
+Also try to see if separating out Baghdad and remainders can change the output.
+
+```{r}
+# Baghdad
+obs_density_baghdad <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
+                                           rhs_var, ngrid = 100, window = windows$Baghdad) #No surge
+predicted_baghdad <- obs_density_baghdad$estimated_counts
+
+obs_density_baghdad_surge <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
+                                                 rhs_var_surge, ngrid = 100, window = windows$Baghdad) #Surge
+predicted_baghdad_surge <- obs_density_baghdad_surge$estimated_counts
+
+## Calculate the actual count
+airstrikes <- dat_hfr$Airstrike
+
+for(i in 1:nrow(dat_hfr)){
+  spatstat.geom::Window(airstrikes[[i]]) <- windows$Baghdad
+}
+
+actual_baghdad <- unlist(purrr::map(airstrikes, function(x) x$n))
+
+## Plot (Baghdad)
+plot_compare_bag_surge <- data.frame(days = c(31:499),
+                                     actual_baghdad, predicted_baghdad, predicted_baghdad_surge) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = actual_baghdad), color = "darkgray") +
+  geom_line(aes(x = days, y = predicted_baghdad), color = "red") +
+  geom_line(aes(x = days, y = predicted_baghdad_surge), color = "blue") +
+  theme_bw() +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 400, y = 70, size = 5, color = "red") +
+  annotate("text", label = "Predicted\n(with surge)", x = 400, y = 50, size = 5, color = "blue") +
+  labs(title = "Actual vs. predicted counts of airstrikes (Baghdad)", x = "Days", y = "Count") + ylim(0, 100)
+
+plot_compare_bag_surge
+
+# Outside of Baghdad
+obs_density_out <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
+                                       rhs_var, ngrid = 100, window = windows$outside_Baghdad) #No surge
+predicted_out <- obs_density_out$estimated_counts
+
+obs_density_out_surge <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
+                                             rhs_var_surge, ngrid = 100, window = windows$outside_Baghdad) #Surge
+predicted_out_surge <- obs_density_out_surge$estimated_counts
+
+## Calculate the actual count
+airstrikes <- dat_hfr$Airstrike
+
+for(i in 1:nrow(dat_hfr)){
+  spatstat.geom::Window(airstrikes[[i]]) <- windows$outside_Baghdad
+}
+
+actual_out <- unlist(purrr::map(airstrikes, function(x) x$n))
+
+## Plot (outside of Baghdad)
+plot_compare_out_surge <- data.frame(days = c(31:499),
+                                     actual_out, predicted_out, predicted_out_surge) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = actual_out), color = "darkgray") +
+  geom_line(aes(x = days, y = predicted_out), color = "red") +
+  geom_line(aes(x = days, y = predicted_out_surge), color = "blue") +
+  theme_bw() +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 270, y = 30, size = 5, color = "red") +
+  annotate("text", label = "Predicted\n(with surge)", x = 400, y = 50, size = 5, color = "blue") +
+  labs(title = "Actual vs. predicted counts of airstrikes (outside Baghdad)", x = "Days", y = "Count") + ylim(0, 100)
+
+plot_compare_out_surge
+
+```
+
 
 Just in case, let's try if the changes in the number of grid cells can affect the estimates. Even if we increase the number of grid cells from 100 to 200, the results do not differ substantially.
 
