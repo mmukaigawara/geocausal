@@ -22,12 +22,12 @@ predict_obs_density <- function(hfr, ratio,
   # Define function -----
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
   cat("Fitting the model...\n")
-  mod <- spatstat.model::mppm(as.formula(text_form), data = hfr) #Fit mppm
+  mod <- spatstat.model::mppm(as.formula(text_form), data = hfr_train) #Fit mppm
   coefficients <- as.numeric(summary(mod)$coef) #Coefficients
   
   # Obtain fitted values of the propensity score -----
   cat("Calculating the intensity...\n")
-  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", ngrid = ngrid)$cif #Returns intensity (cif) over nxn grid cells
+  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", newdata = hfr, ngrid = ngrid)$cif #Returns intensity (cif) over nxn grid cells
   cat("Integrating the intensity to obtain the propensity score...\n")
   estimated_counts <- sapply(intensity_grid_cells, function(x) integral(x, domain = window)) #Integrate intensity over the window (so, e_t(w) for each date)
   intensity_of_each_obs <- spatstat.model::fitted.mppm(mod, dataonly = TRUE) #Return fitted cif for each observation for each date
