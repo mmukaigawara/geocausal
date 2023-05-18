@@ -243,6 +243,64 @@ plot_compare_out_surge
 
 ```
 
+Finally, let's check out-of-sample prediction performance.
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+# 80% training
+out_obs_density_8 <- predict_obs_density(dat_hfr, ratio = 0.8, "Airstrike", 
+                                         rhs_var, ngrid = 100, iraq_window)
+predicted_out_8 <- out_obs_density_8$estimated_counts
+
+out_obs_density_8_surge <- predict_obs_density(dat_hfr, ratio = 0.8, "Airstrike", 
+                                               rhs_var_surge, ngrid = 100, iraq_window)
+predicted_out_8_surge <- out_obs_density_8_surge$estimated_counts
+
+# 70% training
+out_obs_density_7 <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike", 
+                                         rhs_var, ngrid = 100, iraq_window)
+predicted_out_7 <- out_obs_density_7$estimated_counts
+
+out_obs_density_7_surge <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike", 
+                                               rhs_var_surge, ngrid = 100, iraq_window)
+predicted_out_7_surge <- out_obs_density_7_surge$estimated_counts
+
+# Plot
+plot_out_of_sample <- data.frame(days = c(31:499),
+                                 actual_counts, 
+                                 predicted_out_8, predicted_out_8_surge) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
+  geom_line(aes(x = days, y = predicted_out_8), color = "blue") +
+  geom_line(aes(x = days, y = predicted_out_8_surge), color = "red") +
+  theme_bw() +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
+  geom_vline(xintercept = round(499*0.8), linetype = "dashed", color = "black") +
+  annotate("text", label = "Out-of-sample\n(80%)", x = 430, y = 50, size = 5, color = "blue") +
+  annotate("text", label = "Out-of-sample\n(80%, surge+)", x = 430, y = 80, size = 5, color = "red") +
+  labs(title = "Actual vs. predicted counts of airstrikes (80%)", x = "Days", y = "Count")
+
+plot_out_of_sample
+
+plot_out_of_sample2 <- data.frame(days = c(31:499),
+                                  actual_counts, 
+                                  predicted_out_7, predicted_out_7_surge) %>%
+  ggplot() +
+  geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
+  geom_line(aes(x = days, y = predicted_out_7), color = "blue") +
+  geom_line(aes(x = days, y = predicted_out_7_surge), color = "red") +
+  theme_bw() +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
+  geom_vline(xintercept = round(499*0.7), linetype = "dashed", color = "black") +
+  annotate("text", label = "Out-of-sample\n(70%)", x = 430, y = 50, size = 5, color = "blue") +
+  annotate("text", label = "Out-of-sample\n(70%, surge+)", x = 430, y = 80, size = 5, color = "red") +
+  labs(title = "Actual vs. predicted counts of airstrikes (70%)", x = "Days", y = "Count")
+
+plot_out_of_sample2
+
+```
+
+
+[Go back to the original vignette]
 
 Just in case, let's try if the changes in the number of grid cells can affect the estimates. Even if we increase the number of grid cells from 100 to 200, the results do not differ substantially.
 
@@ -342,7 +400,7 @@ plot_out_of_sample <- data.frame(days = c(31:499),
 plot_out_of_sample
 ```
 
-The resudual plot can be found below.
+The residual plot can be found below.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_out_of_sample_residual <- data.frame(days = c(31:499),
