@@ -136,7 +136,9 @@ plot_compare <- vis_obs_density(actual_data = dat_hfr$Airstrike,
                                 time_unit = "Days")
 
 # Second element is the plot (the first element is the dataframe)
-plot_compare[2]
+plot_compare[[2]] +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 435, y = 20, size = 4, color = "red")
 ```
 
 Just in case, let's try if the changes in the number of grid cells can affect the estimates. Even if we increase the number of grid cells from 100 to 200, the results do not differ substantially.
@@ -150,7 +152,7 @@ plot_compare_double_grid <- vis_obs_density(actual_data = dat_hfr$Airstrike,
                                             color_actual = "darkgray", color_dens_1 = "red", color_dens_2 = "blue",
                                             time_unit = "Days")
 
-plot_compare_double_grid[2]
+plot_compare_double_grid[[2]]
 ```
 
 Why do results remain the same? This can be easily understood by visualizing the grid-cell-level intensities. As you can see, the intensity is almost the same as the one we obtained by setting <tt>ngrid = 100</tt>.
@@ -163,19 +165,19 @@ And here's the residual plot.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Construct the residual data using the first element of plot_compare_double_plot
-data_compare_residual <- plot_compare_double_grid[1] %>%
+data_compare_residual <- plot_compare_double_grid[[1]] %>%
   dplyr::mutate(res_ng_100 = predicted_counts - actual_counts,
-                res_ng_200 = predicted_counts_res - actual_counts)
+                res_ng_200 = predicted_counts_2 - actual_counts)
 
 # Plot
 plot_compare_residual <- ggplot(data_compare_residual) +
-  geom_line(aes(x = days, y = res_ng_100), color = "red") +
-  geom_line(aes(x = days, y = res_ng_200), color = "blue") +
+  geom_line(aes(x = time, y = res_ng_100), color = "red") +
+  geom_line(aes(x = time, y = res_ng_200), color = "blue") +
   theme_bw() +
-  annotate("text", label = "Predicted\n(ngrid = 100)", x = 400, y = 70, size = 5, color = "red") +
-  annotate("text", label = "Predicted\n(ngrid = 200)", x = 430, y = 40, size = 5, color = "blue") +
+  annotate("text", label = "Predicted\n(ngrid = 100)", x = 400, y = 70, size = 4, color = "red") +
+  annotate("text", label = "Predicted\n(ngrid = 200)", x = 430, y = 40, size = 4, color = "blue") +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(title = "Residual plot comparing ngrid = 100 and 200", x = "Days", y = "Residual")
+  labs(title = "Residual plot comparing ngrid = 100 and 200", x = "Days", y = "Residual") + ylim(-100, 100)
 
 plot_compare_residual
 ```
@@ -213,53 +215,41 @@ obs_density_7 <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike",
 plot_out_of_sample <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
                                       density_1 = obs_density, density_2 = obs_density_8, density_3 = obs_density_7,
                                       color_actual = "darkgray", 
-                                      color_dens_1 = "red", color_dens_2 = "blue",  color_dens_3 = "green",
+                                      color_dens_1 = "red", color_dens_2 = "blue",  color_dens_3 = "green4",
                                       time_unit = "Days")
 
-plot_out_of_sample[2]
-
-
-plot_out_of_sample <- data.frame(days = c(31:499),
-                                 actual_counts, predicted_counts, 
-                                 predicted_out_8, predicted_out_7) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
-  geom_line(aes(x = days, y = predicted_counts), color = "red") +
-  geom_line(aes(x = days, y = predicted_out_8), color = "blue") +
-  geom_line(aes(x = days, y = predicted_out_7), color = "green4") +
-  theme_bw() +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 470, y = 20, size = 5, color = "red") +
-  geom_vline(xintercept = 499, linetype = "dashed", color = "red") +
-  annotate("text", label = "Out-of-sample\n(80%)", x = 430, y = 50, size = 5, color = "blue") +
-  geom_vline(xintercept = out_obs_density_8$train_max_row, linetype = "dashed", color = "blue") +
-  annotate("text", label = "Out-of-sample\n(70%)", x = 430, y = 80, size = 5, color = "green4") +
-  geom_vline(xintercept = out_obs_density_7$train_max_row, linetype = "dashed", color = "green4") +
-  labs(title = "Actual vs. predicted counts of airstrikes", x = "Days", y = "Count")
-
-plot_out_of_sample
+plot_out_of_sample[[2]] +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "red") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
+  annotate("text", label = "Out-of-sample\n(80%)", x = 390, y = 50, size = 4, color = "blue") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
+  annotate("text", label = "Out-of-sample\n(70%)", x = 415, y = 80, size = 4, color = "green4") +
+  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4")
 ```
 
 The residual plot can be found below.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot_out_of_sample_residual <- data.frame(days = c(31:499),
-                                          res_pred = predicted_counts - actual_counts,
-                                          res_out_8 = predicted_out_8 - actual_counts,
-                                          res_out_7 = predicted_out_7 - actual_counts) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = res_pred), color = "red") +
-  geom_line(aes(x = days, y = res_out_8), color = "blue") +
-  geom_line(aes(x = days, y = res_out_7), color = "green4") +
+# Construct the residual data using the first element of plot_compare_double_plot
+data_out_of_sample_residual <- plot_out_of_sample[[1]] %>%
+  dplyr::mutate(res_pred = predicted_counts - actual_counts,
+                res_out_8 = predicted_out_8 - actual_counts,
+                res_out_7 = predicted_out_7 - actual_counts)
+
+plot_out_of_sample_residual <- ggplot(data_out_of_sample_residual) +
+  geom_line(aes(x = time, y = res_pred), color = "red") +
+  geom_line(aes(x = time, y = res_out_8), color = "blue") +
+  geom_line(aes(x = time, y = res_out_7), color = "green4") +
   theme_bw() +
-  annotate("text", label = "Predicted", x = 450, y = -25, size = 5, color = "red") +
-  geom_vline(xintercept = 499, linetype = "dashed", color = "red") +
-  annotate("text", label = "Out-of-sample\n(80%)", x = 430, y = -50, size = 5, color = "blue") +
-  geom_vline(xintercept = out_obs_density_8$train_max_row, linetype = "dashed", color = "blue") +
-  annotate("text", label = "Out-of-sample\n(70%)", x = 410, y = 50, size = 5, color = "green4") +
-  geom_vline(xintercept = out_obs_density_7$train_max_row, linetype = "dashed", color = "green4") +
+  annotate("text", label = "Predicted", x = 430, y = -25, size = 4, color = "red") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
+  annotate("text", label = "Out-of-sample\n(80%)", x = 430, y = -50, size = 4, color = "blue") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
+  annotate("text", label = "Out-of-sample\n(70%)", x = 420, y = 80, size = 4, color = "green4") +
+  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4") +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(title = "Residual plot comparing 80% and 70% allocations", x = "Days", y = "Residual")
+  labs(title = "Residual plot comparing 80% and 70% allocations", x = "Days", y = "Residual") + ylim(-100, 100)
 
 plot_out_of_sample_residual
 ```
@@ -270,90 +260,54 @@ The out-of-sample prediction is not going well, particularly when we use the fir
 
 We can use the fitted model to predict the number of airstrikes in a sub-region. In this case, we continue to use <tt>predict_obs_density</tt> function, but this time set <tt>ratio = 1</tt> and set <tt>window = windows\$Baghdad</tt>. That is, we use the entire dataset to fit the model, and then predict the counts in a window, this time Baghdad and outside of Baghdad. The window objects of Baghdad and outside of Baghdad are saved as <tt>windows\$Baghdad</tt> and <tt>windows\$outside_Baghdad</tt>, respectively.
 
-Let's take a look at Baghdad first.
+Let's take a look at Baghdad first. Notice that for the actual count of airstrikes in Baghdad, we need to change the window from the entire Iraq to Baghdad.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Baghdad
 obs_density_baghdad <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
                                            rhs_var, ngrid = 100, window = windows$Baghdad)
-predicted_baghdad <- obs_density_baghdad$estimated_counts
 
-## Calculate the actual count
-airstrikes <- dat_hfr$Airstrike
+# Change the window of interest for the actual data
+airstrikes_baghdad <- dat_hfr$Airstrike
 
 for(i in 1:nrow(dat_hfr)){
-  spatstat.geom::Window(airstrikes[[i]]) <- windows$Baghdad
+  spatstat.geom::Window(airstrikes_baghdad[[i]]) <- windows$Baghdad
 }
 
-actual_baghdad <- unlist(purrr::map(airstrikes, function(x) x$n))
-
 # Plot (Baghdad)
-plot_compare_bag <- data.frame(days = c(31:499),
-                               actual_baghdad, predicted_baghdad) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = actual_baghdad), color = "darkgray") +
-  geom_line(aes(x = days, y = predicted_baghdad), color = "red") +
-  theme_bw() +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 400, y = 70, size = 5, color = "red") +
+plot_compare_bag <- vis_obs_density(actual_data = airstrikes_baghdad, 
+                                    density_1 = obs_density_baghdad,
+                                    color_actual = "darkgray", color_dens_1 = "red",
+                                    time_unit = "Days")
+
+plot_compare_bag[[2]] +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 400, y = 70, size = 4, color = "red") +
   labs(title = "Actual vs. predicted counts of airstrikes (Baghdad)", x = "Days", y = "Count") + ylim(0, 100)
-
-plot_compare_bag
 ```
 
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot_baghdad_residual <- data.frame(days = c(31:499),
-                                        res_bag = predicted_baghdad - actual_baghdad) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = res_bag), color = "red") +
-  theme_bw() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(title = "Residual plot (Baghdad)", x = "Days", y = "Residual") + ylim(-100, 100)
-
-plot_baghdad_residual
-```
-
-Then outside of Baghdad.
+Then let's do the same for outside of Baghdad.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Outside of Baghdad
 obs_density_out_bag <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike", 
                                            rhs_var, ngrid = 100, window = windows$outside_Baghdad)
-predicted_out_bag <- obs_density_out_bag$estimated_counts
 
-## Calculate the actual count
-airstrikes <- dat_hfr$Airstrike
+airstrikes_out_bag <- dat_hfr$Airstrike
 
 for(i in 1:nrow(dat_hfr)){
-  spatstat.geom::Window(airstrikes[[i]]) <- windows$outside_Baghdad
+  spatstat.geom::Window(airstrikes_out_bag[[i]]) <- windows$outside_Baghdad
 }
 
-actual_out_bag <- unlist(purrr::map(airstrikes, function(x) x$n))
+plot_compare_out_bag <- vis_obs_density(actual_data = airstrikes_out_bag, 
+                                        density_1 = obs_density_out_bag,
+                                        color_actual = "darkgray", color_dens_1 = "blue",
+                                        time_unit = "Days")
 
-# Plot (Outside of baghdad)
-plot_compare_out_bag <- data.frame(days = c(31:499),
-                                   actual_out_bag, predicted_out_bag) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = actual_out_bag), color = "darkgray") +
-  geom_line(aes(x = days, y = predicted_out_bag), color = "blue") +
-  theme_bw() +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 400, y = 40, size = 5, color = "blue") +
-  labs(title = "Actual vs. predicted counts of airstrikes (Outside of Baghdad)", x = "Days", y = "Count")  +  ylim(0, 100)
-
-plot_compare_out_bag
-```
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot_out_bag_residual <- data.frame(days = c(31:499),
-                                    res_out_bag = predicted_out_bag - actual_out_bag) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = res_out_bag), color = "blue") +
-  theme_bw() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(title = "Residual plot (Outside of Baghdad)", x = "Days", y = "Residual") + ylim(-100, 100)
-
-plot_out_bag_residual
+plot_compare_out_bag[[2]] +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 400, y = 40, size = 4, color = "blue") +
+  labs(title = "Actual vs. predicted counts of airstrikes (Outside of Baghdad)", x = "Days", y = "Count") + ylim(0, 100)
 ```
 
 # Considering the model appropriateness
@@ -366,7 +320,6 @@ min(dat_hfr$time) #The min is March 25, 2007
 max(dat_hfr$time) #The max is July 5, 2008, hence the dataset is within the range of the surge
 
 dat_hfr$surge <- ifelse(dat_hfr$time <= "2008-01-01", 1, 0)
-
 rhs_var_surge <-  c(rhs_var, "surge")
 
 # Get observed density over the entire window, for the entire period
@@ -374,74 +327,63 @@ obs_density_surge <- get_obs_density(dat_hfr, "Airstrike", rhs_var_surge,
                                      ngrid = 100, window = iraq_window)
 
 # Plot
-predicted_counts_surge <- obs_density_surge$estimated_counts
+plot_compare_surge <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
+                                      density_1 = obs_density, density_2 = obs_density_surge,
+                                      color_actual = "darkgray", 
+                                      color_dens_1 = "red", color_dens_2 = "blue",
+                                      time_unit = "Days")
 
-plot_compare_surge <- data.frame(days = c(31:499),
-                                 actual_counts, predicted_counts, predicted_counts_surge) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
-  geom_line(aes(x = days, y = predicted_counts), color = "red") +
-  geom_line(aes(x = days, y = predicted_counts_surge), color = "blue") +
-  theme_bw() +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
-  annotate("text", label = "Predicted\n(original)", x = 400, y = 70, size = 5, color = "red") +
-  annotate("text", label = "Predicted\n(controlling for the surge)", x = 200, y = 70, size = 5, color = "blue") +
-  labs(title = "Actual vs. predicted counts of airstrikes", x = "Days", y = "Count")
-
-plot_compare_surge
+plot_compare_surge[[2]] +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
+  annotate("text", label = "Predicted\n(original)", x = 410, y = 30, size = 4, color = "red") +
+  annotate("text", label = "Predicted\n(surge)", x = 250, y = 70, size = 4, color = "blue") + ylim(0, 100)
 ```
 
 Let's check out-of-sample prediction performance.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-# 80% training
-out_obs_density_8 <- predict_obs_density(dat_hfr, ratio = 0.8, "Airstrike", 
-                                         rhs_var, ngrid = 100, iraq_window)
-predicted_out_8 <- out_obs_density_8$estimated_counts
+# 80% training with surge
+obs_density_8_surge <- predict_obs_density(dat_hfr, ratio = 0.8, "Airstrike", 
+                                           rhs_var_surge, ngrid = 100, iraq_window)
 
-out_obs_density_8_surge <- predict_obs_density(dat_hfr, ratio = 0.8, "Airstrike", 
-                                               rhs_var_surge, ngrid = 100, iraq_window)
-predicted_out_8_surge <- out_obs_density_8_surge$estimated_counts
-
-# 70% training
-out_obs_density_7 <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike", 
-                                         rhs_var, ngrid = 100, iraq_window)
-predicted_out_7 <- out_obs_density_7$estimated_counts
-
-out_obs_density_7_surge <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike", 
-                                               rhs_var_surge, ngrid = 100, iraq_window)
-predicted_out_7_surge <- out_obs_density_7_surge$estimated_counts
+# 70% training with surge
+obs_density_7_surge <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike", 
+                                           rhs_var_surge, ngrid = 100, iraq_window)
 
 # Plot
-plot_out_of_sample <- data.frame(days = c(31:499),
-                                 actual_counts, 
-                                 predicted_out_8, predicted_out_8_surge) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
-  geom_line(aes(x = days, y = predicted_out_8), color = "blue") +
-  geom_line(aes(x = days, y = predicted_out_8_surge), color = "red") +
-  theme_bw() +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
-  geom_vline(xintercept = round(499*0.8), linetype = "dashed", color = "black") +
-  annotate("text", label = "Out-of-sample\n(80%)", x = 430, y = 50, size = 5, color = "blue") +
-  annotate("text", label = "Out-of-sample\n(80%, surge+)", x = 430, y = 80, size = 5, color = "red") +
-  labs(title = "Actual vs. predicted counts of airstrikes (80%)", x = "Days", y = "Count")
+plot_out_of_sample_8s <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
+                                         density_1 = obs_density, 
+                                         density_2 = obs_density_8, 
+                                         density_3 = obs_density_8_surge,
+                                         color_actual = "darkgray", 
+                                         color_dens_1 = "red", color_dens_2 = "blue",  color_dens_3 = "green4",
+                                         time_unit = "Days")
 
-plot_out_of_sample
+plot_out_of_sample_8s[[2]] +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "red") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
+  annotate("text", label = "Out-of-sample\n(80%)", x = 390, y = 50, size = 4, color = "blue") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
+  annotate("text", label = "Out-of-sample\n(80%, surge)", x = 415, y = 30, size = 4, color = "green4") +
+  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4")
 
-plot_out_of_sample2 <- data.frame(days = c(31:499),
-                                  actual_counts, 
-                                  predicted_out_7, predicted_out_7_surge) %>%
-  ggplot() +
-  geom_line(aes(x = days, y = actual_counts), color = "darkgray") +
-  geom_line(aes(x = days, y = predicted_out_7), color = "blue") +
-  geom_line(aes(x = days, y = predicted_out_7_surge), color = "red") +
-  theme_bw() +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 5, color = "darkgray") +
-  geom_vline(xintercept = round(499*0.7), linetype = "dashed", color = "black") +
-  annotate("text", label = "Out-of-sample\n(70%)", x = 430, y = 50, size = 5, color = "blue") +
-  annotate("text", label = "Out-of-sample\n(70%, surge+)", x = 430, y = 80, size = 5, color = "red") +
-  labs(title = "Actual vs. predicted counts of airstrikes (70%)", x = "Days", y = "Count")
+plot_out_of_sample_7s <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
+                                         density_1 = obs_density, 
+                                         density_2 = obs_density_7, 
+                                         density_3 = obs_density_7_surge,
+                                         color_actual = "darkgray", 
+                                         color_dens_1 = "red", color_dens_2 = "blue",  color_dens_3 = "green4",
+                                         time_unit = "Days")
 
-plot_out_of_sample2
+plot_out_of_sample_7s[[2]] +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
+  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "red") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
+  annotate("text", label = "Out-of-sample\n(70%)", x = 390, y = 50, size = 4, color = "blue") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
+  annotate("text", label = "Out-of-sample\n(70%, surge)", x = 230, y = 80, size = 4, color = "green4") +
+  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4")
 ```
+
+Given this result, let's then continue to use the model with the indicator.
