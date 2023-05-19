@@ -16,16 +16,16 @@
 vis_obs_density <- function(actual_data,
                             density_1, density_2 = NA, density_3 = NA,
                             color_actual,
-                            color_dens_1, color_dens_2 = NA, color_dens_3 = NA,
+                            color_dens_1, color_dens_2, color_dens_3,
                             time_unit) {
   
   # Obtain the actual counts 
-  actual_counts <- unlist(purrr::map(dat_hfr$Airstrike, function(x) x$n))
+  actual_counts <- unlist(purrr::map(actual_data, function(x) x$n))
   
-  if(is.na(density_2)){
+  if(is.na(density_2)[1]){
     
     # Obtain the predicted counts
-    predicted_counts <- obs_density$estimated_counts
+    predicted_counts <- density_1$estimated_counts
     
     # Construct dataset
     plot_data <- data.frame(time = c(1:length(actual_counts)), 
@@ -40,11 +40,11 @@ vis_obs_density <- function(actual_data,
     
     return(list(plot_data, plot_compare))
     
-  } else if (is.na(density_3)) {
+  } else if (is.na(density_3)[1]) {
     
     # Obtain the predicted counts
-    predicted_counts <- obs_density$estimated_counts
-    predicted_counts_2 <- obs_density_2$estimated_counts
+    predicted_counts <- density_1$estimated_counts
+    predicted_counts_2 <- density_2$estimated_counts
     
     # Construct dataset
     plot_data <- data.frame(time = c(1:length(actual_counts)), 
@@ -64,9 +64,9 @@ vis_obs_density <- function(actual_data,
   } else {
     
     # Obtain the predicted counts
-    predicted_counts <- obs_density$estimated_counts
-    predicted_counts_2 <- obs_density_2$estimated_counts
-    predicted_counts_3 <- obs_density_3$estimated_counts
+    predicted_counts <- density_1$estimated_counts
+    predicted_counts_2 <- density_2$estimated_counts
+    predicted_counts_3 <- density_3$estimated_counts
     
     # Construct dataset
     plot_data <- data.frame(time = c(1:length(actual_counts)), 
