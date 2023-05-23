@@ -1,0 +1,104 @@
+---
+title: "Step 6. Obtaining counterfactual densities"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{6_counterfactual}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type = "text/css">
+h1.title {
+  font-size: 30px;
+}
+h1 { /* Header 1 */
+  font-size: 26px;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 16px;
+}
+div#TOC li {
+    list-style:none;
+    background-image:none;
+    background-repeat:none;
+    background-position:0; 
+}
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+
+library(readr)
+library(ggplot2)
+library(furrr)
+library(spatstat)
+library(lubridate)
+```
+
+```{r setup, include = FALSE}
+devtools::load_all()
+#library(geocausal)
+```
+
+```{r load data, include = FALSE}
+airstr_base <- get(load("~/geocausal/Data/airstr_base.csv"))
+load("~/geocausal/Data/iraq_window.Rda")
+airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")] 
+##Data not included in analysis, also excluding SOF
+```
+
+# 1 Obtaining counterfactual densities
+
+
+## 1.1 Obtaining the baseline density
+
+- Use the data from 2006 to obtain the baseline density
+
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
+# Data
+head(airstr_base)
+unique(airstr_base$Type)
+range(airstr_base$date)
+
+# Get baseline density
+airstr_coords <- cbind(x = airstr_base$longitude, y = airstr_base$latitude)
+airstr_points <- as.ppp(airstr_coords, W = iraq_window)
+plot(airstr_points, pch = 16, cex = 0.3)
+
+bw_density <- spatstat.explore::bw.scott(airstr_points)
+
+baseline_dens <- density(airstr_points, bw_density)
+baseline_dens <- est_dens / integral(baseline_dens)
+plot(baseline_dens)
+
+```
+# 1.2 Changing the expected number of outcomes
+
+
+
+
+# 1.3 Changing the location
+
+
+
+
+# 1.4 Shifting the focus
+
+
+
+# 1.5 Everything at once
+
+
+
+
+
