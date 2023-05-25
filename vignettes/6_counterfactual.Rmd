@@ -54,7 +54,7 @@ devtools::load_all()
 airstr_base <- get(load("~/geocausal/Data/airstr_base.csv"))
 load("~/geocausal/Data/iraq_window.Rda")
 airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")] 
-##Data not included in analysis, also excluding SOF
+##Data used here is not included in the analysis, also it excludes SOF
 ```
 
 # 1 Obtaining counterfactual densities
@@ -63,6 +63,7 @@ airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")]
 ## 1.1 Obtaining the baseline density
 
 - Use the data from 2006 to obtain the baseline density
+- Check: Only one density is obtained
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Data
@@ -71,16 +72,12 @@ unique(airstr_base$Type)
 range(airstr_base$date)
 
 # Get baseline density
-airstr_coords <- cbind(x = airstr_base$longitude, y = airstr_base$latitude)
-airstr_points <- as.ppp(airstr_coords, W = iraq_window)
-plot(airstr_points, pch = 16, cex = 0.3)
+baseline_density <- get_baseline_density(airstr_base, 
+                                         coordinates = c("longitude", "latitude"),
+                                         window = iraq_window,
+                                         return_ppp = FALSE)
 
-bw_density <- spatstat.explore::bw.scott(airstr_points)
-
-baseline_dens <- density(airstr_points, bw_density)
-baseline_dens <- est_dens / integral(baseline_dens)
-plot(baseline_dens)
-
+plot(baseline_density)
 ```
 # 1.2 Changing the expected number of outcomes
 
