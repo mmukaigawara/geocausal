@@ -23,6 +23,6 @@ get_baseline_density <- function(data,
   baseline_density <- baseline_density / integral(baseline_density) #Divide by integral of the density
   
   
-  return(list(baseline_density, baseline_ppp))
+  return(list(baseline_im = baseline_density, baseline_ppp = baseline_ppp))
 
 }
