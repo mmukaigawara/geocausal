@@ -7,12 +7,10 @@
 #' @param coordinates A vector of column names for longitudes and latitudes (in this order)
 #' @param indep_var A vector of names of independent variables
 #' @param window The window object of interest
-#' @param return_ppp If TRUE, the function returns both the density and point processes. By default, FALSE
 
 get_baseline_density <- function(data, 
                                  coordinates = c("longitude", "latitude"),
-                                 window,
-                                 return_ppp = FALSE){
+                                 window){
   
   # Convert data to ppp
   coordinates_data <- airstr_base[, coordinates]
@@ -25,10 +23,6 @@ get_baseline_density <- function(data,
   baseline_density <- baseline_density / integral(baseline_density) #Divide by integral of the density
   
   
-  if (return_ppp == TRUE) {
-    return(list(baseline_density, baseline_ppp))
-  } else {
-    return(baseline_density)
-  }
-  
+  return(list(baseline_density, baseline_ppp))
+
 }
