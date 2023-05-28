@@ -22,6 +22,7 @@ get_baseline_summary <- function(data, time_column) {
                         probs = c(0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 
                                   0.6, 0.7, 0.75, 0.8, 0.9, 1))
   average <- mean(dat_count$count)
+  var <- var(dat_count$count)
   
-  return(list(plot = dat_count_plot, quantile = quantiles, mean = average))
+  return(list(plot = dat_count_plot, quantile = quantiles, mean = average, variance = var))
 }
