@@ -19,7 +19,7 @@ get_baseline_density <- function(data,
   # Apply Scott's rule of thumb
   scott_bandwidth <- spatstat.explore::bw.scott(baseline_ppp)
   
-  baseline_density <- stats::density(baseline_ppp, scott_bandwidth) #Kernel density estimation
+  baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = 256) #Kernel density estimation
   baseline_density <- baseline_density / integral(baseline_density) #Divide by integral of the density
   
   
