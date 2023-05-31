@@ -43,6 +43,8 @@ library(ggplot2)
 library(furrr)
 library(spatstat)
 library(lubridate)
+library(stars)
+library(ggthemes)
 ```
 
 ```{r setup, include = FALSE}
@@ -51,14 +53,15 @@ devtools::load_all()
 ```
 
 ```{r load data, include = FALSE}
+dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
 airstr_base <- get(load("~/geocausal/Data/airstr_base.csv"))
+load("~/geocausal/Data/covariates/routes_dist.dat")
 load("~/geocausal/Data/iraq_window.Rda")
 airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")] 
 ##Data used here is not included in the analysis, also it excludes SOF
 ```
 
 # 1 Obtaining counterfactual densities
-
 
 ## 1.1 Obtaining the baseline density
 
@@ -68,34 +71,134 @@ airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")]
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Data
 head(airstr_base)
-unique(airstr_base$Type)
 range(airstr_base$date)
 
 # Get baseline density
-baseline_density <- get_baseline_density(airstr_base, 
-                                         coordinates = c("longitude", "latitude"),
-                                         window = iraq_window,
-                                         return_ppp = FALSE)
+baseline <- get_baseline_density(data = airstr_base, 
+                                 coordinates = c("longitude", "latitude"),
+                                 window = iraq_window)
 
-plot(baseline_density)
+baseline$density_plot
+baseline$density_plot + scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
+baseline$point_plot
 ```
 # 1.2 Counterfactual (1) Changing the expected number of outcomes
 
+First, get the summary and plot so that we can see the expected number of airstrikes.
 
+```{r}
+# Get the target number
+baseline_summary <- get_baseline_summary(data = airstr_base, 
+                                         time_column = "date")
 
+baseline_summary$quantile
+baseline_summary$mean
+baseline_summary$variance
+baseline_summary$plot
+```
 
-# 1.3 Counterfactual (2) Shifting the geographical focus
+Then first try the simple multiplication. Since the baseline density is standardized, the target_number is already the target expectation.
 
+```{r}
+# Type 1 intervention (simple multiplication)
+baseline_density <- baseline$density
+target_number <- 3
 
+counterfactual_multiply <- get_counterfactual_density(baseline_density = baseline_density,
+                                                      expected_number = target_number,
+                                                      window = iraq_window)
+counterfactual_multiply$density
+counterfactual_multiply$density_plot
+counterfactual_multiply$density_plot + scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
+```
 
+Then type-2 interventions.
 
-# 1.4 Shifting the focus
+```{r}
+# Type 2 intervention (shifting the location)
 
+## Data on locations
+focus_locations <- cbind(longitude = 44.025, latitude = 32.614) #Baghdad only
+focus_locations <- cbind(longitude = 43.158, latitude = 36.349) #Mosul only
+focus_locations <- cbind(longitude = c(44.025, 43.158), latitude = c(32.614, 36.349)) #Baghdad and Mosul
 
+## Distance from focus
+distance_from_focus <- get_focus(focus_locations = focus_locations, 
+                                 window = iraq_window)
+plot(distance_from_focus)
 
-# 1.5 Everything at once
+### Another distance map
+distance_from_routes <- exp(-routes_dist)/integral(routes_dist)
+plot(distance_from_routes)
 
+target_densities <- list(distance_from_focus, distance_from_routes)
+priorities <- c(3, 5)
 
+power_density <- get_power_density(target_densities = target_densities, 
+                                   priorities = priorities, 
+                                   window = iraq_window)
 
+power_density$density
+power_density$density_plot
 
+counterfactual_location <- get_counterfactual_density(baseline_density = baseline_density,
+                                                      expected_number = 3,
+                                                      power_density = power_density$density,
+                                                      window = iraq_window)
 
+counterfactual_location$density
+counterfactual_location$density_plot
+```
+
+Simulation and visualization exercises
+
+```{r}
+# Simulation and visualization
+
+## Type 1
+target_numbers <- seq(1, 6, by = 1)
+
+plot_list <- purrr::map(target_numbers, get_counterfactual_density,
+                        counterfactual_type = "intensity", baseline_density = baseline_density,
+                        window = iraq_window)
+
+range <- range(target_numbers)
+
+plot_hfr <- hyperframe(target_numbers = target_numbers, plot = NA)
+for (ii in 1:length(plot_list)) {
+  plot_hfr[ii, "plot"] <- plot_list[[ii]]
+}
+
+scale_max <- ceiling(max(unlist(lapply(target_numbers, 
+                                       function(jj) max(c(plot_list[[jj]]$v)[which(!is.na(plot_list[[jj]]$v))]))
+                                )
+                         )
+                     )
+
+plot_out <- spatstat.geom::plot.im(plot_hfr[, "plot"],
+                 main = paste0("Target numbers from ", range[1], " to ", range[2]),
+                 zlim = c(0, scale_max))
+
+try <- data.frame(x = rep(sort(plot_list[[6]]$xcol),
+                          length(plot_list[[6]]$yrow)),
+                  y = rep(sort(plot_list[[6]]$yrow, decreasing = TRUE),
+                          each = length(plot_list[[6]]$xcol)),
+                  v = c(plot_list[[6]]$v))
+ggplot(aes(x = x, y = y), data = try) + geom_tile(aes(fill = v)) + theme_bw()
+
+## Type 2
+priorities <- list(c(1, 1), c(1, 5), c(1, 10))
+
+power_density_list <- purrr::map(priorities, get_power_density,
+                                 target_densities = target_densities,
+                                 window = iraq_window)
+
+plot_list <- purrr::map(power_density_list, get_counterfactual_density,
+                        counterfactual_type = "location", baseline_density = baseline_density,
+                        target_number = 3, window = iraq_window)
+
+class(plot_list[[1]])
+
+```
+
+Examples
