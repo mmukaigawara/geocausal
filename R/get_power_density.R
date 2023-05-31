@@ -20,6 +20,18 @@ get_power_density <- function(target_densities,
   
   power_density <- power_density/integral(power_density, domain = iraq_window)
   
-  return(power_density)
+  # Figure - density
+  sf_density <- stars::st_as_stars(power_density)
+  sf_density <- sf::st_as_sf(sf_density) %>% sf::st_set_crs(32650)
+  
+  power_dens <- ggplot() +
+    ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
+    ggplot2::scale_fill_viridis_c(option = "plasma") + 
+    ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+    ggthemes::theme_map() +
+    ggplot2::ggtitle(paste0("Power density")) +
+    labs(fill = "Density")
+
+  return(list(density = power_density, density_plot = power_dens))
   
 }

@@ -21,8 +21,31 @@ get_baseline_density <- function(data,
   
   baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = 256) #Kernel density estimation
   baseline_density <- baseline_density / integral(baseline_density) #Divide by integral of the density
+
+  # Figure - density
+  sf_density <- stars::st_as_stars(baseline_density)
+  sf_density <- sf::st_as_sf(sf_density) %>% sf::st_set_crs(32650)
   
+  baseline_dens <- ggplot() +
+    ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
+    ggplot2::scale_fill_viridis_c(option = "plasma") + 
+    ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+    ggthemes::theme_map() +
+    ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment per time period = ", 1, ")" )) +
+    labs(fill = "Density")
+
+  # Figure - ppp
+  sf_points <- data.frame(lat = baseline_ppp$y,
+                          lon = baseline_ppp$x) %>%
+    sf::st_as_sf(coords = c("lon", "lat")) %>%
+    sf::st_set_crs(32650)
   
-  return(list(baseline_im = baseline_density, baseline_ppp = baseline_ppp))
+  baseline_ppp <- ggplot() +
+    ggplot2::geom_sf(data = sf_points, size = 0.5, col = "black") +
+    ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+    ggthemes::theme_map() +
+    ggplot2::ggtitle("Observed treatment locations")
+  
+  return(list(density = baseline_density, density_plot = baseline_dens, point_plot = baseline_ppp))
 
 }

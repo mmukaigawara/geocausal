@@ -13,8 +13,9 @@ get_baseline_summary <- function(data, time_column) {
     dplyr::summarize(count = dplyr::n())
   
   dat_count_plot <- ggplot2::ggplot(dat_count, aes(x = .data[[time_column]], y = count)) +
-    geom_col() + 
-    theme_bw() + 
+    ggplot2::geom_col() + 
+    theme_bw() +
+    ggplot2::ggtitle("The number of treatment per time period") +
     labs(x = "Time", y = "Count")
   
   # Generate a summary

@@ -3,30 +3,40 @@
 #' A function that takes the target number, baseline density, and power density,
 #' and generates a hyperframe with point patterns
 #'
-#' @param counterfactual_type Either "intensity" or "location." If "intensity," it multiplies the baselin density by the target number. If "location," it shifts the focus location.
-#' @param target_number The expected number of observations. If "location," it is treated as a constant.
+#' @param expected_number The expected number of observations.
 #' @param baseline_density The baseline density (an im object)
 #' @param power_density The power density (an im object)
 #' @param window An owin object
 
-get_counterfactual_density <- function(counterfactual_type,
-                                       target_number,
+get_counterfactual_density <- function(expected_number,
                                        baseline_density,
-                                       power_density,
+                                       power_density = NA,
                                        window) {
   
-  if (counterfactual_type == "intensity") { # counterfactual_type = "intensity"
+  if (is.na(power_density[1])) { # counterfactual_type = intensity only -> multiply by the expectation
     
-    counterfactual_density <- target_number * baseline_density
+    counterfactual_density <- expected_number * baseline_density
     
-  } else if (counterfactual_type == "location") { # counterfactual_type = "location"
+  } else { # counterfactual_type = location as well
     
     product_power_baseline <- baseline_density * power_density
     counterfactual_density <- product_power_baseline/
-      integral(product_power_baseline, W = iraq_window) * target_number
+      integral(product_power_baseline, W = window) * expected_number
     
   }
   
-  return(counterfactual_density)
+  # Figure
+  sf_density <- stars::st_as_stars(counterfactual_density)
+  sf_density <- sf::st_as_sf(sf_density) %>% sf::st_set_crs(32650)
+  
+  counterfactual_dens <- ggplot() +
+    ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
+    ggplot2::scale_fill_viridis_c(option = "plasma") + 
+    ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+    ggthemes::theme_map() +
+    ggplot2::ggtitle(paste0("Counterfactual Density\n(The expected number of treatment per time period = ", expected_number, ")" )) +
+    labs(fill = "Density")
+  
+  return(list(density = counterfactual_density, density_plot = counterfactual_dens))
   
 }
