@@ -19,4 +19,8 @@ Imports:
     data.table,
     purrr,
     furrr,
-    mclust
+    mclust,
+    lubridate,
+    stars,
+    ggthemes,
+    ggpubr
