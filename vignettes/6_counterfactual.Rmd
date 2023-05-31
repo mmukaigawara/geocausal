@@ -45,6 +45,7 @@ library(spatstat)
 library(lubridate)
 library(stars)
 library(ggthemes)
+library(ggpubr)
 ```
 
 ```{r setup, include = FALSE}
@@ -142,7 +143,7 @@ power_density$density
 power_density$density_plot
 
 counterfactual_location <- get_counterfactual_density(baseline_density = baseline_density,
-                                                      expected_number = 3,
+                                                      expected_number = target_number,
                                                       power_density = power_density$density,
                                                       window = iraq_window)
 
@@ -150,55 +151,17 @@ counterfactual_location$density
 counterfactual_location$density_plot
 ```
 
-Simulation and visualization exercises
+Simulation and visualization exercises for power density
+- Suppose that we keep the distance from cities as it is with alpha = 2 and want to see how changing alpha from 1 to 6 for routes affects the power density...
 
 ```{r}
-# Simulation and visualization
+sim_power <- simulate_power_density(target_densities = list(distance_from_focus), #This must be a list element
+                                    density_to_manipulate = distance_from_routes,
+                                    priorities = 2,
+                                    priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
+                                    window = iraq_window)
 
-## Type 1
-target_numbers <- seq(1, 6, by = 1)
-
-plot_list <- purrr::map(target_numbers, get_counterfactual_density,
-                        counterfactual_type = "intensity", baseline_density = baseline_density,
-                        window = iraq_window)
-
-range <- range(target_numbers)
-
-plot_hfr <- hyperframe(target_numbers = target_numbers, plot = NA)
-for (ii in 1:length(plot_list)) {
-  plot_hfr[ii, "plot"] <- plot_list[[ii]]
-}
-
-scale_max <- ceiling(max(unlist(lapply(target_numbers, 
-                                       function(jj) max(c(plot_list[[jj]]$v)[which(!is.na(plot_list[[jj]]$v))]))
-                                )
-                         )
-                     )
-
-plot_out <- spatstat.geom::plot.im(plot_hfr[, "plot"],
-                 main = paste0("Target numbers from ", range[1], " to ", range[2]),
-                 zlim = c(0, scale_max))
-
-try <- data.frame(x = rep(sort(plot_list[[6]]$xcol),
-                          length(plot_list[[6]]$yrow)),
-                  y = rep(sort(plot_list[[6]]$yrow, decreasing = TRUE),
-                          each = length(plot_list[[6]]$xcol)),
-                  v = c(plot_list[[6]]$v))
-ggplot(aes(x = x, y = y), data = try) + geom_tile(aes(fill = v)) + theme_bw()
-
-## Type 2
-priorities <- list(c(1, 1), c(1, 5), c(1, 10))
-
-power_density_list <- purrr::map(priorities, get_power_density,
-                                 target_densities = target_densities,
-                                 window = iraq_window)
-
-plot_list <- purrr::map(power_density_list, get_counterfactual_density,
-                        counterfactual_type = "location", baseline_density = baseline_density,
-                        target_number = 3, window = iraq_window)
-
-class(plot_list[[1]])
-
+sim_power
 ```
 
 Examples
