@@ -18,7 +18,7 @@ get_power_density <- function(target_densities,
     power_density <- power_density * target_densities[[ii]] ^ priorities[ii]
   }
   
-  power_density <- power_density/integral(power_density, domain = iraq_window)
+  power_density <- power_density/integral(power_density, domain = window)
   
   # Figure - density
   sf_density <- stars::st_as_stars(power_density)
@@ -30,7 +30,8 @@ get_power_density <- function(target_densities,
     ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
     ggthemes::theme_map() +
     ggplot2::ggtitle(paste0("Power density")) +
-    labs(fill = "Density")
+    labs(fill = "Density") +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
   return(list(density = power_density, density_plot = power_dens))
   

@@ -32,7 +32,8 @@ get_baseline_density <- function(data,
     ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
     ggthemes::theme_map() +
     ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment per time period = ", 1, ")" )) +
-    labs(fill = "Density")
+    labs(fill = "Density") +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
   # Figure - ppp
   sf_points <- data.frame(lat = baseline_ppp$y,
@@ -44,7 +45,8 @@ get_baseline_density <- function(data,
     ggplot2::geom_sf(data = sf_points, size = 0.5, col = "black") +
     ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
     ggthemes::theme_map() +
-    ggplot2::ggtitle("Observed treatment locations")
+    ggplot2::ggtitle("Observed treatment locations") +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   
   return(list(density = baseline_density, density_plot = baseline_dens, point_plot = baseline_ppp))
 

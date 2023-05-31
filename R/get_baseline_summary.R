@@ -16,7 +16,8 @@ get_baseline_summary <- function(data, time_column) {
     ggplot2::geom_col() + 
     theme_bw() +
     ggplot2::ggtitle("The number of treatment per time period") +
-    labs(x = "Time", y = "Count")
+    labs(x = "Time", y = "Count") +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   
   # Generate a summary
   quantiles <- quantile(dat_count$count, 

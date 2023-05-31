@@ -35,7 +35,8 @@ get_counterfactual_density <- function(expected_number,
     ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
     ggthemes::theme_map() +
     ggplot2::ggtitle(paste0("Counterfactual Density\n(The expected number of treatment per time period = ", expected_number, ")" )) +
-    labs(fill = "Density")
+    labs(fill = "Density") +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   
   return(list(density = counterfactual_density, density_plot = counterfactual_dens))
   
