@@ -36,7 +36,7 @@ get_window <- function(load_path) {
   } else {
     temp_window <- spatstat.geom::owin(poly = data.frame(x = temp_matrix[, 1], y = temp_matrix[, 2]))
   }
-  
+
   return(temp_window)
   
 }
