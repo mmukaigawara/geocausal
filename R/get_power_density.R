@@ -13,12 +13,17 @@ get_power_density <- function(target_densities,
                               window,
                               grayscale = FALSE) {
   
-  power_density <- 1
+  # Obtaining each target density ^ alpha
+  target_alpha <- lapply(1:length(target_densities), function(x) target_densities[[x]] ^ priorities[x])
   
-  for (ii in 1:length(target_densities)){
-    power_density <- power_density * target_densities[[ii]] ^ priorities[ii]
-  }
+  power_density <- target_alpha[[1]]
   
+  if (length(target_densities) > 1){
+    
+    for (ii in 2:length(target_densities)){ power_density <- power_density * target_alpha[[ii]] }
+    
+  } 
+    
   power_density <- power_density/integral(power_density, domain = window)
   
   # Figure - density
