@@ -54,7 +54,7 @@ load_path <- "~/geocausal/Data/covariates"
 
 load("~/geocausal/Data/iraq_window.Rda")
 load(paste0(load_path, "/cities_dist.dat"))
-load(paste0(load_path, "/ethnicity.dat"))
+load(paste0(load_path, "/sectarian.dat"))
 load(paste0(load_path, "/rivers_dist.dat"))
 load(paste0(load_path, "/routes_dist.dat"))
 load(paste0(load_path, "/settle_dist.dat"))
@@ -87,7 +87,7 @@ ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities",
 
 In this vignette, we will walk through the covariates. Our example considers the following covariates:
 
-- <tt>ethnicity</tt>: settlement patterns and the population (logged, in 2003) of the governorate in which the airstrikes took place;
+- <tt>sectarian</tt>: settlement patterns and the population (logged, in 2003) of the governorate in which the airstrikes took place;
 - <tt>cities_dist</tt>: distances from major cities;
 - <tt>rivers_dist</tt>: distances from rivers;
 - <tt>routes_dist</tt>: distances from road networks;
@@ -98,37 +98,37 @@ In this vignette, we will walk through the covariates. Our example considers the
 
 ## The population (logged, in 2003) and settlement patterns
 
-The data <tt>ethnicity</tt> is a collection of pixel images.
+The data <tt>sectarian</tt> is a collection of pixel images.
 
 ```{r}
-ethnicity
+sectarian
 ```
 
 For each ethnic group (Shia, Sunni, Christians, Turcomans, and Shia/Sunni mixed), we have a map of settlement patterns.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(ethnicity$Shia, main = "Shia")
-plot(ethnicity$Sunni, main = "Sunni")
-plot(ethnicity$Christians, main = "Christians")
-plot(ethnicity$Turcomans, main = "Turcomans")
-plot(ethnicity$Mixed_ShSu, main = "Mixed Shia/Sunni")
+plot(sectarian$Shia, main = "Shia")
+plot(sectarian$Sunni, main = "Sunni")
+plot(sectarian$Christians, main = "Christians")
+plot(sectarian$Turcomans, main = "Turcomans")
+plot(sectarian$Mixed_ShSu, main = "Mixed Shia/Sunni")
 ```
 
 For the population, we have logged population in 2003 of each of the Iraqi districts as a pixel image.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(ethnicity$total_pop, main = "Total population")
+plot(sectarian$total_pop, main = "Total population")
 ```
 
 Let's save each of them as a separate column of the hyperframe.
 
 ```{r}
-dat_hfr$Shia <- spatstat.geom::as.im(ethnicity$Shia, dimyx = 200)
-dat_hfr$Sunni <- spatstat.geom::as.im(ethnicity$Sunni, dimyx = 200)
-dat_hfr$Christians <- spatstat.geom::as.im(ethnicity$Christians, dimyx = 200)
-dat_hfr$Turcomans <- spatstat.geom::as.im(ethnicity$Turcomans, dimyx = 200)
-dat_hfr$MixedShSu <- spatstat.geom::as.im(ethnicity$Mixed_ShSu, dimyx = 200)
-dat_hfr$logPopulation <- spatstat.geom::as.im(log(ethnicity$total_pop), dimyx = 200)
+dat_hfr$Shia <- spatstat.geom::as.im(sectarian$Shia, dimyx = 256)
+dat_hfr$Sunni <- spatstat.geom::as.im(sectarian$Sunni, dimyx = 256)
+dat_hfr$Christians <- spatstat.geom::as.im(sectarian$Christians, dimyx = 256)
+dat_hfr$Turcomans <- spatstat.geom::as.im(sectarian$Turcomans, dimyx = 256)
+dat_hfr$MixedShSu <- spatstat.geom::as.im(sectarian$Mixed_ShSu, dimyx = 256)
+dat_hfr$logPopulation <- spatstat.geom::as.im(log(sectarian$total_pop), dimyx = 256)
 ```
 
 ## Distances from major cities
