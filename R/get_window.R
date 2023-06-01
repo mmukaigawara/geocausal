@@ -29,7 +29,7 @@ get_window <- function(load_path) {
   
   clockwise_check <- clockwise(data.frame(x = temp_matrix[, 1],
                                           y = temp_matrix[, 2]))
-  ??owin
+
   # Generating a window
   if (clockwise) {
     temp_window <- spatstat.geom::owin(poly = data.frame(x = rev(temp_matrix[, 1]), y = rev(temp_matrix[, 2])))
