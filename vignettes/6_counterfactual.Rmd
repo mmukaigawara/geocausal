@@ -40,8 +40,6 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 
 library(readr)
 library(ggplot2)
-library(stars)
-library(elevatr)
 ```
 
 ```{r setup, include = FALSE}
@@ -54,6 +52,7 @@ dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
 airstr_base <- get(load("~/geocausal/Data/airstr_base.csv"))
 load("~/geocausal/Data/covariates/routes_dist.dat")
 load("~/geocausal/Data/iraq_window.Rda")
+# Or, iraq_window <- get_window(load_path = "~/geocausal/Data/iraq_boundary_adm1/.")
 load("~/geocausal/Data/covariates/sectarian.dat")
 airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")] 
 ##Data used here is not included in the analysis, also it excludes SOF
@@ -74,6 +73,7 @@ baseline <- get_baseline_density(data = airstr_base,
                                  window = iraq_window,
                                  grayscale = FALSE)
 
+plot(baseline$density)
 baseline$density_plot
 baseline$point_plot
 
@@ -130,19 +130,34 @@ focus_locations <- cbind(longitude = 43.158, latitude = 36.349) #Mosul only
 distance_from_focus <- get_focus(focus_locations = focus_locations, 
                                  window = iraq_window)
 plot(distance_from_focus)
+```
 
+```{r}
 # Density 2: Distance from routes (lines)
 
 distance_from_routes <- exp(-routes_dist)/integral(routes_dist)
 plot(distance_from_routes)
+```
 
+```{r}
 # Density 3: Sectarian (polygon)
 
 sunni <- sectarian$Sunni
 plot(sunni)
+```
 
+```{r}
 # Density 4: Elevation
+elevation_data <- get_elevation(load_path = "~/geocausal/Data/iraq_boundary_adm1/.",
+                                z = 5)
 
+elevation <- elevation_data$im
+plot(elevation)
+elevation_data$plot
+
+## Convert it to terrain (slope)
+#terrain_data <- raster::terrain(elevation_data, opt = "slope")
+#terrain_im <- maptools_as.im.RasterLayer(terrain_data)
 ```
 
 ## 3.2. Obtaining power densities
@@ -156,10 +171,11 @@ power_sunni_routes <- get_power_density(target_densities = target_sunni_routes,
                                         priorities = priorities, 
                                         window = iraq_window,
                                         grayscale = FALSE)
-
-power_sunni_routes$density
+plot(power_sunni_routes$density)
 power_sunni_routes$plot
+```
 
+```{r}
 # Example 2: Sectarian x City
 target_sunni_mosul <- list(sunni, distance_from_focus)
 power_sunni_mosul <- get_power_density(target_densities = target_sunni_mosul, 
@@ -168,7 +184,9 @@ power_sunni_mosul <- get_power_density(target_densities = target_sunni_mosul,
                                        grayscale = FALSE)
 
 power_sunni_mosul$plot
+```
 
+```{r}
 # Example 3: Roads x City
 target_road_mosul <- list(distance_from_routes, distance_from_focus)
 power_road_mosul <- get_power_density(target_densities = target_road_mosul, 
@@ -177,10 +195,17 @@ power_road_mosul <- get_power_density(target_densities = target_road_mosul,
                                       grayscale = FALSE)
 
 power_road_mosul$plot
+```
 
-# Example 4: Terrain x Sectarian
+```{r}
+# Example 4: Elevation x Sectarian
+target_elevation_sunni <- list(elevation, sunni)
+power_elevation_sunni <- get_power_density(target_densities = target_elevation_sunni,
+                                           priorities = priorities,
+                                           window = iraq_window,
+                                           grayscale = FALSE)
 
-
+plot(power_elevation_sunni$density)
 ```
 
 
