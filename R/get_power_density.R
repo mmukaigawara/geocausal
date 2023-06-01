@@ -23,9 +23,9 @@ get_power_density <- function(target_densities,
     for (ii in 2:length(target_densities)){ power_density <- power_density * target_alpha[[ii]] }
     
   } 
-    
+
   power_density <- power_density/integral(power_density, domain = window)
-  
+
   # Figure - density
   sf_density <- stars::st_as_stars(power_density)
   sf_density <- sf::st_as_sf(sf_density) %>% sf::st_set_crs(32650)
@@ -37,7 +37,7 @@ get_power_density <- function(target_densities,
       ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
       ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0("Power density")) +
+      ggplot2::ggtitle(paste0("Power Density")) +
       labs(fill = "Density") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
@@ -48,7 +48,7 @@ get_power_density <- function(target_densities,
       ggplot2::scale_fill_viridis_c(option = "plasma") + 
       ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0("Power density")) +
+      ggplot2::ggtitle(paste0("Power Density")) +
       labs(fill = "Density") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))   
     
