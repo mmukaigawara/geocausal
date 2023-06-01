@@ -76,7 +76,9 @@ simulate_counterfactual_density <- function(expected_number,
   }
   
   plot <- ggpubr::ggarrange(plotlist = plot_list, common.legend = TRUE, legend = "bottom")
-  plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob("Simulated Counterfactual Densities", face = "bold"))
+  titletext <- paste0("Simulated Counterfactual Densities\n(Expectation = ", 
+                      expected_number, " per time period)")
+  plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob(titletext, face = "bold"))
   
   return(list(densities = counterfactual_density_list,
               plot = plot))
