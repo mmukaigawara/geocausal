@@ -40,12 +40,8 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 
 library(readr)
 library(ggplot2)
-library(furrr)
-library(spatstat)
-library(lubridate)
 library(stars)
-library(ggthemes)
-library(ggpubr)
+library(elevatr)
 ```
 
 ```{r setup, include = FALSE}
@@ -58,16 +54,14 @@ dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
 airstr_base <- get(load("~/geocausal/Data/airstr_base.csv"))
 load("~/geocausal/Data/covariates/routes_dist.dat")
 load("~/geocausal/Data/iraq_window.Rda")
+load("~/geocausal/Data/covariates/sectarian.dat")
 airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")] 
 ##Data used here is not included in the analysis, also it excludes SOF
 ```
 
-# 1 Obtaining counterfactual densities
-
-## 1.1 Obtaining the baseline density
+# 1. Obtaining the baseline density
 
 - Use the data from 2006 to obtain the baseline density
-- Check: Only one density is obtained
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Data
@@ -77,15 +71,20 @@ range(airstr_base$date)
 # Get baseline density
 baseline <- get_baseline_density(data = airstr_base, 
                                  coordinates = c("longitude", "latitude"),
-                                 window = iraq_window)
+                                 window = iraq_window,
+                                 grayscale = FALSE)
 
 baseline$density_plot
-baseline$density_plot + scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
 baseline$point_plot
-```
-# 1.2 Counterfactual (1) Changing the expected number of outcomes
 
-First, get the summary and plot so that we can see the expected number of airstrikes.
+baseline <- get_baseline_density(data = airstr_base, 
+                                 coordinates = c("longitude", "latitude"),
+                                 window = iraq_window,
+                                 grayscale = TRUE)
+
+baseline$density_plot
+```
+Get the summary and plot so that we can see the expected number of airstrikes.
 
 ```{r}
 # Get the target number
@@ -98,58 +97,92 @@ baseline_summary$variance
 baseline_summary$plot
 ```
 
+# 2. Obtaining the counterfactual density by simple multiplication
+
 Then first try the simple multiplication. Since the baseline density is standardized, the target_number is already the target expectation.
 
 ```{r}
-# Type 1 intervention (simple multiplication)
+# Counterfactual: Simple multiplication
 baseline_density <- baseline$density
 target_number <- 3
 
 counterfactual_multiply <- get_counterfactual_density(baseline_density = baseline_density,
                                                       expected_number = target_number,
-                                                      window = iraq_window)
+                                                      window = iraq_window,
+                                                      grayscale = FALSE)
 counterfactual_multiply$density
-counterfactual_multiply$density_plot
-counterfactual_multiply$density_plot + scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
+counterfactual_multiply$plot
 ```
 
-Then type-2 interventions.
+# 3. Obtaining the counterfactual density by shifting locations
+
+## 3.1. Obtaining the densities to construct a power density
 
 ```{r}
-# Type 2 intervention (shifting the location)
+# Density 1: Distance from focuses (points)
 
 ## Data on locations
-focus_locations <- cbind(longitude = 44.025, latitude = 32.614) #Baghdad only
 focus_locations <- cbind(longitude = 43.158, latitude = 36.349) #Mosul only
-focus_locations <- cbind(longitude = c(44.025, 43.158), latitude = c(32.614, 36.349)) #Baghdad and Mosul
+#focus_locations <- cbind(longitude = 44.025, latitude = 32.614) #Baghdad only
+#focus_locations <- cbind(longitude = c(44.025, 43.158), latitude = c(32.614, 36.349)) #Baghdad and Mosul
 
-## Distance from focus
+## Distance from focuses
 distance_from_focus <- get_focus(focus_locations = focus_locations, 
                                  window = iraq_window)
 plot(distance_from_focus)
 
-### Another distance map
+# Density 2: Distance from routes (lines)
+
 distance_from_routes <- exp(-routes_dist)/integral(routes_dist)
 plot(distance_from_routes)
 
-target_densities <- list(distance_from_focus, distance_from_routes)
-priorities <- c(3, 5)
+# Density 3: Sectarian (polygon)
 
-power_density <- get_power_density(target_densities = target_densities, 
-                                   priorities = priorities, 
-                                   window = iraq_window)
+sunni <- sectarian$Sunni
+plot(sunni)
 
-power_density$density
-power_density$density_plot
+# Density 4: Elevation
 
-counterfactual_location <- get_counterfactual_density(baseline_density = baseline_density,
-                                                      expected_number = target_number,
-                                                      power_density = power_density$density,
-                                                      window = iraq_window)
-
-counterfactual_location$density
-counterfactual_location$density_plot
 ```
+
+## 3.2. Obtaining power densities
+
+```{r}
+target_sunni_routes <- list(sunni, distance_from_routes)
+priorities <- c(2, 2)
+
+# Example 1: Sectarian x Routes
+power_sunni_routes <- get_power_density(target_densities = target_sunni_routes, 
+                                        priorities = priorities, 
+                                        window = iraq_window,
+                                        grayscale = FALSE)
+
+power_sunni_routes$density
+power_sunni_routes$plot
+
+# Example 2: Sectarian x City
+target_sunni_mosul <- list(sunni, distance_from_focus)
+power_sunni_mosul <- get_power_density(target_densities = target_sunni_mosul, 
+                                       priorities = priorities, 
+                                       window = iraq_window,
+                                       grayscale = FALSE)
+
+power_sunni_mosul$plot
+
+# Example 3: Roads x City
+target_road_mosul <- list(distance_from_routes, distance_from_focus)
+power_road_mosul <- get_power_density(target_densities = target_road_mosul, 
+                                      priorities = priorities, 
+                                      window = iraq_window,
+                                      grayscale = FALSE)
+
+power_road_mosul$plot
+
+# Example 4: Terrain x Sectarian
+
+
+```
+
 
 Simulation and visualization exercises for power density
 - Suppose that we keep the distance from cities as it is with alpha = 2 and want to see how changing alpha from 1 to 6 for routes affects the power density...
@@ -158,10 +191,39 @@ Simulation and visualization exercises for power density
 sim_power <- simulate_power_density(target_densities = list(distance_from_focus), #This must be a list element
                                     density_to_manipulate = distance_from_routes,
                                     priorities = 2,
-                                    priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
-                                    window = iraq_window)
+                                    priorities_for_manipulation = c(1, 2, 3, 5, 7, 10),
+                                    window = iraq_window,
+                                    grayscale = FALSE)
 
-sim_power
+sim_power$densities
+sim_power$plot
 ```
 
-Examples
+## 3.3. Obtaining counterfactual densities
+
+```{r}
+counterfactual_location <- get_counterfactual_density(baseline_density = baseline_density,
+                                                      expected_number = target_number,
+                                                      power_density = power_road_mosul$density,
+                                                      window = iraq_window,
+                                                      grayscale = FALSE)
+
+counterfactual_location$density
+counterfactual_location$plot
+```
+
+Simulation for counterfactual densities
+
+```{r}
+# Simulation
+sim_counter <- simulate_counterfactual_density(expected_number = target_number,
+                                               baseline_density = baseline_density,
+                                               power_simulation_results = sim_power,
+                                               window = iraq_window,
+                                               grayscale = FALSE)
+
+sim_counter$densities
+sim_counter$plot
+```
+
+
