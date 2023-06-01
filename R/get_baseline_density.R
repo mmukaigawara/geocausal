@@ -10,7 +10,8 @@
 
 get_baseline_density <- function(data, 
                                  coordinates = c("longitude", "latitude"),
-                                 window){
+                                 window,
+                                 grayscale = FALSE){
   
   # Convert data to ppp
   coordinates_data <- airstr_base[, coordinates]
@@ -26,14 +27,25 @@ get_baseline_density <- function(data,
   sf_density <- stars::st_as_stars(baseline_density)
   sf_density <- sf::st_as_sf(sf_density) %>% sf::st_set_crs(32650)
   
-  baseline_dens <- ggplot() +
-    ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
-    ggplot2::scale_fill_viridis_c(option = "plasma") + 
-    ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
-    ggthemes::theme_map() +
-    ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment per time period = ", 1, ")" )) +
-    labs(fill = "Density") +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  if(grayscale) {
+    baseline_dens <- ggplot() +
+      ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
+      ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggthemes::theme_map() +
+      ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment per time period = ", 1, ")" )) +
+      labs(fill = "Density") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  } else {
+    baseline_dens <- ggplot() +
+      ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
+      ggplot2::scale_fill_viridis_c(option = "plasma") + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggthemes::theme_map() +
+      ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment per time period = ", 1, ")" )) +
+      labs(fill = "Density") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  }
 
   # Figure - ppp
   sf_points <- data.frame(lat = baseline_ppp$y,
