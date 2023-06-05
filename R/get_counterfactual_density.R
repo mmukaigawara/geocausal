@@ -35,9 +35,9 @@ get_counterfactual_density <- function(expected_number,
     counterfactual_dens <- ggplot() +
       ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
       ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0("Counterfactual Density\n(The expected number of treatment per time period = ", expected_number, ")" )) +
+      ggplot2::ggtitle(paste0("Counterfactual Density\n(The expected number of treatment events\nover the entire region per time period = ", expected_number, ")" )) +
       labs(fill = "Density") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
@@ -46,9 +46,9 @@ get_counterfactual_density <- function(expected_number,
     counterfactual_dens <- ggplot() +
       ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
       ggplot2::scale_fill_viridis_c(option = "plasma") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0("Counterfactual Density\n(The expected number of treatment per time period = ", expected_number, ")" )) +
+      ggplot2::ggtitle(paste0("Counterfactual Density\n(The expected number of treatment events\nover the entire region per time period = ", expected_number, ")" )) +
       labs(fill = "Density") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     

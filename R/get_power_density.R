@@ -35,7 +35,7 @@ get_power_density <- function(target_densities,
     power_dens <- ggplot() +
       ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
       ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
       ggplot2::ggtitle(paste0("Power Density")) +
       labs(fill = "Density") +
@@ -46,7 +46,7 @@ get_power_density <- function(target_densities,
     power_dens <- ggplot() +
       ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
       ggplot2::scale_fill_viridis_c(option = "plasma") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
       ggplot2::ggtitle(paste0("Power Density")) +
       labs(fill = "Density") +

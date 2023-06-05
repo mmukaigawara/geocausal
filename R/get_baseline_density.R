@@ -31,18 +31,18 @@ get_baseline_density <- function(data,
     baseline_dens <- ggplot() +
       ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
       ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment per time period = ", 1, ")" )) +
+      ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment events\nover the entire region per time period = ", 1, ")" )) +
       labs(fill = "Density") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   } else {
     baseline_dens <- ggplot() +
       ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
       ggplot2::scale_fill_viridis_c(option = "plasma") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment per time period = ", 1, ")" )) +
+      ggplot2::ggtitle(paste0("Baseline Density\n(The expected number of treatment events\nover the entire region per time period = ", 1, ")" )) +
       labs(fill = "Density") +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   }
@@ -57,7 +57,7 @@ get_baseline_density <- function(data,
     ggplot2::geom_sf(data = sf_points, size = 0.5, col = "black") +
     ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
     ggthemes::theme_map() +
-    ggplot2::ggtitle("Observed treatment locations") +
+    ggplot2::ggtitle("Observed Treatment Events") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   
   return(list(density = baseline_density, density_plot = baseline_dens, point_plot = baseline_ppp))
