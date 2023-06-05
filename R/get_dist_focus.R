@@ -1,12 +1,12 @@
-#' Function: get_focus
+#' Function: get_dist_focus
 #'
 #' A function that generates a distance map from focus locations
 #'
 #' @param focus_locations A dataframe of coordinates of focus locations
 #' @param window An owin object
 
-get_focus <- function(focus_locations,
-                      window) {
+get_dist_focus <- function(focus_locations,
+                           window) {
   
   # Convert to ppp
   focus_locations_ppp <- spatstat.geom::as.ppp(X = focus_locations, W = window)
