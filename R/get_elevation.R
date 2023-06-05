@@ -27,10 +27,10 @@ get_elevation <- function(load_path, ...) {
     labs(title = "Elevation", x = "Longitude", y = "Latitude", fill = "Elevation (meters)") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   
-  # Return a list of RasterLayer, im object, dataframe, and a ggplot object
+  # Return a list of RasterLayer, im object, and a ggplot object
   return(list(rasterlayer = elevation_data,
               im = elevation_im,
-              df = elevation_data_df,
+              #df = elevation_data_df,
               plot = gg))
   
 }
