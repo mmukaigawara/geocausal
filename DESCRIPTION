@@ -24,4 +24,5 @@ Imports:
     stars,
     ggthemes,
     ggpubr,
-    RColorBrewer
+    RColorBrewer,
+    latex2exp
