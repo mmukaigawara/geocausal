@@ -81,6 +81,7 @@ simulate_counterfactual_density <- function(expected_number,
   plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob(titletext, face = "bold"))
   
   return(list(densities = counterfactual_density_list,
-              plot = plot))
+              plot = plot,
+              priorities = power_simulation_results$priorities))
   
 }
