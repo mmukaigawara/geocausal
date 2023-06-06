@@ -23,4 +23,5 @@ Imports:
     lubridate,
     stars,
     ggthemes,
-    ggpubr
+    ggpubr,
+    RColorBrewer
