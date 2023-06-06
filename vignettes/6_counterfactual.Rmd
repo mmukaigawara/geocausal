@@ -57,6 +57,7 @@ load("~/geocausal/Data/windows.RData")
 load("~/geocausal/Data/covariates/sectarian.dat")
 airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")] 
 ##Data used here is not included in the analysis, also it excludes SOF
+obs_density_surge <- readRDS("~/geocausal/Data/obs_density_surge.rds")
 ```
 
 # 1. Obtaining the baseline density
@@ -288,10 +289,16 @@ expectation_road
 Finally, obtain the log density based on one counterfactual scenario.
 
 ```{r}
-counter_dens <- sim_counter$densities[[1]]
+counter_dens <- sim_counter$densities[[6]]
 
 counterfactual_sum_log <- get_counterfactual_sum_log_intensity(counterfactual_density = counter_dens,
                                                                treatment_data = dat_hfr$Airstrike)
+
+# Log density ratio
+log_density_ratio <- counterfactual_sum_log - obs_density$sum_log_intensity
+
+plot(log_density_ratio)
+
 
 ```
 
