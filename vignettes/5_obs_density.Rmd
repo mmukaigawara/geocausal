@@ -324,6 +324,7 @@ rhs_var_surge <-  c(rhs_var, "surge")
 # Get observed density over the entire window, for the entire period
 obs_density_surge <- get_obs_density(dat_hfr, "Airstrike", rhs_var_surge, 
                                      ngrid = 100, window = iraq_window)
+##saveRDS(obs_density_surge, file = "~/geocausal/Data/obs_density_surge.RData")
 
 # Plot
 plot_compare_surge <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
