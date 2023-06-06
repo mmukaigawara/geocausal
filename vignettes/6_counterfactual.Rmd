@@ -52,6 +52,7 @@ dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
 airstr_base <- get(load("~/geocausal/Data/airstr_base.csv"))
 load("~/geocausal/Data/covariates/routes_dist.dat")
 load("~/geocausal/Data/iraq_window.Rda")
+load("~/geocausal/Data/windows.RData")
 # Or, iraq_window <- get_window(load_path = "~/geocausal/Data/iraq_boundary_adm1/.")
 load("~/geocausal/Data/covariates/sectarian.dat")
 airstr_base <- airstr_base[, c("latitude", "longitude", "date", "Type")] 
@@ -72,15 +73,6 @@ baseline <- get_baseline_density(data = airstr_base,
                                  coordinates = c("longitude", "latitude"),
                                  window = iraq_window,
                                  grayscale = FALSE)
-
-plot(baseline$density)
-baseline$density_plot
-baseline$point_plot
-
-baseline <- get_baseline_density(data = airstr_base, 
-                                 coordinates = c("longitude", "latitude"),
-                                 window = iraq_window,
-                                 grayscale = TRUE)
 
 baseline$density_plot
 ```
@@ -110,7 +102,7 @@ counterfactual_multiply <- get_counterfactual_density(baseline_density = baselin
                                                       expected_number = target_number,
                                                       window = iraq_window,
                                                       grayscale = FALSE)
-counterfactual_multiply$density
+
 counterfactual_multiply$plot
 ```
 
@@ -119,7 +111,7 @@ counterfactual_multiply$plot
 ## 3.1. Obtaining the densities to construct a power density
 
 ```{r}
-# Density 1: Distance from focuses (points)
+# Density 1: Distance from focuses (i.e., points)
 
 ## Data on locations
 focus_locations <- cbind(longitude = 43.158, latitude = 36.349) #Mosul only
@@ -127,13 +119,14 @@ focus_locations <- cbind(longitude = 43.158, latitude = 36.349) #Mosul only
 #focus_locations <- cbind(longitude = c(44.025, 43.158), latitude = c(32.614, 36.349)) #Baghdad and Mosul
 
 ## Distance from focuses
-distance_from_focus <- get_focus(focus_locations = focus_locations, 
-                                 window = iraq_window)
+distance_from_focus <- get_dist_focus(focus_locations = focus_locations, 
+                                      window = iraq_window)
+
 plot(distance_from_focus)
 ```
 
 ```{r}
-# Density 2: Distance from routes (lines)
+# Density 2: Distance from routes (i.e., lines)
 
 distance_from_routes <- exp(-routes_dist)/integral(routes_dist)
 plot(distance_from_routes)
@@ -208,22 +201,6 @@ power_elevation_sunni <- get_power_density(target_densities = target_elevation_s
 plot(power_elevation_sunni$density)
 ```
 
-
-Simulation and visualization exercises for power density
-- Suppose that we keep the distance from cities as it is with alpha = 2 and want to see how changing alpha from 1 to 6 for routes affects the power density...
-
-```{r}
-sim_power <- simulate_power_density(target_densities = list(distance_from_focus), #This must be a list element
-                                    density_to_manipulate = distance_from_routes,
-                                    priorities = 2,
-                                    priorities_for_manipulation = c(1, 2, 3, 5, 7, 10),
-                                    window = iraq_window,
-                                    grayscale = FALSE)
-
-sim_power$densities
-sim_power$plot
-```
-
 ## 3.3. Obtaining counterfactual densities
 
 ```{r}
@@ -235,6 +212,23 @@ counterfactual_location <- get_counterfactual_density(baseline_density = baselin
 
 counterfactual_location$density
 counterfactual_location$plot
+```
+
+# 3.4 Simulation
+
+Simulation and visualization exercises for power density
+- Suppose that we keep the distance from cities as it is with alpha = 2 and want to see how changing alpha from 1 to 5 for routes affects the power density...
+
+```{r}
+sim_power <- simulate_power_density(target_densities = list(distance_from_routes), #This must be a list element
+                                    density_to_manipulate = distance_from_focus,
+                                    priorities = 2,
+                                    priorities_for_manipulation = c(1, 2, 3, 4, 5, 6),
+                                    window = iraq_window,
+                                    grayscale = FALSE)
+
+sim_power$densities
+sim_power$plot
 ```
 
 Simulation for counterfactual densities
@@ -250,5 +244,75 @@ sim_counter <- simulate_counterfactual_density(expected_number = target_number,
 sim_counter$densities
 sim_counter$plot
 ```
+
+Then choose which density? Use these as inputs
+
+```{r}
+get_distance_based_expectation <- function(counterfactual_simulation_results = sim_counter,
+                                           entire_window = iraq_window,
+                                           density_of_interest = distance_from_focus,
+                                           grayscale = FALSE) {
+  
+  # Get the range and quantiles of standardized distances 
+  distance_range <- range(`density_of_interest`$v, na.rm = TRUE)
+  distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
+  
+  # Convert the distance map to windows
+  distance_window <- matrix(`distance_map`$v, nrow = nrow(`density_of_interest`$v))
+  distance_windows <- lapply(distance_quantiles, function(x) distance_window > x) # A list of binary matrices based on quantiles
+  distance_owin <- lapply(distance_windows, function(x) {
+    owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
+  }) # Owin objects
+  
+  # Get the expectation
+  partial_expectations <- lapply(distance_owin, function(x) {
+    lapply(`counterfactual_simulation_results`$densities, function(y) {
+          counter <- y
+          spatstat.geom::Window(counter) <- x
+          return(integral(counter))
+    })
+  })
+  
+  # Convert it to a dataframe
+  expectation_results <- data.table::rbindlist(partial_expectations)/
+    integral(`counterfactual_simulation_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
+
+  result_data <- data.frame(expectation = c(unlist(expectation_results)),
+                            alpha = rep(`counterfactual_simulation_results`$priorities, each = 101),
+                            distance = 1 - rep(seq(0, 1, by = 0.01), length(`counterfactual_simulation_results`$priorities)))
+  result_data$alpha <- factor(result_data$alpha)
+  
+  # Plot
+  expectation_plot <- ggplot(result_data) +
+    ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
+    theme_bw() +
+    labs(x = "Quantiles of distances from the focus", 
+         y = "The proportion of expected treatment events\ncovered by the area") +
+    ggplot2::scale_color_brewer(palette = "RdYlBu") +
+    xlim(0, 1) + ylim(0, 1)
+
+  # Plot for windows
+  window_showcase_list <- list(distance_owin$`10%`, distance_owin$`20%`, distance_owin$`30%`,
+                               distance_owin$`40%`, distance_owin$`50%`, distance_owin$`60%`,
+                               distance_owin$`70%`, distance_owin$`80%`, distance_owin$`90%`)
+  window_showcase <- lapply(window_showcase_list, spatstat.geom::as.polygonal)
+
+  window_plot_list <- lapply(window_showcase, function(x) {
+    gg <- ggplot() + 
+      ggplot2::geom_polygon(data = fortify(as.data.frame(x)), aes(x = x, y = y), fill = "blue") +
+      ggplot2::geom_path(data = fortify(as.data.frame(x)), aes(x = x, y = y), color = "blue") +
+      ggplot2::geom_path(data = fortify(as.data.frame(entire_window)), aes(x = x, y = y)) +
+      ggthemes::theme_map()
+    return(gg)
+  })
+
+  # Color and plot
+  
+}
+
+
+```
+
+
 
 
