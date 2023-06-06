@@ -283,6 +283,16 @@ expectation_road <- get_distance_based_expectation(counterfactual_simulation_res
 expectation_road
 ```
 
+# 4. Get the log density
 
+Finally, obtain the log density based on one counterfactual scenario.
+
+```{r}
+counter_dens <- sim_counter$densities[[1]]
+
+counterfactual_sum_log <- get_counterfactual_sum_log_intensity(counterfactual_density = counter_dens,
+                                                               treatment_data = dat_hfr$Airstrike)
+
+```
 
 
