@@ -220,10 +220,13 @@ Simulation and visualization exercises for power density
 - Suppose that we keep the distance from cities as it is with alpha = 2 and want to see how changing alpha from 1 to 5 for routes affects the power density...
 
 ```{r}
-sim_power <- simulate_power_density(target_densities = list(distance_from_routes), #This must be a list element
+dist_routes <- distance_from_routes/integral(distance_from_routes)
+plot(dist_routes)
+
+sim_power <- simulate_power_density(target_densities = list(dist_routes), #This must be a list element
                                     density_to_manipulate = distance_from_focus,
                                     priorities = 2,
-                                    priorities_for_manipulation = c(1, 2, 3, 4, 5, 6),
+                                    priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
                                     window = iraq_window,
                                     grayscale = FALSE)
 
@@ -248,69 +251,36 @@ sim_counter$plot
 Then choose which density? Use these as inputs
 
 ```{r}
-get_distance_based_expectation <- function(counterfactual_simulation_results = sim_counter,
-                                           entire_window = iraq_window,
-                                           density_of_interest = distance_from_focus,
-                                           grayscale = FALSE) {
-  
-  # Get the range and quantiles of standardized distances 
-  distance_range <- range(`density_of_interest`$v, na.rm = TRUE)
-  distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
-  
-  # Convert the distance map to windows
-  distance_window <- matrix(`distance_map`$v, nrow = nrow(`density_of_interest`$v))
-  distance_windows <- lapply(distance_quantiles, function(x) distance_window > x) # A list of binary matrices based on quantiles
-  distance_owin <- lapply(distance_windows, function(x) {
-    owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
-  }) # Owin objects
-  
-  # Get the expectation
-  partial_expectations <- lapply(distance_owin, function(x) {
-    lapply(`counterfactual_simulation_results`$densities, function(y) {
-          counter <- y
-          spatstat.geom::Window(counter) <- x
-          return(integral(counter))
-    })
-  })
-  
-  # Convert it to a dataframe
-  expectation_results <- data.table::rbindlist(partial_expectations)/
-    integral(`counterfactual_simulation_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
+expectation_mosul <- get_distance_based_expectation(counterfactual_simulation_results = sim_counter, 
+                                                    entire_window = iraq_window, 
+                                                    density_of_interest = distance_from_focus,
+                                                    grayscale = FALSE)
 
-  result_data <- data.frame(expectation = c(unlist(expectation_results)),
-                            alpha = rep(`counterfactual_simulation_results`$priorities, each = 101),
-                            distance = 1 - rep(seq(0, 1, by = 0.01), length(`counterfactual_simulation_results`$priorities)))
-  result_data$alpha <- factor(result_data$alpha)
-  
-  # Plot
-  expectation_plot <- ggplot(result_data) +
-    ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
-    theme_bw() +
-    labs(x = "Quantiles of distances from the focus", 
-         y = "The proportion of expected treatment events\ncovered by the area") +
-    ggplot2::scale_color_brewer(palette = "RdYlBu") +
-    xlim(0, 1) + ylim(0, 1)
+expectation_mosul
+```
 
-  # Plot for windows
-  window_showcase_list <- list(distance_owin$`10%`, distance_owin$`20%`, distance_owin$`30%`,
-                               distance_owin$`40%`, distance_owin$`50%`, distance_owin$`60%`,
-                               distance_owin$`70%`, distance_owin$`80%`, distance_owin$`90%`)
-  window_showcase <- lapply(window_showcase_list, spatstat.geom::as.polygonal)
+Simulate with the opposite
 
-  window_plot_list <- lapply(window_showcase, function(x) {
-    gg <- ggplot() + 
-      ggplot2::geom_polygon(data = fortify(as.data.frame(x)), aes(x = x, y = y), fill = "blue") +
-      ggplot2::geom_path(data = fortify(as.data.frame(x)), aes(x = x, y = y), color = "blue") +
-      ggplot2::geom_path(data = fortify(as.data.frame(entire_window)), aes(x = x, y = y)) +
-      ggthemes::theme_map()
-    return(gg)
-  })
+```{r}
+sim_power2 <- simulate_power_density(target_densities = list(distance_from_focus), #This must be a list element
+                                     density_to_manipulate = dist_routes,
+                                     priorities = 2,
+                                     priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
+                                     window = iraq_window,
+                                     grayscale = FALSE)
 
-  # Color and plot
-  
-}
+sim_counter2 <- simulate_counterfactual_density(expected_number = target_number,
+                                                baseline_density = baseline_density,
+                                                power_simulation_results = sim_power2,
+                                                window = iraq_window,
+                                                grayscale = FALSE)
 
+expectation_road <- get_distance_based_expectation(counterfactual_simulation_results = sim_counter2, 
+                                                   entire_window = iraq_window, 
+                                                   density_of_interest = dist_routes,
+                                                   grayscale = FALSE)
 
+expectation_road
 ```
 
 
