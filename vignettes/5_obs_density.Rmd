@@ -41,7 +41,6 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 library(readr)
 library(ggplot2)
 library(furrr)
-library(spatstat)
 library(lubridate)
 ```
 
