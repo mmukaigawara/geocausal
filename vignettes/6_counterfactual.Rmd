@@ -294,12 +294,12 @@ counter_dens <- sim_counter$densities[[6]]
 counterfactual_sum_log <- get_counterfactual_sum_log_intensity(counterfactual_density = counter_dens,
                                                                treatment_data = dat_hfr$Airstrike)
 
+counterfactual_sum_log
+
 # Log density ratio
 log_density_ratio <- counterfactual_sum_log - obs_density$sum_log_intensity
 
-plot(log_density_ratio)
-
-
+plot(log_density_ratio, xlab = "Date")
 ```
 
 
