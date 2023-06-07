@@ -105,7 +105,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
   window_plot <- ggpubr::ggarrange(plotlist = window_plot_list, nrow = 1)
   window_plot <- ggpubr::annotate_figure(window_plot, bottom = ggpubr::text_grob("Areas covered by quantiles"))
   
-  entire_plot <- ggpubr::ggarrange(expectation_plot, window_plot, nrow = 2)
+  entire_plot <- ggpubr::ggarrange(expectation_plot, window_plot, nrow = 2, heights = c(0.7, 0.3))
   titletext <- "The Expected Number of Treatment Events and\nDistances from the Focus"
   entire_plot <- ggpubr::annotate_figure(entire_plot, top = ggpubr::text_grob(titletext, face = "bold"))
   
