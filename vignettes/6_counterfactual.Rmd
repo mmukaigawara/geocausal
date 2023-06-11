@@ -146,7 +146,6 @@ elevation_data <- get_elevation(load_path = "~/geocausal/Data/iraq_boundary_adm1
                                 z = 5)
 
 elevation <- elevation_data$im
-plot(elevation)
 elevation_data$plot
 
 ## Convert it to terrain (slope)
@@ -231,7 +230,6 @@ sim_power <- simulate_power_density(target_densities = list(dist_routes), #This 
                                     window = iraq_window,
                                     grayscale = FALSE)
 
-sim_power$densities
 sim_power$plot
 ```
 
@@ -245,7 +243,6 @@ sim_counter <- simulate_counterfactual_density(expected_number = target_number,
                                                window = iraq_window,
                                                grayscale = FALSE)
 
-sim_counter$densities
 sim_counter$plot
 ```
 
@@ -255,7 +252,8 @@ Then choose which density? Use these as inputs
 expectation_mosul <- get_distance_based_expectation(counterfactual_simulation_results = sim_counter, 
                                                     entire_window = iraq_window, 
                                                     density_of_interest = distance_from_focus,
-                                                    grayscale = FALSE)
+                                                    grayscale = FALSE,
+                                                    expectation_use_raw = FALSE)
 
 expectation_mosul
 ```
