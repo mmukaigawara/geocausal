@@ -50,7 +50,7 @@ simulate_counterfactual_density <- function(expected_number,
                             ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
                             ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
                             ggthemes::theme_map() +
-                            ggplot2::ggtitle(paste0("alpha = ", powers[a])) +
+                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", powers[a], "$"))) +
                             labs(fill = "Density") +
                             theme(plot.title = element_text(hjust = 0.5))
                           
@@ -66,7 +66,7 @@ simulate_counterfactual_density <- function(expected_number,
                             ggplot2::scale_fill_viridis_c(option = "plasma", limits = c(NA, max_val)) + 
                             ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
                             ggthemes::theme_map() +
-                            ggplot2::ggtitle(paste0("alpha = ", powers[a])) +
+                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", powers[a], "$"))) +
                             labs(fill = "Density") +
                             theme(plot.title = element_text(hjust = 0.5))
                           
@@ -76,8 +76,9 @@ simulate_counterfactual_density <- function(expected_number,
   }
   
   plot <- ggpubr::ggarrange(plotlist = plot_list, common.legend = TRUE, legend = "bottom")
-  titletext <- paste0("Simulated Counterfactual Densities\n(Expectation = ", 
-                      expected_number, " per time period)")
+  titletext <- paste0("Simulated Counterfactual Densities")
+  labtext <- paste0("Note: The expected number of treatment events\nover the entire region per time period = ", expected_number)
+  plot <- ggpubr::annotate_figure(plot, fig.lab = labtext, fig.lab.pos = "bottom.right", fig.lab.size = 7)
   plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob(titletext, face = "bold"))
   
   return(list(densities = counterfactual_density_list,

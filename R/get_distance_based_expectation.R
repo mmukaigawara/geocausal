@@ -7,11 +7,13 @@
 #' @param density_of_interest A density that is being manipulated
 #' @param entire_window An owin object (the entire region)
 #' @param gray_scale By default, FALSE
+#' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
 
 get_distance_based_expectation <- function(counterfactual_simulation_results,
                                            entire_window,
                                            density_of_interest,
-                                           grayscale = FALSE) {
+                                           grayscale = FALSE,
+                                           expectation_use_raw = FALSE) {
   
   # Get the range and quantiles of standardized distances 
   distance_range <- range(`density_of_interest`$v, na.rm = TRUE)
@@ -34,8 +36,13 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
   })
   
   # Convert it to a dataframe
-  expectation_results <- data.table::rbindlist(partial_expectations)/
-    integral(`counterfactual_simulation_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
+  
+  if (expectation_use_raw) {
+    expectation_results <- data.table::rbindlist(partial_expectations)
+  } else {
+    expectation_results <- data.table::rbindlist(partial_expectations)/
+      integral(`counterfactual_simulation_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
+  }
   
   result_data <- data.frame(expectation = c(unlist(expectation_results)),
                             alpha = rep(`counterfactual_simulation_results`$priorities, each = 101),
@@ -45,25 +52,55 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
   # Plot
   if(grayscale) {
     
-    expectation_plot <- ggplot(result_data) +
-      ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
-      theme_bw() +
-      labs(x = "Quantiles of Gaussian distances from the focus", 
-           y = "The proportion of\nexpected treatment events\ncovered by the area",
-           color = latex2exp::TeX("$\\alpha_{focus}$")) +
-      ggplot2::scale_color_brewer(palette = "Greys") +
-      xlim(0, 1) + ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+    if (expectation_use_raw) {
+      
+      expectation_plot <- ggplot(result_data) +
+        ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
+        theme_bw() +
+        labs(x = "Quantiles of Gaussian distances from the focus", 
+             y = "The expected treatment events\ncovered by the area",
+             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+        ggplot2::scale_color_brewer(palette = "Greys") +
+        xlim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+      
+    } else {
+      
+      expectation_plot <- ggplot(result_data) +
+        ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
+        theme_bw() +
+        labs(x = "Quantiles of Gaussian distances from the focus", 
+             y = "The proportion of\nexpected treatment events\ncovered by the area",
+             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+        ggplot2::scale_color_brewer(palette = "Greys") +
+        xlim(0, 1) + ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+      
+    }
     
   } else {
     
-    expectation_plot <- ggplot(result_data) +
-      ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
-      theme_bw() +
-      labs(x = "Quantiles of Gaussian distances from the focus", 
-           y = "The proportion of\nexpected treatment events\ncovered by the area",
-           color = latex2exp::TeX("$\\alpha_{focus}$")) +
-      ggplot2::scale_color_brewer(palette = "PiYG") +
-      xlim(0, 1) + ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+    if (expectation_use_raw) {
+      
+      expectation_plot <- ggplot(result_data) +
+        ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
+        theme_bw() +
+        labs(x = "Quantiles of Gaussian distances from the focus", 
+             y = "The expected treatment events\ncovered by the area",
+             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+        ggplot2::scale_color_brewer(palette = "PiYG") +
+        xlim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+      
+    } else {
+    
+      expectation_plot <- ggplot(result_data) +
+        ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
+        theme_bw() +
+        labs(x = "Quantiles of Gaussian distances from the focus", 
+             y = "The proportion of\nexpected treatment events\ncovered by the area",
+             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+        ggplot2::scale_color_brewer(palette = "PiYG") +
+        xlim(0, 1) + ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+        
+    }
     
   }
   

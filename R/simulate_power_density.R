@@ -66,7 +66,7 @@ simulate_power_density <- function(target_densities, #This must be a list elemen
                             ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
                             ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
                             ggthemes::theme_map() +
-                            ggplot2::ggtitle(paste0("alpha = ", priorities_for_manipulation[a])) +
+                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_for_manipulation[a], "$"))) +
                             labs(fill = "Density") +
                             theme(plot.title = element_text(hjust = 0.5))
                           
@@ -82,7 +82,7 @@ simulate_power_density <- function(target_densities, #This must be a list elemen
                             ggplot2::scale_fill_viridis_c(option = "plasma", limits = c(NA, max_val)) + 
                             ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
                             ggthemes::theme_map() +
-                            ggplot2::ggtitle(paste0("alpha = ", priorities_for_manipulation[a])) +
+                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_for_manipulation[a], "$"))) +
                             labs(fill = "Density") +
                             theme(plot.title = element_text(hjust = 0.5))
                           
