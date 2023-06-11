@@ -21,7 +21,7 @@ get_baseline_density <- function(data,
   scott_bandwidth <- spatstat.explore::bw.scott(baseline_ppp)
   
   baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = 256) #Kernel density estimation
-  baseline_density <- baseline_density / integral(baseline_density) #Divide by integral of the density
+  baseline_density <- baseline_density / spatstat.geom::integral(baseline_density) #Divide by integral of the density
 
   # Figure - density
   sf_density <- stars::st_as_stars(baseline_density)
