@@ -41,7 +41,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
     expectation_results <- data.table::rbindlist(partial_expectations)
   } else {
     expectation_results <- data.table::rbindlist(partial_expectations)/
-      integral(`counterfactual_simulation_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
+      spatstat.geom::integral(`counterfactual_simulation_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
   }
   
   result_data <- data.frame(expectation = c(unlist(expectation_results)),

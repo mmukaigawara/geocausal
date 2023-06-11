@@ -32,7 +32,7 @@ simulate_power_density <- function(target_densities, #This must be a list elemen
   
   for (jj in 1:length(priorities_for_manipulation)){
     temp <- power_density * density_to_manipulate ^ priorities_for_manipulation[jj]
-    temp <- temp/integral(temp, domain = window)
+    temp <- temp/spatstat.geom::integral(temp, domain = window)
     power_density_list[[jj]] <- temp
   }
   

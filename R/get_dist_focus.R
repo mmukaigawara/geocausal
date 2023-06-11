@@ -17,7 +17,7 @@ get_dist_focus <- function(focus_locations,
   
   # Take the exponential of -distance and divide it by the integral
   neg_exp_distance <- exp(-focus_locations_distance)
-  distance_from_focus <- neg_exp_distance/integral(neg_exp_distance)
+  distance_from_focus <- neg_exp_distance/spatstat.geom::integral(neg_exp_distance)
 
   return(distance_from_focus)
   

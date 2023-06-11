@@ -23,7 +23,7 @@ simulate_counterfactual_density <- function(expected_number,
                                         function(x) {
                                           product_power_baseline <- baseline_density * power_densities[[x]]
                                           counterfactual_density <- product_power_baseline/
-                                            integral(product_power_baseline, W = window) * expected_number
+                                            spatstat.geom::integral(product_power_baseline, W = window) * expected_number
                                           return(counterfactual_density)
                                           }
                                         )
