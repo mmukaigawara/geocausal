@@ -24,7 +24,7 @@ get_power_density <- function(target_densities,
     
   } 
 
-  power_density <- power_density/integral(power_density, domain = window)
+  power_density <- power_density/spatstat.geom::integral(power_density, domain = window)
 
   # Figure - density
   sf_density <- stars::st_as_stars(power_density)
