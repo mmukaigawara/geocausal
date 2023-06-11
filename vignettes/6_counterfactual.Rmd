@@ -129,7 +129,7 @@ plot(distance_from_focus)
 ```{r}
 # Density 2: Distance from routes (i.e., lines)
 
-distance_from_routes <- exp(-routes_dist)/integral(routes_dist)
+distance_from_routes <- exp(-routes_dist)/spatstat.geom::integral(routes_dist)
 plot(distance_from_routes)
 ```
 
@@ -220,7 +220,7 @@ Simulation and visualization exercises for power density
 - Suppose that we keep the distance from cities as it is with alpha = 2 and want to see how changing alpha from 1 to 5 for routes affects the power density...
 
 ```{r}
-dist_routes <- distance_from_routes/integral(distance_from_routes)
+dist_routes <- distance_from_routes/spatstat.geom::integral(distance_from_routes)
 plot(dist_routes)
 
 sim_power <- simulate_power_density(target_densities = list(dist_routes), #This must be a list element
