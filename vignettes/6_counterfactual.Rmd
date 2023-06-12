@@ -113,22 +113,23 @@ counterfactual_multiply$plot
 
 ```{r}
 # Density 1: Distance from focuses (i.e., points)
+dist_from_focus <- get_dist_focus(window = iraq_window,
+                                  point = c(43.158, 36.349), #Coodinates (lon and lat) of Mosul
+                                  grayscale = FALSE,
+                                  mile = FALSE)
 
-## Data on locations
-focus_locations <- cbind(longitude = 43.158, latitude = 36.349) #Mosul only
-#focus_locations <- cbind(longitude = 44.025, latitude = 32.614) #Baghdad only
-#focus_locations <- cbind(longitude = c(44.025, 43.158), latitude = c(32.614, 36.349)) #Baghdad and Mosul
+dist_from_focus[[2]] #ggplot
+```
 
-## Distance from focuses
-distance_from_focus <- get_dist_focus(focus_locations = focus_locations, 
-                                      window = iraq_window)
+```{r}
+distance_from_focus <- exp(-dist_from_focus[[1]])/spatstat.geom::integral(dist_from_focus[[1]])
 
-plot(distance_from_focus)
+# Example of conversion
+plot(exp(-dist_from_focus[[1]]/1000)/integral(dist_from_focus[[1]]))
 ```
 
 ```{r}
 # Density 2: Distance from routes (i.e., lines)
-
 distance_from_routes <- exp(-routes_dist)/spatstat.geom::integral(routes_dist)
 plot(distance_from_routes)
 ```
