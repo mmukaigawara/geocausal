@@ -18,14 +18,9 @@ get_dist_focus <- function(window, point, grayscale, mile){
   polygon_spdf <- window_sp[[5]]
   
   # Create sf objects
-  #sf_poly <- sf::st_as_sf(polygon_df,
-  #                        coords = c("longitude", "latitude"))
   point_df <- data.frame(longitude = point[1], latitude = point[2])
-  #sf_point <- sf::st_as_sf(point_df,
-  #                         coords = c("longitude", "latitude"))
-  
+
   # Create a raster based on the polygon's extent
-  boundary <- sf::st_bbox(polygon)
   r <- raster::raster(res = 0.1)
   raster::extent(r) <- raster::extent(polygon_sf)
   
