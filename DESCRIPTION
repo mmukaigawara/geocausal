@@ -25,4 +25,6 @@ Imports:
     ggthemes,
     ggpubr,
     RColorBrewer,
-    latex2exp
+    latex2exp,
+    geosphere,
+    raster
