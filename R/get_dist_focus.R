@@ -25,7 +25,7 @@ get_dist_focus <- function(window, point, grayscale, mile){
   raster::extent(r) <- raster::extent(polygon_sf)
   
   # Define the extent of the raster
-  r <- raster::raster(extent(polygon_spdf), resolution = 0.02)
+  r <- raster::raster(raster::extent(polygon_spdf), resolution = 0.02)
   
   # Rasterize the polygon
   r <- raster::rasterize(polygon_spdf, r, field = 1)
@@ -48,13 +48,13 @@ get_dist_focus <- function(window, point, grayscale, mile){
   
   if (mile) {
     
-    dist_df <- data.frame(longitude = coordinates(rast_points)[, 1],
-                          latitude = coordinates(rast_points)[, 2],
+    dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
+                          latitude = sp::coordinates(rast_points)[, 2],
                           distance = point_dists * 0.621371/1000) #miles
   } else {
     
-    dist_df <- data.frame(longitude = coordinates(rast_points)[, 1],
-                          latitude = coordinates(rast_points)[, 2],
+    dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
+                          latitude = sp::coordinates(rast_points)[, 2],
                           distance = point_dists/1000) #km
     
   }
