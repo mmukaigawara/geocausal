@@ -2,12 +2,14 @@
 #'
 #' A function that generates a distance map from focus locations
 #'
-#' @param point A vector of longitude and latitude of a point
+#' @param longitude A vector of longitude and latitude of a point
+#' @param latitude A vector of longitude and latitude of a point
 #' @param window An owin object
 #' @param grayscale
 #' @param mile Whether to return the output in miles instead of kilometers
 
-get_dist_focus <- function(window, point, grayscale, mile){
+get_dist_focus <- function(window, longitude, latitude, 
+                           grayscale, mile){
   
   # Convert owin into sp objects  
   window_sp <- convert_owin_into_sf(window)
@@ -18,7 +20,8 @@ get_dist_focus <- function(window, point, grayscale, mile){
   polygon_spdf <- window_sp[[5]]
   
   # Create sf objects
-  point_df <- data.frame(longitude = point[1], latitude = point[2])
+  point_df <- data.frame(longitude = longitude, latitude = latitude)
+  num_points <- nrow(point_df)
 
   # Create a raster based on the polygon's extent
   r <- raster::raster(res = 0.1)
@@ -37,12 +40,23 @@ get_dist_focus <- function(window, point, grayscale, mile){
   rast_points <- raster::rasterToPoints(r)
   rast_points <- rast_points[, c(1:2)]
   
-  # Calculate distance for each pixel
-  point_dists <- purrr::map_dbl(1:nrow(rast_points), function(i) {
-    geosphere::distVincentyEllipsoid(rast_points[i, ], point_df)
+  # Calculate distance for each pixel and take the minimum
+  # Do the same for all the points of interest
+  
+  point_dists_list <- purrr::map(1:num_points, function(j) {
+    
+    # Distance from a point
+    point_dists <- purrr::map_dbl(1:nrow(rast_points), function(i) {
+      geosphere::distVincentyEllipsoid(rast_points[i, ], point_df[j, ])
+    })
+    
+    point_dists <- unlist(point_dists) #Vector
+    return(point_dists)
+    
   })
   
-  point_dists <- unlist(point_dists)
+  # Take the minimum
+  point_dists <- do.call(pmin, point_dists_list)
   
   # Create a df to store the results
   
