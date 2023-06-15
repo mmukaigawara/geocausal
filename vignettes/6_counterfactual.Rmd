@@ -114,25 +114,86 @@ counterfactual_multiply$plot
 ```{r}
 # Density 1: Distance from focuses (i.e., points)
 dist_from_focus <- get_dist_focus(window = iraq_window,
-                                  point = c(43.158, 36.349), #Coodinates (lon and lat) of Mosul
+                                  longitude = c(43.158),
+                                  latitude = c(36.349), #Coodinates (lon and lat) of Mosul
                                   grayscale = FALSE,
                                   mile = FALSE)
 
-dist_from_focus[[2]] #ggplot
+dist_from_focus$plot #ggplot
 ```
 
 ```{r}
-distance_from_focus <- exp(-dist_from_focus[[1]])/spatstat.geom::integral(dist_from_focus[[1]])
+# Another example (two points)
+dist_from_focus2 <- get_dist_focus(window = iraq_window,
+                                   longitude = c(43.158, 44.366), #Mosul and Baghdad
+                                   latitude = c(36.349, 33.315),
+                                   grayscale = FALSE,
+                                   mile = FALSE)
 
-# Example of conversion
-plot(exp(-dist_from_focus[[1]]/1000)/integral(dist_from_focus[[1]]))
+dist_from_focus2$plot
+```
+
+```{r}
+distance_from_focus <- exp(-dist_from_focus[[1]]/1000)/spatstat.geom::integral(dist_from_focus[[1]])
+plot(distance_from_focus)
 ```
 
 ```{r}
 # Density 2: Distance from routes (i.e., lines)
-distance_from_routes <- exp(-routes_dist)/spatstat.geom::integral(routes_dist)
-plot(distance_from_routes)
+shapefile_path = "~/geocausal/Data/covariates/primary_routes/primary_routes.shp"
+window = iraq_window
+
+# The process above takes so much time. Perhaps distmap -> convert coordinate system
+# Or, convert coordinates of shapefile -> then distmap?
+
+crs_id <- 3200
+window <- iraq_window
+
+# Re-coordinate the shapefile
+shp <- sf::st_read("~/geocausal/Data/covariates/primary_routes/.")
+roads <- sf::st_geometry(shp)
+roads <- roads %>% sf::st_transform(roads, crs = crs_id) # Convert to meters
+roads_psp <- spatstat.geom::as.psp(roads)
+roads_psp
+plot(roads_psp)
+
+roads_psp$window$xrange[1] = roads_psp$window$xrange[1] - 0.05*roads_psp$window$xrange[1]
+roads_psp$window$xrange[2] = roads_psp$window$xrange[2] + 0.05*roads_psp$window$xrange[1]
+roads_psp$window$yrange[1] = roads_psp$window$yrange[1] - 0.05*roads_psp$window$xrange[1]
+roads_psp$window$yrange[2] = roads_psp$window$yrange[2] + 0.05*roads_psp$window$xrange[1]
+
+plot(roads_psp)
+
+# Convert owin into sp objects  
+window_sp <- convert_owin_into_sf(window)
+polygon_sf <- window_sp[[4]]
+
+# Re-coordinate the window
+polygon_sf <- polygon_sf %>% sf::st_set_crs(4326) #4326 = decimal long/lat
+poly <- sf::st_transform(polygon_sf, crs = crs_id) #eg, 3200 = meters, specific to iraq
+
+window_recoord <- spatstat.geom::as.owin(poly)
+window_recoord
+
+t <- spatstat.geom::distmap(roads_psp, dimyx = 1024)
+t_km <- t/1000
+plot(t_km)
+
+spatstat.geom::Window(t_km) <- window_recoord
+
+plot(t_km) #The coordinates are still km
+
 ```
+
+```{r}
+# Alternatively...slow but we can do this with geosphere
+shapefile_path = "~/geocausal/Data/covariates/primary_routes/primary_routes.shp"
+distance_from_line <- get_dist_line(window = iraq_window, path_to_shapefile = shapefile_path)
+
+
+```
+
+
 
 ```{r}
 # Density 3: Sectarian (polygon)
