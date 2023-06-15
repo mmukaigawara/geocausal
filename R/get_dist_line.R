@@ -3,11 +3,12 @@
 #' A function that generates a distance map from lines (e.g., roads and rivers)
 #'
 #' @param path_to_shapefile Path to shapefile
+#' @param line_data A sfc_MULTILINESTRING file (if available; if not the function creates it from a shapefile)
 #' @param window An owin object
 #' @param grayscale
 #' @param mile Whether to return the output in miles instead of kilometers
 
-get_dist_line <- function(window, path_to_shapefile, 
+get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
                           grayscale, mile, resolution, ...){
   
   # Convert owin into sp objects  
@@ -18,9 +19,17 @@ get_dist_line <- function(window, path_to_shapefile,
   polygon_sf <- window_sp[[4]]
   polygon_spdf <- window_sp[[5]]
   
-  # Read and re-coordinate the shapefile for lines
-  shp <- sf::st_read(path_to_shapefile)
-  roads <- sf::st_geometry(shp) #Geometries of lines (e.g., roads)
+  # Create "sfc_MULTILINESTRING" if not available
+  if(is.null(line_data)) {
+    # Read and re-coordinate the shapefile for lines
+    shp <- sf::st_read(path_to_shapefile)
+    roads <- sf::st_geometry(shp) #Geometries of lines (e.g., roads)
+    
+  } else {
+    # If it is available, then load it
+    roads <- line_data
+
+  }
   
   # Create a raster based on the polygon's extent
   r <- raster::raster(res = 0.5)
