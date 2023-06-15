@@ -8,7 +8,7 @@
 #' @param mile Whether to return the output in miles instead of kilometers
 
 get_dist_line <- function(window, path_to_shapefile, 
-                          grayscale, mile, ...){
+                          grayscale, mile, resolution, ...){
   
   # Convert owin into sp objects  
   window_sp <- convert_owin_into_sf(window)
@@ -27,7 +27,7 @@ get_dist_line <- function(window, path_to_shapefile,
   raster::extent(r) <- raster::extent(polygon_sf)
   
   # Define the extent of the raster
-  r <- raster::raster(raster::extent(polygon_spdf), resolution = 0.02) #Modify resolution as needed
+  r <- raster::raster(raster::extent(polygon_spdf), resolution = resolution) #Modify resolution as needed
   
   # Rasterize the polygon
   r <- raster::rasterize(polygon_spdf, r, field = 1)
@@ -38,21 +38,21 @@ get_dist_line <- function(window, path_to_shapefile,
   # Convert raster to SpatialPixels
   rast_points <- raster::rasterToPoints(r)
   rast_points <- rast_points[, c(1:2)]
-  
+
   # Calculate distance for each pixel and take the minimum
   # Do the same for all the points of interest
-  
-  lines_dists_list <- purrr::map(1:length(roads), function(j) {
+
+  lines_dists_list <- furrr::future_map(1:length(roads), function(j) {
     
     # Distance from a point
-    line_dists <- purrr::map_dbl(1:nrow(rast_points), function(i) {
+    line_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
       suppressWarnings(as.numeric(geosphere::dist2Line(rast_points[i, ], roads[[j]][[1]])[, 1]))
     })
     
     line_dists <- unlist(line_dists) #Vector
     return(line_dists)
     
-  })
+  }, .progress = TRUE)
   
   # Take the minimum
   line_dists <- do.call(pmin, lines_dists_list)
