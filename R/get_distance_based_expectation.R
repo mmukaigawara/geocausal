@@ -4,8 +4,10 @@
 #' and returns simulated counterfactual densities
 #'
 #' @param counterfactual_simulation_results An output of the simulate_counterfactual_density function
-#' @param density_of_interest A density that is being manipulated
 #' @param entire_window An owin object (the entire region)
+#' @param density_of_interest A density that is being manipulated
+#' @param distance_map An im object (map) whose cell values are the distance from the focus (e.g., city)
+#' @param distance_map_unit e.g., km, mile
 #' @param gray_scale By default, FALSE
 #' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
 
@@ -13,6 +15,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
                                            entire_window,
                                            density_of_interest,
                                            distance_map,
+                                           distance_map_unit = "km",
                                            grayscale = FALSE,
                                            expectation_use_raw = FALSE) {
 
@@ -50,6 +53,9 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
   result_data$alpha <- factor(result_data$alpha)
 
   # Plot
+  
+  x_label_text <- paste0("Distance from the focus (", distance_map_unit, ")")
+  
   if(grayscale) {
     
     if (expectation_use_raw) {
@@ -57,7 +63,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Distances from the focus (km)", 
+        labs(x = x_label_text, 
              y = "The expected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
@@ -68,7 +74,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Distance from the focus (km)", 
+        labs(x = x_label_text, 
              y = "The proportion of\nexpected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
@@ -83,7 +89,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Distance from the focus (km)", 
+        labs(x = x_label_text, 
              y = "The expected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
@@ -94,7 +100,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Distance from the focus (km)", 
+        labs(x = x_label_text, 
              y = "The proportion of\nexpected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
