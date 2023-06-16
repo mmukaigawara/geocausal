@@ -1,0 +1,92 @@
+---
+title: "Step 7. Calculating estimates"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{7_estimate}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type = "text/css">
+h1.title {
+  font-size: 30px;
+}
+h1 { /* Header 1 */
+  font-size: 26px;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 16px;
+}
+div#TOC li {
+    list-style:none;
+    background-image:none;
+    background-repeat:none;
+    background-position:0; 
+}
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+
+library(readr)
+library(ggplot2)
+```
+
+```{r setup, include = FALSE}
+devtools::load_all()
+#library(geocausal)
+```
+
+```{r load data, include = FALSE}
+dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
+load("~/geocausal/Data/iraq_window.Rda")
+load("~/geocausal/Data/windows.RData")
+load("~/geocausal/Data/counter_d.Rda")
+obs_density_surge <- readRDS("~/geocausal/Data/obs_density_surge.rds")
+```
+
+
+# 1. Get the log density
+
+```{r}
+# Sum of counterfactual log densities
+counter_d1 <- counter_d[[1]] #Mosul x roads
+counter_d2 <- counter_d[[2]] #Mosul x Bagh
+
+# Run fx for counter_d1
+estimates_counter_mosul <- get_estimates(observed_density = obs_density_surge,
+                                         counterfactual_density = counter_d1,
+                                         treatment_data = dat_hfr$Airstrike,
+                                         smoothed_outcome = dat_hfr$smooth_allout,
+                                         lag = 3,
+                                         entire_window = iraq_window,
+                                         window_of_interest = iraq_window)
+
+estimates_counter_bagh <- get_estimates(observed_density = obs_density_surge,
+                                         counterfactual_density = counter_d2,
+                                         treatment_data = dat_hfr$Airstrike,
+                                         smoothed_outcome = dat_hfr$smooth_allout,
+                                         lag = 3,
+                                         entire_window = iraq_window,
+                                         window_of_interest = iraq_window)
+
+estimates_counter_bagh$average_expected_events_hajek - estimates_counter_mosul$average_expected_events_hajek
+estimates_counter_bagh$average_expected_events - estimates_counter_mosul$average_expected_events
+
+```
+
+```{r}
+# Multiply the smoothed outcome surface 
+```
+
+
