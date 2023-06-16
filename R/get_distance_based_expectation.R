@@ -12,31 +12,31 @@
 get_distance_based_expectation <- function(counterfactual_simulation_results,
                                            entire_window,
                                            density_of_interest,
+                                           distance_map,
                                            grayscale = FALSE,
                                            expectation_use_raw = FALSE) {
-  
+
   # Get the range and quantiles of standardized distances 
-  distance_range <- range(`density_of_interest`$v, na.rm = TRUE)
+  distance_range <- range(`distance_map`$distance_im$v, na.rm = TRUE)
   distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
   
   # Convert the distance map to windows
-  distance_window <- matrix(`density_of_interest`$v, nrow = nrow(`density_of_interest`$v))
-  distance_windows <- lapply(distance_quantiles, function(x) distance_window > x) # A list of binary matrices based on quantiles
+  distance_window <- matrix(`distance_map`$distance_im$v, nrow = nrow(`distance_map`$distance_im$v))
+  distance_windows <- lapply(distance_quantiles, function(x) distance_window < x) # A list of binary matrices based on quantiles
   distance_owin <- lapply(distance_windows, function(x) {
-    owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
+    spatstat.geom::owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
   }) # Owin objects
-  
+
   # Get the expectation
   partial_expectations <- lapply(distance_owin, function(x) {
     lapply(`counterfactual_simulation_results`$densities, function(y) {
       counter <- y
       spatstat.geom::Window(counter) <- x
-      return(integral(counter))
+      return(spatstat.geom::integral(counter))
     })
   })
-  
+
   # Convert it to a dataframe
-  
   if (expectation_use_raw) {
     expectation_results <- data.table::rbindlist(partial_expectations)
   } else {
@@ -46,9 +46,9 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
   
   result_data <- data.frame(expectation = c(unlist(expectation_results)),
                             alpha = rep(`counterfactual_simulation_results`$priorities, each = 101),
-                            distance = 1 - rep(seq(0, 1, by = 0.01), length(`counterfactual_simulation_results`$priorities)))
+                            distance = distance_quantiles)
   result_data$alpha <- factor(result_data$alpha)
-  
+
   # Plot
   if(grayscale) {
     
@@ -57,22 +57,22 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Quantiles of Gaussian distances from the focus", 
+        labs(x = "Distances from the focus (km)", 
              y = "The expected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        xlim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+        theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
       
     } else {
       
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Quantiles of Gaussian distances from the focus", 
+        labs(x = "Distance from the focus (km)", 
              y = "The proportion of\nexpected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        xlim(0, 1) + ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+        ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
       
     }
     
@@ -83,27 +83,26 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Quantiles of Gaussian distances from the focus", 
+        labs(x = "Distance from the focus (km)", 
              y = "The expected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
-        xlim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+        theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
       
     } else {
     
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
         theme_bw() +
-        labs(x = "Quantiles of Gaussian distances from the focus", 
+        labs(x = "Distance from the focus (km)", 
              y = "The proportion of\nexpected treatment events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
-        xlim(0, 1) + ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+        ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
         
     }
     
   }
-  
   
   # Plot for windows
   window_showcase_list <- list(distance_owin$`80%`, distance_owin$`60%`, 
@@ -130,20 +129,26 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
   }
   
   window_plot_list[[1]] <- window_plot_list[[1]] + 
-    ggtitle("20%") + theme(plot.title = element_text(hjust = 0.5))
+    ggtitle(paste0(round(as.numeric(distance_quantiles["80%"]), 1), "km from the focus \n(", 80, " percentile)")) + 
+    theme(plot.title = element_text(hjust = 0.5))
   window_plot_list[[2]] <- window_plot_list[[2]] + 
-    ggtitle("40%") + theme(plot.title = element_text(hjust = 0.5))
+    ggtitle(paste0(round(as.numeric(distance_quantiles["60%"]), 1), "km from the focus \n(", 60, " percentile)")) + 
+    theme(plot.title = element_text(hjust = 0.5))
   window_plot_list[[3]] <- window_plot_list[[3]] + 
-    ggtitle("60%") + theme(plot.title = element_text(hjust = 0.5))
+    ggtitle(paste0(round(as.numeric(distance_quantiles["40%"]), 1), "km from the focus \n(", 40, " percentile)")) + 
+    theme(plot.title = element_text(hjust = 0.5))
   window_plot_list[[4]] <- window_plot_list[[4]] + 
-    ggtitle("80%") + theme(plot.title = element_text(hjust = 0.5))
+    ggtitle(paste0(round(as.numeric(distance_quantiles["20%"]), 1), "km from the focus \n(", 20, " percentile)")) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  
+  w_plot_list <- list(window_plot_list[[4]], window_plot_list[[3]], window_plot_list[[2]], window_plot_list[[1]])
   
   # Color and plot
-  window_plot <- ggpubr::ggarrange(plotlist = window_plot_list, nrow = 1)
+  window_plot <- ggpubr::ggarrange(plotlist = w_plot_list, nrow = 1)
   window_plot <- ggpubr::annotate_figure(window_plot, bottom = ggpubr::text_grob("Areas covered by quantiles"))
   
   entire_plot <- ggpubr::ggarrange(expectation_plot, window_plot, nrow = 2, heights = c(0.7, 0.3))
-  titletext <- "The Expected Number of Treatment Events and\nDistances from the Focus"
+  titletext <- "The Expected Number of Treatment Events and\nDistance from the Focus"
   entire_plot <- ggpubr::annotate_figure(entire_plot, top = ggpubr::text_grob(titletext, face = "bold"))
   
   return(entire_plot)

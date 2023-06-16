@@ -50,15 +50,18 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
 
   # Calculate distance for each pixel and take the minimum
   # Do the same for all the points of interest
-
+  
+  cat("Calculating distance...\n")
+  
   lines_dists_list <- furrr::future_map(1:length(roads), function(j) {
     
     # Distance from a point
     line_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
-      suppressWarnings(as.numeric(geosphere::dist2Line(rast_points[i, ], roads[[j]][[1]])[, 1]))
+      options(warn = -1)
+      as.numeric(geosphere::dist2Line(rast_points[i, ], roads[[j]][[1]])[, 1])
     })
     
-    line_dists <- unlist(line_dists) #Vector
+    line_dists <- unlist(line_dists, use.names = FALSE) #Vector
     return(line_dists)
     
   }, .progress = TRUE)
@@ -82,6 +85,8 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
   }
   
   # Generate a plot
+  
+  cat("Generating a plot...\n")
   
   if (mile) { #miles
     
