@@ -305,6 +305,12 @@ For visualization purposes, consider two scenarios (Mosul+Roads vs Mosul+Bagh)
 ```{r}
 # Counterfactual 1: Mosul and roads
 dist_routes <- exp(-routes_dist)/spatstat.geom::integral(routes_dist)
+plot(routes_dist)
+
+r_d <- routes_dist
+r_d$v <- r_d$v * 110
+plot(r_d)
+
 
 target_mosul_road <- list(dist_mosul, dist_routes)
 power_mosul_road <- get_power_density(target_densities = target_mosul_road,
@@ -393,6 +399,7 @@ expectation_mosul <- get_distance_based_expectation(counterfactual_simulation_re
                                                     entire_window = iraq_window, 
                                                     density_of_interest = dist_mosul,
                                                     distance_map = dist_from_focus,
+                                                    distance_map_unit = "km",
                                                     grayscale = FALSE,
                                                     expectation_use_raw = TRUE)
 
