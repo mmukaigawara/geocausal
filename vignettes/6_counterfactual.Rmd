@@ -123,10 +123,10 @@ dist_from_focus$plot #ggplot
 ```
 
 ```{r}
-# Another example (two points)
+# Another example (Mosul and Baghdad)
 dist_from_focus2 <- get_dist_focus(window = iraq_window,
-                                   longitude = c(43.158, 44.366), #Mosul and Baghdad
-                                   latitude = c(36.349, 33.315),
+                                   longitude = c(44.366, 43.158), #Baghdad and Mosul
+                                   latitude = c(33.315, 36.349),
                                    grayscale = FALSE,
                                    mile = FALSE)
 
@@ -134,8 +134,13 @@ dist_from_focus2$plot
 ```
 
 ```{r}
-distance_from_focus <- exp(-dist_from_focus[[1]]/1000)/spatstat.geom::integral(dist_from_focus[[1]])
-plot(distance_from_focus)
+dist_mosul <- exp(-dist_from_focus[[1]]/1000)/spatstat.geom::integral(dist_from_focus[[1]])
+plot(dist_mosul)
+```
+
+```{r}
+dist_mos_bagh <- exp(-dist_from_focus2[[1]]/1000)/spatstat.geom::integral(dist_from_focus2[[1]])
+plot(dist_mos_bagh)
 ```
 
 ```{r}
@@ -143,8 +148,7 @@ plot(distance_from_focus)
 shapefile_path = "~/geocausal/Data/covariates/primary_routes/primary_routes.shp"
 window = iraq_window
 
-# The process above takes so much time. Perhaps distmap -> convert coordinate system
-# Or, convert coordinates of shapefile -> then distmap?
+# distmap with converted scale
 
 crs_id <- 3200
 window <- iraq_window
@@ -182,18 +186,51 @@ plot(t_km)
 spatstat.geom::Window(t_km) <- window_recoord
 
 plot(t_km) #The coordinates are still km
+t_km_rescaled <- rescale(t_km, factor = 1/111319.5) #Very, very approximate
 
 ```
 
 ```{r}
 # Alternatively...slow but we can do this with geosphere
 shapefile_path = "~/geocausal/Data/covariates/primary_routes/primary_routes.shp"
-distance_from_line <- get_dist_line(window = iraq_window, path_to_shapefile = shapefile_path)
 
+# Need to modify shapefiles a bit first
+shp <- sf::st_read(shapefile_path)
 
+lapply(1:length(unique(shp$ROUTE_NUMB)), function(x) {
+  temp <- sf::st_combine(shp$geometry[which(shp$ROUTE_NUMB == unique(shp$ROUTE_NUMB)[x])])
+  temp[[1]][[1]] <- do.call("rbind", temp[[1]])
+  
+  while (length(temp[[1]]) > 1) {
+      temp[[1]][[2]] <- NULL
+    }
+  
+  return(temp[[1]])
+  }) -> line_dat
+
+length(line_dat[[30]]) #Remove one missing element
+line_dat[[30]] <- NULL
+
+# Then run the function (This method is extendable to polygons as well (see dist2Line function))
+## If line data is available
+dist_from_line <- get_dist_line(window = iraq_window, 
+                                line_data = line_dat,
+                                mile = FALSE,
+                                grayscale = FALSE,
+                                resolution = 0.1,
+                                distfun = distHaversine)
+
+dist_from_line$plot
+
+## If not (takes a lot of time)
+dist_from_line <- get_dist_line(window = iraq_window, 
+                                path_to_shapefile = shapefile_path,
+                                mile = FALSE,
+                                grayscale = FALSE,
+                                resolution = 0.1)
+
+distance_from_line$plot
 ```
-
-
 
 ```{r}
 # Density 3: Sectarian (polygon)
@@ -218,7 +255,7 @@ elevation_data$plot
 ## 3.2. Obtaining power densities
 
 ```{r}
-target_sunni_routes <- list(sunni, distance_from_routes)
+target_sunni_routes <- list(sunni, dist_from_routes)
 priorities <- c(2, 2)
 
 # Example 1: Sectarian x Routes
@@ -242,7 +279,7 @@ power_sunni_mosul$plot
 ```
 
 ```{r}
-# Example 3: Roads x City
+# Example 3-1: Roads x City
 target_road_mosul <- list(distance_from_routes, distance_from_focus)
 power_road_mosul <- get_power_density(target_densities = target_road_mosul, 
                                       priorities = priorities, 
@@ -263,17 +300,55 @@ power_elevation_sunni <- get_power_density(target_densities = target_elevation_s
 plot(power_elevation_sunni$density)
 ```
 
+For visualization purposes, consider two scenarios (Mosul+Roads vs Mosul+Bagh)
+
+```{r}
+# Counterfactual 1: Mosul and roads
+dist_routes <- exp(-routes_dist)/spatstat.geom::integral(routes_dist)
+
+target_mosul_road <- list(dist_mosul, dist_routes)
+power_mosul_road <- get_power_density(target_densities = target_mosul_road,
+                                           priorities = c(5, 1),
+                                           window = iraq_window,
+                                           grayscale = FALSE)
+
+plot(power_mosul_road$density)
+```
+
+```{r}
+# Counterfactual 2: Mosul and Bagh
+target_mos_bagh <- list(dist_mos_bagh)
+power_mos_bagh <- get_power_density(target_densities = target_mos_bagh,
+                                           priorities = c(3),
+                                           window = iraq_window,
+                                           grayscale = FALSE)
+
+plot(power_mos_bagh$density)
+```
+
+
 ## 3.3. Obtaining counterfactual densities
 
 ```{r}
-counterfactual_location <- get_counterfactual_density(baseline_density = baseline_density,
+# Counterfactual 1
+counterfactual_mosul_road <- get_counterfactual_density(baseline_density = baseline_density,
                                                       expected_number = target_number,
-                                                      power_density = power_road_mosul$density,
+                                                      power_density = power_mosul_road$density,
                                                       window = iraq_window,
                                                       grayscale = FALSE)
 
-counterfactual_location$density
-counterfactual_location$plot
+counterfactual_mosul_road$plot
+```
+
+```{r}
+# Counterfactual 2
+counterfactual_mos_bagh <- get_counterfactual_density(baseline_density = baseline_density,
+                                                      expected_number = target_number,
+                                                      power_density = power_mos_bagh$density,
+                                                      window = iraq_window,
+                                                      grayscale = FALSE)
+
+counterfactual_mos_bagh$plot
 ```
 
 # 3.4 Simulation
@@ -282,40 +357,44 @@ Simulation and visualization exercises for power density
 - Suppose that we keep the distance from cities as it is with alpha = 2 and want to see how changing alpha from 1 to 5 for routes affects the power density...
 
 ```{r}
-dist_routes <- distance_from_routes/spatstat.geom::integral(distance_from_routes)
-plot(dist_routes)
+#dist_routes <- distance_from_routes/spatstat.geom::integral(distance_from_routes)
+#plot(dist_routes)
 
-sim_power <- simulate_power_density(target_densities = list(dist_routes), #This must be a list element
-                                    density_to_manipulate = distance_from_focus,
-                                    priorities = 2,
+# For counterfactual scenario 1
+
+sim_power_mosul <- simulate_power_density(target_densities = list(dist_routes), #This must be a list element
+                                    density_to_manipulate = dist_mosul,
+                                    priorities = 1,
                                     priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
                                     window = iraq_window,
                                     grayscale = FALSE)
 
-sim_power$plot
+plot(sim_power_mosul$densities[[6]])
+sim_power_mosul$plot #Somehow not working (images incompatible...)
 ```
 
 Simulation for counterfactual densities
 
 ```{r}
 # Simulation
-sim_counter <- simulate_counterfactual_density(expected_number = target_number,
+sim_counter_mosul <- simulate_counterfactual_density(expected_number = target_number,
                                                baseline_density = baseline_density,
-                                               power_simulation_results = sim_power,
+                                               power_simulation_results = sim_power_mosul,
                                                window = iraq_window,
                                                grayscale = FALSE)
 
-sim_counter$plot
+sim_counter_mosul$plot #Not working
 ```
 
 Then choose which density? Use these as inputs
 
 ```{r}
-expectation_mosul <- get_distance_based_expectation(counterfactual_simulation_results = sim_counter, 
+expectation_mosul <- get_distance_based_expectation(counterfactual_simulation_results = sim_counter_mosul, 
                                                     entire_window = iraq_window, 
-                                                    density_of_interest = distance_from_focus,
+                                                    density_of_interest = dist_mosul,
+                                                    distance_map = dist_from_focus,
                                                     grayscale = FALSE,
-                                                    expectation_use_raw = FALSE)
+                                                    expectation_use_raw = TRUE)
 
 expectation_mosul
 ```
@@ -325,6 +404,7 @@ Simulate with the opposite
 ```{r}
 sim_power2 <- simulate_power_density(target_densities = list(distance_from_focus), #This must be a list element
                                      density_to_manipulate = dist_routes,
+                                     distance_map = dist_from_focus,
                                      priorities = 2,
                                      priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
                                      window = iraq_window,
@@ -346,20 +426,16 @@ expectation_road
 
 # 4. Get the log density
 
-Finally, obtain the log density based on one counterfactual scenario.
+Finally, save these for the next vignette.
 
 ```{r}
-counter_dens <- sim_counter$densities[[6]]
+counter_dens_1 <- sim_counter_mosul$densities[[6]] #Mosul x roads
+counter_dens_2 <- counterfactual_mos_bagh$density
 
-counterfactual_sum_log <- get_counterfactual_sum_log_intensity(counterfactual_density = counter_dens,
-                                                               treatment_data = dat_hfr$Airstrike)
-
-counterfactual_sum_log
-
-# Log density ratio
-log_density_ratio <- counterfactual_sum_log - obs_density$sum_log_intensity
-
-plot(log_density_ratio, xlab = "Date")
+plot(counter_dens_1)
+plot(counter_dens_2)
+counter_d <- list(counter_dens_1, counter_dens_2)
+#save(counter_d, file = "~/geocausal/Data/counter_d.Rda") #Saved two counter densities
 ```
 
 
