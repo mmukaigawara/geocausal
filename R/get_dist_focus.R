@@ -8,7 +8,7 @@
 #' @param grayscale
 #' @param mile Whether to return the output in miles instead of kilometers
 
-get_dist_focus <- function(window, longitude, latitude, 
+get_dist_focus <- function(window, longitude, latitude, resolution,
                            grayscale, mile){
   
   # Convert owin into sp objects  
@@ -28,7 +28,7 @@ get_dist_focus <- function(window, longitude, latitude,
   raster::extent(r) <- raster::extent(polygon_sf)
   
   # Define the extent of the raster
-  r <- raster::raster(raster::extent(polygon_spdf), resolution = 0.02)
+  r <- raster::raster(raster::extent(polygon_spdf), resolution = resolution)
   
   # Rasterize the polygon
   r <- raster::rasterize(polygon_spdf, r, field = 1)
@@ -43,14 +43,13 @@ get_dist_focus <- function(window, longitude, latitude,
   # Calculate distance for each pixel and take the minimum
   # Do the same for all the points of interest
   
-  point_dists_list <- purrr::map(1:num_points, function(j) {
-    
+  point_dists_list <- furrr::future_map(1:num_points, function(j) {
+
     # Distance from a point
-    point_dists <- purrr::map_dbl(1:nrow(rast_points), function(i) {
-      geosphere::distVincentyEllipsoid(rast_points[i, ], point_df[j, ])
-    })
+    point_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
+      geosphere::distVincentySphere(rast_points[i, ], point_df[j, ])
+    }) #More accurate function is distVincentyEllipsoid but it takes time
     
-    point_dists <- unlist(point_dists) #Vector
     return(point_dists)
     
   })
