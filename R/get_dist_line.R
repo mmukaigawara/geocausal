@@ -30,7 +30,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
     roads <- line_data
 
   }
-  
+
   # Create a raster based on the polygon's extent
   r <- raster::raster(res = 0.5)
   raster::extent(r) <- raster::extent(polygon_sf)
@@ -48,26 +48,67 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
   rast_points <- raster::rasterToPoints(r)
   rast_points <- rast_points[, c(1:2)]
 
-  # Calculate distance for each pixel and take the minimum
-  # Do the same for all the points of interest
-  
+  # Calculate distance for each pixel
+
   cat("Calculating distance...\n")
   
-  lines_dists_list <- furrr::future_map(1:length(roads), function(j) {
+  # First, pick potential line with minimum distance for each point
+  
+  ## Convert rast points to sf objects
+  rast_points_sf <- furrr::future_map(1:nrow(rast_points), function(k) {
+    sf::st_point(rast_points[k, ])
+  })
+  
+  rast_points_sf <- sf::st_sfc(rast_points_sf)
+  
+  ## Identify line ID with minimum distance for each point
+  line_id_min <- sf::st_nearest_feature(rast_points_sf,
+                                        sf::st_sfc(roads))
+  
+  # Second, calculate distance from these lines for each point
+  progressr::with_progress({
     
-    # Distance from a point
-    line_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
-      options(warn = -1)
-      as.numeric(geosphere::dist2Line(rast_points[i, ], roads[[j]][[1]])[, 1])
+    p <- progressr::progressor(steps = length(roads))
+    
+    dists_list <- furrr::future_map(1:length(roads), function(l, p) {
+      
+      p() #For progress bar
+    
+      # Identify the points with line i as the line with minimum distance
+      rast_point_id <- which(line_id_min == l)
+    
+      dist <- furrr::future_map_dbl(1:length(rast_point_id), function(m) {
+        
+        # Distance from a line
+        dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id[m], ], 
+                                                roads[[l]][[1]],
+                                                distfun = geosphere::distCosine)[, 1])
+      
+        return(dist)
+        })
+    
+      return(cbind(rast_point_id, dist))
+      
+      }, p = p)
+    
     })
+  
+  # An old function that took too long
+  #lines_dists_list <- furrr::future_map(1:length(roads), function(j) {
     
-    line_dists <- unlist(line_dists, use.names = FALSE) #Vector
-    return(line_dists)
+  #  # Distance from a line
+  #  line_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
+  #    as.numeric(geosphere::dist2Line(rast_points[i, ], roads[[j]][[1]],
+  #                                    distfun = geosphere::distVincentySphere)[, 1])
+  #  })
     
-  }, .progress = TRUE)
+  #  line_dists <- unlist(line_dists, use.names = FALSE) #Vector
+  #  return(line_dists)
+    
+  #})
   
   # Take the minimum
-  line_dists <- do.call(pmin, lines_dists_list)
+  # line_dists <- do.call(pmin, lines_dists_list)
   
   # Create a df to store the results
   
