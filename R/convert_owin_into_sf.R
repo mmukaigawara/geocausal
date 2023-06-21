@@ -37,9 +37,9 @@ convert_owin_into_sf <- function(window) {
   
   ## Class: sf
   polygon_sf <- sf::st_sf(polygon_sfc)
-  
+
   ## Class: SpatialPolygonsDataFrame
-  polygon_spdf <- as(polygon_sf, "Spatial")
+  polygon_spdf <- sf::as_Spatial(polygon_sf)
   
   return(list(polygon, polygon_df, polygon_sfc, polygon_sf, polygon_spdf))
   
