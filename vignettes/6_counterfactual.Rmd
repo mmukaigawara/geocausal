@@ -116,6 +116,7 @@ counterfactual_multiply$plot
 dist_from_focus <- get_dist_focus(window = iraq_window,
                                   longitude = c(43.158),
                                   latitude = c(36.349), #Coodinates (lon and lat) of Mosul
+                                  resolution = 0.02,
                                   grayscale = FALSE,
                                   mile = FALSE)
 
@@ -127,6 +128,7 @@ dist_from_focus$plot #ggplot
 dist_from_focus2 <- get_dist_focus(window = iraq_window,
                                    longitude = c(44.366, 43.158), #Baghdad and Mosul
                                    latitude = c(33.315, 36.349),
+                                   resolution = 0.02,
                                    grayscale = FALSE,
                                    mile = FALSE)
 
@@ -217,8 +219,7 @@ dist_from_line <- get_dist_line(window = iraq_window,
                                 line_data = line_dat,
                                 mile = FALSE,
                                 grayscale = FALSE,
-                                resolution = 0.1,
-                                distfun = distHaversine)
+                                resolution = 0.02)
 
 dist_from_line$plot
 
