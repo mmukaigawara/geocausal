@@ -47,24 +47,25 @@ simulate_power_density <- function(target_densities, #This must be a list elemen
   # Figure - density
   sf_density_list <- lapply(1:length(power_density_list),
                             function(x) {
-                              sf_density <- stars::st_as_stars(power_density_list[[x]])
-                              sf_density <- sf::st_as_sf(sf_density) %>% sf::st_set_crs(32650)
+                              sf_density <- as.data.frame(power_density_list[[x]])
+                              sf_density <- tidyr::pivot_longer(sf_density, cols = starts_with("V"), 
+                                                                names_to = "variable", values_to = "value")
                               return(sf_density)
                             }
                             )
 
   ## Max value to obtain the zlim
   max_val <- max(unlist(lapply(1:length(sf_density_list),
-                               function(x) max(sf_density_list[[x]]$v, na.rm = TRUE))))
+                               function(x) max(sf_density_list[[x]]$value, na.rm = TRUE))))
   
   if (grayscale) {
     
     plot_list <- lapply(1:length(sf_density_list),
                         function(a) {
                           power_dens <- ggplot() +
-                            ggplot2::geom_sf(data = sf_density_list[[a]], aes(fill = v), col = NA) +
+                            ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
                             ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-                            ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+                            ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
                             ggthemes::theme_map() +
                             ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_for_manipulation[a], "$"))) +
                             labs(fill = "Density") +
@@ -78,9 +79,9 @@ simulate_power_density <- function(target_densities, #This must be a list elemen
     plot_list <- lapply(1:length(sf_density_list),
                         function(a) {
                           power_dens <- ggplot() +
-                            ggplot2::geom_sf(data = sf_density_list[[a]], aes(fill = v), col = NA) +
+                            ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
                             ggplot2::scale_fill_viridis_c(option = "plasma", limits = c(NA, max_val)) + 
-                            ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+                            ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
                             ggthemes::theme_map() +
                             ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_for_manipulation[a], "$"))) +
                             labs(fill = "Density") +
