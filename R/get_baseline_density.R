@@ -25,7 +25,7 @@ get_baseline_density <- function(data,
 
   # Figure - density
   sf_density <- stars::st_as_stars(baseline_density)
-  sf_density <- sf::st_as_sf(sf_density) %>% sf::st_set_crs(32650)
+  sf_density <- sf::st_as_sf(sf_density) #%>% sf::st_set_crs(32650)
   
   if(grayscale) {
     baseline_dens <- ggplot() +
