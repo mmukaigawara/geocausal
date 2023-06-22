@@ -60,34 +60,6 @@ get_power_density <- function(target_densities,
     
   }
 
-  # Figure - density
-  #sf_density <- stars::st_as_stars(power_density)
-  #sf_density <- sf::st_as_sf(sf_density) #%>% sf::st_set_crs(32650)
-
-#  if(grayscale) {
-    
-#    power_dens <- ggplot() +
-#      ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
-#      ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-#      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
-#      ggthemes::theme_map() +
-#      ggplot2::ggtitle(paste0("Power Density")) +
-#      labs(fill = "Density") +
-#      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-    
-#  } else {
- 
-#    power_dens <- ggplot() +
-#      ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
-#      ggplot2::scale_fill_viridis_c(option = "plasma") + 
-#      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
-#      ggthemes::theme_map() +
-#      ggplot2::ggtitle(paste0("Power Density")) +
-#      labs(fill = "Density") +
-#      theme(plot.title = element_text(hjust = 0.5, face = "bold"))   
-    
-#  }
-
   return(list(density = power_density, plot = power_dens))
   
 }
