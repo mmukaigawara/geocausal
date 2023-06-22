@@ -20,8 +20,8 @@ simulate_counterfactual_density <- function(expected_number,
   
   # Obtaining a list of counterfactual densities based on simluations
   counterfactual_density_list <- lapply(1:length(power_densities),
-                                        function(x) {
-                                          product_power_baseline <- baseline_density * power_densities[[x]]
+                                        function(x) { #Suppress warnings for incompatibility of images
+                                          suppressWarnings( product_power_baseline <- baseline_density * power_densities[[x]] )
                                           counterfactual_density <- product_power_baseline/
                                             spatstat.geom::integral(product_power_baseline, W = window) * expected_number
                                           return(counterfactual_density)
