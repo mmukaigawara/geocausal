@@ -77,16 +77,11 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
       # Identify the points with line i as the line with minimum distance
       rast_point_id <- which(line_id_min == l)
     
-      dist <- furrr::future_map_dbl(1:length(rast_point_id), function(m) {
-        
-        # Distance from a line
-        dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id[m], ], 
-                                                roads[[l]][[1]],
-                                                distfun = geosphere::distVincentyEllipsoid)[, 1])
+      # Distance from a line
+      dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id, ], 
+                                              roads[[l]][[1]],
+                                              distfun = geosphere::distGeo)[, 1])
       
-        return(dist)
-        })
-    
       return(cbind(rast_point_id, dist))
       
       }, p = p)

@@ -47,9 +47,9 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
 
     # Distance from a point
     point_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
-      geosphere::distVincentyEllipsoid(rast_points[i, ], point_df[j, ])
+      geosphere::distGeo(rast_points[i, ], point_df[j, ])
     })
-    
+
     return(point_dists)
     
   })
