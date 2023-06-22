@@ -73,7 +73,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
     dists_list <- furrr::future_map(1:length(roads), function(l, p) {
       
       p() #For progress bar
-    
+
       # Identify the points with line i as the line with minimum distance
       rast_point_id <- which(line_id_min == l)
     
@@ -82,7 +82,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
         # Distance from a line
         dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id[m], ], 
                                                 roads[[l]][[1]],
-                                                distfun = geosphere::distCosine)[, 1])
+                                                distfun = geosphere::distVincentyEllipsoid)[, 1])
       
         return(dist)
         })
@@ -92,6 +92,9 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
       }, p = p)
     
     })
+
+  dists <- do.call(rbind, dists_list)
+  dists <- dists[order(dists[, 1]),] #Sort the distance
   
   # An old function that took too long
   #lines_dists_list <- furrr::future_map(1:length(roads), function(j) {
@@ -116,12 +119,12 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
     
     dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
                           latitude = sp::coordinates(rast_points)[, 2],
-                          distance = line_dists * 0.621371/1000) #miles
+                          distance = dists[, 2] * 0.621371/1000) #miles
   } else {
     
     dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
                           latitude = sp::coordinates(rast_points)[, 2],
-                          distance = line_dists/1000) #km
+                          distance = dists[, 2]/1000) #km
     
   }
   
