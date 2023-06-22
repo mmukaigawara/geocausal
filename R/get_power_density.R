@@ -15,13 +15,13 @@ get_power_density <- function(target_densities,
   
   # Obtaining each target density ^ alpha
   target_alpha <- lapply(1:length(target_densities), function(x) target_densities[[x]] ^ priorities[x])
-  
+
   power_density <- target_alpha[[1]]
   
   if (length(target_densities) > 1){
     
     for (ii in 2:length(target_densities)){ power_density <- power_density * target_alpha[[ii]] }
-    
+
   } 
 
   power_density <- power_density/spatstat.geom::integral(power_density, domain = window)
