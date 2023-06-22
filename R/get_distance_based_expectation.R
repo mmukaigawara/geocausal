@@ -6,8 +6,8 @@
 #' @param counterfactual_simulation_results An output of the simulate_counterfactual_density function
 #' @param entire_window An owin object (the entire region)
 #' @param density_of_interest A density that is being manipulated
-#' @param distance_map An im object (map) whose cell values are the distance from the focus (e.g., city)
-#' @param distance_map_unit e.g., km, mile
+#' @param distance_map An image object whose cell values are the distance from the focus (e.g., city)
+#' @param distance_map_unit km or mile
 #' @param gray_scale By default, FALSE
 #' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
 
@@ -20,11 +20,11 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
                                            expectation_use_raw = FALSE) {
 
   # Get the range and quantiles of standardized distances 
-  distance_range <- range(`distance_map`$distance_im$v, na.rm = TRUE)
+  distance_range <- range(`distance_map`$v, na.rm = TRUE)
   distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
   
   # Convert the distance map to windows
-  distance_window <- matrix(`distance_map`$distance_im$v, nrow = nrow(`distance_map`$distance_im$v))
+  distance_window <- matrix(`distance_map`$v, nrow = nrow(`distance_map`$v))
   distance_windows <- lapply(distance_quantiles, function(x) distance_window < x) # A list of binary matrices based on quantiles
   distance_owin <- lapply(distance_windows, function(x) {
     spatstat.geom::owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
