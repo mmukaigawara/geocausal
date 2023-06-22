@@ -42,17 +42,15 @@ get_estimates <- function(observed_density, counterfactual_density,
   mat_im_weighted <- sweep(mat_im, MARGIN = 3, STATS = weights, FUN = '*') #Multiply by weights
   
   # 2-3. Get average weighted densities
+  # Note: Don't use IPW. This funciton only returns Hajek extimators.
   average_weighted_surface <- spatstat.geom::as.im(apply(mat_im_weighted, c(1, 2), mean), W = entire_window)
   average_weighted_surface_haj <- average_weighted_surface / mean(weights)
   
   # 3. Integrate over the window of interest
-  average_expected_events <- spatstat.geom::integral(average_weighted_surface, window = window_of_interest)
   average_expected_events_haj <- spatstat.geom::integral(average_weighted_surface_haj, window = window_of_interest)
   
-  return(list(average_weighted_density = average_weighted_surface,
-              average_weighted_density_hajek = average_weighted_surface_haj,
-              average_expected_events = average_expected_events,
-              average_expected_events_hajek = average_expected_events_haj,
+  return(list(average_weighted_density = average_weighted_surface_haj,
+              average_expected_events = average_expected_events_haj,
               weights = weights))
   
 }
