@@ -22,16 +22,22 @@ get_baseline_density <- function(data,
   
   baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = 256) #Kernel density estimation
   baseline_density <- baseline_density / spatstat.geom::integral(baseline_density) #Divide by integral of the density
-
-  # Figure - density
-  sf_density <- stars::st_as_stars(baseline_density)
-  sf_density <- sf::st_as_sf(sf_density) #%>% sf::st_set_crs(32650)
   
+  # ggplot figure - density
+  
+  ## Convert power density to a data frame
+  pd_df <- as.data.frame(baseline_density)
+  
+  ## Pivot the data frame to a long format
+  pd_df_long <- tidyr::pivot_longer(pd_df, cols = starts_with("V"), names_to = "variable", values_to = "value")
+  
+  ## Plot the image using ggplot2
   if(grayscale) {
+    
     baseline_dens <- ggplot() +
-      ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
-      ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
+      ggplot2::geom_tile(data = pd_df_long, aes(x = x, y = y, fill = value)) +
+      ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") +
+      ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
       ggplot2::ggtitle("Baseline Density",
                        subtitle = paste0("The expected number of treatment events\nover the entire region per time period = ", 1)) +
@@ -40,10 +46,11 @@ get_baseline_density <- function(data,
             plot.subtitle = element_text(hjust = 0.5))
     
   } else {
+    
     baseline_dens <- ggplot() +
-      ggplot2::geom_sf(data = sf_density, aes(fill = v), col = NA) +
+      ggplot2::geom_tile(data = pd_df_long, aes(x = x, y = y, fill = value)) +
       ggplot2::scale_fill_viridis_c(option = "plasma") + 
-      ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y), color = "white") + 
+      ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
       ggplot2::ggtitle("Baseline Density",
                        subtitle = paste0("The expected number of treatment events\nover the entire region per time period = ", 1)) +
@@ -52,16 +59,14 @@ get_baseline_density <- function(data,
             plot.subtitle = element_text(hjust = 0.5))
     
   }
-
-  # Figure - ppp
-  sf_points <- data.frame(lat = baseline_ppp$y,
-                          lon = baseline_ppp$x) %>%
-    sf::st_as_sf(coords = c("lon", "lat")) %>%
-    sf::st_set_crs(32650)
+  
+  # ggplot figure - points
+  
+  points <- as.data.frame(baseline_ppp)
   
   baseline_ppp <- ggplot() +
-    ggplot2::geom_sf(data = sf_points, size = 0.5, col = "black") +
-    ggplot2::geom_path(data = fortify(as.data.frame(window)), aes(x = x, y = y)) + 
+    ggplot2::geom_point(data = points, aes(x = x, y = y), size = 0.5, col = "black") +
+    ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "black") + 
     ggthemes::theme_map() +
     ggplot2::ggtitle("Observed Treatment Events") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
