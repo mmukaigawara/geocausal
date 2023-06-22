@@ -67,7 +67,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
                                         sf::st_sfc(roads))
   
   lines_covered <- sort(unique(line_id_min)) # Not every line is a candidate
-  
+
   # Second, calculate distance from these lines for each point
   progressr::with_progress({
     
@@ -81,9 +81,13 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
       rast_point_id <- which(line_id_min == lines_covered[l])
       
       # Distance from a line
-      dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id, ], 
-                                              roads[[lines_covered[l]]][[1]],
-                                              distfun = geosphere::distVincentyEllipsoid)[, 1])
+      suppressWarnings( #Suppress warnings
+        
+        dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id, ], 
+                                                roads[[lines_covered[l]]][[1]],
+                                                distfun = geosphere::distVincentyEllipsoid)[, 1])
+      
+      )
         
       return(cbind(rast_point_id, dist))
       
@@ -93,26 +97,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
 
   dists <- do.call(rbind, dists_list)
   dists <- dists[order(dists[, 1]), ] #Sort the distance
-  
-  # An old function that took too long
-  #lines_dists_list <- furrr::future_map(1:length(roads), function(j) {
-    
-  #  # Distance from a line
-  #  line_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
-  #    as.numeric(geosphere::dist2Line(rast_points[i, ], roads[[j]][[1]],
-  #                                    distfun = geosphere::distVincentySphere)[, 1])
-  #  })
-    
-  #  line_dists <- unlist(line_dists, use.names = FALSE) #Vector
-  #  return(line_dists)
-    
-  #})
-  
-  # Take the minimum
-  # line_dists <- do.call(pmin, lines_dists_list)
-  
-  # Create a df to store the results
-  
+
   if (mile) {
     
     dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
