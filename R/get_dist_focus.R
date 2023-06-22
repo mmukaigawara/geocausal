@@ -42,15 +42,16 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   
   # Calculate distance for each pixel and take the minimum
   # Do the same for all the points of interest
+  # Future consideration: Perhaps we might want to pick the closest point roughly (see get_dist_line function)
   
   progressr::with_progress({
     
-    p <- progressr::progressor(steps = length(roads))
+    p <- progressr::progressor(steps = length(num_points))
   
     point_dists_list <- furrr::future_map(1:num_points, function(j, p) {
 
       # Distance from a point
-      geosphere::distGeo(rast_points, point_df[j, ])
+      geosphere::distVincentyEllipsoid(rast_points, point_df[j, ])
 
     }, p = p)
   

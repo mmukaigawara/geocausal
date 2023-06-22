@@ -52,7 +52,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
 
   cat("Calculating distance...\n")
   
-  # First, pick potential line with minimum distance for each point
+  # First, pick a potential line with minimum distance for each point
   
   ## Convert rast points to sf objects
   rast_points_sf <- furrr::future_map(1:nrow(rast_points), function(k) {
@@ -60,28 +60,31 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
   })
   
   rast_points_sf <- sf::st_sfc(rast_points_sf)
+  rast_points_sf <- rast_points_sf %>% sf::st_set_crs(sf::st_crs(roads))
   
   ## Identify line ID with minimum distance for each point
   line_id_min <- sf::st_nearest_feature(rast_points_sf,
                                         sf::st_sfc(roads))
   
+  lines_covered <- sort(unique(line_id_min)) # Not every line is a candidate
+  
   # Second, calculate distance from these lines for each point
   progressr::with_progress({
     
-    p <- progressr::progressor(steps = length(roads))
+    p <- progressr::progressor(steps = length(lines_covered))
     
-    dists_list <- furrr::future_map(1:length(roads), function(l, p) {
+    dists_list <- furrr::future_map(1:length(lines_covered), function(l, p) {
       
       p() #For progress bar
 
       # Identify the points with line i as the line with minimum distance
-      rast_point_id <- which(line_id_min == l)
-    
+      rast_point_id <- which(line_id_min == lines_covered[l])
+      
       # Distance from a line
       dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id, ], 
-                                              roads[[l]][[1]],
-                                              distfun = geosphere::distGeo)[, 1])
-      
+                                              roads[[lines_covered[l]]][[1]],
+                                              distfun = geosphere::distVincentyEllipsoid)[, 1])
+        
       return(cbind(rast_point_id, dist))
       
       }, p = p)
@@ -89,7 +92,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
     })
 
   dists <- do.call(rbind, dists_list)
-  dists <- dists[order(dists[, 1]),] #Sort the distance
+  dists <- dists[order(dists[, 1]), ] #Sort the distance
   
   # An old function that took too long
   #lines_dists_list <- furrr::future_map(1:length(roads), function(j) {
@@ -167,7 +170,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
         theme(plot.title = element_text(hjust = 0.5, face = "bold"))
       
     } else {
-      
+
       gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
         ggplot2::geom_tile() +
         ggplot2::coord_quickmap() +
