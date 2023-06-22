@@ -43,15 +43,17 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   # Calculate distance for each pixel and take the minimum
   # Do the same for all the points of interest
   
-  point_dists_list <- furrr::future_map(1:num_points, function(j) {
-
-    # Distance from a point
-    point_dists <- furrr::future_map_dbl(1:nrow(rast_points), function(i) {
-      geosphere::distGeo(rast_points[i, ], point_df[j, ])
-    })
-
-    return(point_dists)
+  progressr::with_progress({
     
+    p <- progressr::progressor(steps = length(roads))
+  
+    point_dists_list <- furrr::future_map(1:num_points, function(j, p) {
+
+      # Distance from a point
+      geosphere::distGeo(rast_points, point_df[j, ])
+
+    }, p = p)
+  
   })
   
   # Take the minimum
