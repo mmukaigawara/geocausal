@@ -9,9 +9,13 @@
 #' @param gray_scale By default, FALSE
 #' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
 
-get_estimates <- function(observed_density, counterfactual_density,
-                          treatment_data, smoothed_outcome, lag,
-                          entire_window, window_of_interest) {
+get_estimates <- function(observed_density, 
+                          counterfactual_density,
+                          treatment_data, 
+                          smoothed_outcome, 
+                          lag,
+                          entire_window, 
+                          window_of_interest) {
   
   # 1. Weight
   
@@ -43,8 +47,9 @@ get_estimates <- function(observed_density, counterfactual_density,
   
   # 2-3. Get average weighted densities
   # Note: Don't use IPW. This funciton only returns Hajek extimators.
-  average_weighted_surface <- spatstat.geom::as.im(apply(mat_im_weighted, c(1, 2), mean), W = entire_window)
-  average_weighted_surface_haj <- average_weighted_surface / mean(weights)
+  average_weighted_surface <- spatstat.geom::as.im(apply(mat_im_weighted, c(1, 2), mean), 
+                                                   W = entire_window) #This is IPW
+  average_weighted_surface_haj <- average_weighted_surface / mean(weights) #Hajek
   
   # 3. Integrate over the window of interest
   average_expected_events_haj <- spatstat.geom::integral(average_weighted_surface_haj, window = window_of_interest)
