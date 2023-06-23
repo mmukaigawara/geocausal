@@ -43,7 +43,7 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   # Calculate distance for each pixel and take the minimum
   # Do the same for all the points of interest
   # Future consideration: Perhaps we might want to pick the closest point roughly (see get_dist_line function)
-  
+
   progressr::with_progress({
     
     p <- progressr::progressor(steps = length(num_points))
