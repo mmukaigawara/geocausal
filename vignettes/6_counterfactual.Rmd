@@ -135,6 +135,19 @@ dist_from_focus2 <- get_dist_focus(window = iraq_window,
 
 dist_from_focus2$plot
 ```
+```{r}
+# Another example (Actual data points)
+dist_from_actual_points <- get_dist_focus(window = iraq_window,
+                                          longitude = airstr_base$longitude, #Observed data points
+                                          latitude = airstr_base$latitude,
+                                          resolution = 0.02,
+                                          grayscale = FALSE,
+                                          mile = FALSE)
+
+dist_from_focus2$plot
+```
+
+Convert to Gaussian then
 
 ```{r}
 dist_mosul <- exp(-dist_from_focus[[1]]/1000)/spatstat.geom::integral(dist_from_focus[[1]])
@@ -300,7 +313,7 @@ Simulation and visualization exercises for power density
 sim_power_mosul <- simulate_power_density(target_densities = list(dist_from_routes), #This must be a list element
                                           density_to_manipulate = dist_mosul,
                                           priorities = 1,
-                                          priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
+                                          priorities_for_manipulation = c(1, 2, 5, 10, 15, 50),
                                           window = iraq_window,
                                           grayscale = FALSE)
 
@@ -381,7 +394,7 @@ counter_dens_1 <- sim_counter_mosul$densities[[6]] #Mosul x roads
 counter_dens_2 <- counterfactual_mos_bagh$density
 
 plot(counter_dens_1)
-plot(counter_dens_2)
+plot(counter_dens_2, zlim = c(0, 10))
 counter_d <- list(counter_dens_1, counter_dens_2)
 #save(counter_d, file = "~/geocausal/Data/counter_d.Rda") #Saved two counterfactual densities
 ```
