@@ -22,6 +22,8 @@ get_estimates <- function(observed_density,
   
   # 1. Weight
   
+  cat("Calculating weights...\n")
+  
   # 1-1. Log density
   counterfactual_sum_log <- get_counterfactual_sum_log_intensity(counterfactual_density = counterfactual_density,
                                                                  treatment_data = treatment_data)
@@ -56,6 +58,8 @@ get_estimates <- function(observed_density,
   
   # 3. Integrate over the window of interest (quantiles from a focus)
   
+  cat("Calculating expectations...\n")
+  
   ## Get the range and quantiles of standardized distances 
   distance_range <- range(`distance_map`$v, na.rm = TRUE)
   distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
@@ -75,6 +79,8 @@ get_estimates <- function(observed_density,
   })
   
   # 4. Then plot (just one scenario; the remainder basically follows get_distance_based_expectation)
+  
+  cat("Generating a plot...\n")
   
   ## Convert partial_expectations to a dataframe
   if (expectation_use_raw) {
@@ -191,8 +197,6 @@ get_estimates <- function(observed_density,
   entire_plot <- ggpubr::ggarrange(expectation_plot, window_plot, nrow = 2, heights = c(0.7, 0.3))
   titletext <- "The Expected Number of Outcome Events and\nDistance from the Focus under a Counterfactual Scenario"
   entire_plot <- ggpubr::annotate_figure(entire_plot, top = ggpubr::text_grob(titletext, face = "bold"))
-  
-  return(entire_plot)
   
   return(list(average_weighted_density = average_weighted_surface_haj, #Hajek, average, weighted surface (im)
               average_expected_events = as.numeric(unlist(partial_expectations)[101]), #Hajek, counts, entire window
