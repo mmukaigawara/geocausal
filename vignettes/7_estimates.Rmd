@@ -56,10 +56,11 @@ obs_density_surge <- readRDS("~/geocausal/Data/obs_density_surge.rds")
 ```
 
 
-# 1. Get the log density
+# 1. Get estimates
 
 ```{r}
 # Sum of counterfactual log densities
+# Note: counter_d is a list of two counterfactual densities
 counter_d1 <- counter_d[[1]] #Mosul x roads
 counter_d2 <- counter_d[[2]] #Mosul x Bagh
 
@@ -70,23 +71,45 @@ estimates_counter_mosul <- get_estimates(observed_density = obs_density_surge,
                                          smoothed_outcome = dat_hfr$smooth_allout,
                                          lag = 3,
                                          entire_window = iraq_window,
-                                         window_of_interest = iraq_window)
+                                         distance_map = dist_from_focus$distance_im,
+                                         distance_map_unit = "km",
+                                         grayscale = FALSE,
+                                         expectation_use_raw = TRUE)
 
+estimates_counter_mosul$plot
+```
+
+With another couterfactual scenario (Baghdad focus)
+
+```{r}
 estimates_counter_bagh <- get_estimates(observed_density = obs_density_surge,
-                                         counterfactual_density = counter_d2,
-                                         treatment_data = dat_hfr$Airstrike,
-                                         smoothed_outcome = dat_hfr$smooth_allout,
-                                         lag = 3,
-                                         entire_window = iraq_window,
-                                         window_of_interest = iraq_window)
+                                        counterfactual_density = counter_d2,
+                                        treatment_data = dat_hfr$Airstrike,
+                                        smoothed_outcome = dat_hfr$smooth_allout,
+                                        lag = 3,
+                                        entire_window = iraq_window,
+                                        distance_map = dist_from_focus$distance_im,
+                                        distance_map_unit = "km",
+                                        grayscale = FALSE,
+                                        expectation_use_raw = TRUE)
 
-estimates_counter_bagh$average_expected_events_hajek - estimates_counter_mosul$average_expected_events_hajek
-estimates_counter_bagh$average_expected_events - estimates_counter_mosul$average_expected_events
+estimates_counter_bagh$plot
 
+# Need to increase the resolution, ideally at least 256 x 256
+# lag for M as well (one lag)
 ```
 
 ```{r}
-# Multiply the smoothed outcome surface 
+# Get the causal contrasts (with CI)
+causal_contrast <- get_causal_contrasts(estimates_scenario_1 = estimates_counter_mosul,
+                                        estimates_scenario_2 = estimates_counter_bagh,
+                                        grayscale = FALSE,
+                                        expectation_use_raw = TRUE)
+
+causal_contrast$plot
 ```
+
+How about from outcome locations?
+
 
 
