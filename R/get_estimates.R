@@ -17,8 +17,8 @@ get_estimates <- function(observed_density,
                           entire_window, 
                           distance_map = dist_from_focus$distance_im,
                           distance_map_unit = "km",
-                          grayscale = FALSE,
-                          expectation_use_raw = FALSE) {
+                          grayscale,
+                          expectation_use_raw) {
   
   # 1. Weight
   
@@ -40,7 +40,7 @@ get_estimates <- function(observed_density,
   })
 
   # 2. Weighted smoothed outcome
-  smoothed <- smoothed_outcome[(lag + 1):length(smoothed_outcome)]
+  smoothed <- smoothed_outcome[(lag + 1):length(smoothed_outcome)] #Just smoothed outcomes
   
   # 2-1. Convert smoothed outcomes to arrays (pixels, for each time period)
   mat_im <- sapply(smoothed, function(x) spatstat.geom::as.matrix.im(x))
@@ -48,10 +48,13 @@ get_estimates <- function(observed_density,
   mat_im <- array(mat_im, dim = c(pixels, pixels, length(smoothed)))
   
   # 2-2. Weigh each time period by the weights
-  mat_im_weighted <- sweep(mat_im, MARGIN = 3, STATS = weights, FUN = '*') #Multiply by weights
+  mat_im_weighted <- sweep(mat_im, MARGIN = 3, STATS = weights, FUN = '*') #Weighted smoothed outcomes as matrices
   
   # 2-3. Get average weighted densities
   # Note: Don't use IPW for output (this funciton does not return IPW)
+  weighted_surface_list <- lapply(1:dim(mat_im_weighted)[3], function(x) {
+    spatstat.geom::as.im(mat_im_weighted[, , x], W = entire_window)}) #Weighted surfaces for each time frame (eg, each day)
+
   average_weighted_surface <- spatstat.geom::as.im(apply(mat_im_weighted, c(1, 2), mean), 
                                                    W = entire_window) #This is IPW
   average_weighted_surface_haj <- average_weighted_surface / mean(weights) #Hajek
@@ -78,6 +81,29 @@ get_estimates <- function(observed_density,
       return(spatstat.geom::integral(counter))
   })
   
+  # 4. Obtain the variance bound
+#  cat("Obtaining the variance bound...\n")
+  
+  ## Empty matrix to save output (column = 0-100 percent quantile wrt distance; row = timeframe)
+#  matrix_integrated_weighted_smooth_outcome <- matrix(NA, nrow = length(smoothed), ncol = 101)
+  
+#  pb <- txtProgressBar(min = 0, max = length(distance_owin), style = 3)
+  
+#  for (i in 1:length(distance_owin)) {
+#    counts_based_on_distance_for_each_timeframe <- 
+#      furrr::future_map(weighted_surface_list, function(y) {
+#        counter <- y
+#        spatstat.geom::Window(counter) <- distance_owin[[i]]
+#        return(spatstat.geom::integral(counter))
+#      })
+#    matrix_integrated_weighted_smooth_outcome[, i] <- unlist(counts_based_on_distance_for_each_timeframe)
+    
+    # Update the progress bar
+#    setTxtProgressBar(pb, i)
+#  }
+  
+#  close(pb)
+
   # 4. Then plot (just one scenario; the remainder basically follows get_distance_based_expectation)
   
   cat("Generating a plot...\n")
@@ -203,7 +229,9 @@ get_estimates <- function(observed_density,
               average_expected_events_quantiles = as.numeric(unlist(partial_expectations)), #From 0 to 100% quantiles of areas
               weights = weights, #Weights
               average_weights = mean(weights), #Average weights (for Hajek)
-              plot = entire_plot #Distance based expectations
-              ))
+              plot = entire_plot, #Distance based expectations
+              distance_quantiles = as.numeric(distance_quantiles),
+              expectation_plot = expectation_plot,
+              window_plot = window_plot))
   
 }
