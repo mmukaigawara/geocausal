@@ -7,10 +7,11 @@
 #' @param window An owin object
 #' @param grayscale
 #' @param mile Whether to return the output in miles instead of kilometers
+#' @param preprocess Whether to first pick the potentially closest point (better to set TRUE if there are many points)
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
-                           grayscale, mile){
-  
+                           grayscale, mile, preprocess){
+
   # Convert owin into sp objects  
   window_sp <- convert_owin_into_sf(window)
   polygon <- window_sp[[1]]
@@ -22,14 +23,15 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   # Create sf objects
   point_df <- data.frame(longitude = longitude, latitude = latitude)
   num_points <- nrow(point_df)
-
+  point_sf <- sf::st_as_sf(point_df, coords = c("longitude", "latitude"))
+  
   # Create a raster based on the polygon's extent
   r <- raster::raster(res = 0.1)
   raster::extent(r) <- raster::extent(polygon_sf)
   
   # Define the extent of the raster
   r <- raster::raster(raster::extent(polygon_spdf), resolution = resolution)
-  
+
   # Rasterize the polygon
   r <- raster::rasterize(polygon_spdf, r, field = 1)
   
@@ -40,40 +42,110 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   rast_points <- raster::rasterToPoints(r)
   rast_points <- rast_points[, c(1:2)]
   
-  # Calculate distance for each pixel and take the minimum
-  # Do the same for all the points of interest
-  # Future consideration: Perhaps we might want to pick the closest point roughly (see get_dist_line function)
-
-  progressr::with_progress({
+  # Calculate distance for each pixel
+  
+  if (preprocess) {
     
-    p <- progressr::progressor(steps = length(num_points))
-  
-    point_dists_list <- furrr::future_map(1:num_points, function(j, p) {
-
-      # Distance from a point
-      geosphere::distVincentyEllipsoid(rast_points, point_df[j, ])
-
-    }, p = p)
-  
-  })
-  
-  # Take the minimum
-  point_dists <- do.call(pmin, point_dists_list)
-  
-  # Create a df to store the results
-  
-  if (mile) {
+    # With preprocessing
+    # First, pick a potential line with minimum distance for each point
     
-    dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                          latitude = sp::coordinates(rast_points)[, 2],
-                          distance = point_dists * 0.621371/1000) #miles
+    ## Convert rast points to sf objects
+    rast_points_sf <- furrr::future_map(1:nrow(rast_points), function(k) {
+      sf::st_point(rast_points[k, ])
+    })
+    
+    rast_points_sf <- sf::st_sfc(rast_points_sf)
+    rast_points_sf <- rast_points_sf %>% sf::st_set_crs(sf::st_crs(point_sf))
+    
+    ## Identify line ID with minimum distance for each point
+    point_id_min <- sf::st_nearest_feature(rast_points_sf,
+                                           point_sf)
+    
+    points_covered <- sort(unique(point_id_min)) # Not every point is a candidate
+    
+    # Second, calculate distance from these lines for each point
+    progressr::with_progress({
+      
+      p <- progressr::progressor(steps = length(points_covered))
+      
+      dists_list <- furrr::future_map(1:length(points_covered), function(l, p) {
+        
+        p() #For progress bar
+        
+        # Identify the points with line i as the line with minimum distance
+        rast_point_id <- which(point_id_min == points_covered[l])
+        
+        # Distance from a line
+        suppressWarnings( #Suppress warnings
+          
+          dist <- as.numeric(geosphere::distVincentyEllipsoid(rast_points[rast_point_id, ], 
+                                                              point_df[points_covered[l], ]))
+          
+        )
+        
+        return(cbind(rast_point_id, dist))
+        
+      }, p = p)
+      
+    })
+    
+    dists <- do.call(rbind, dists_list)
+    dists <- dists[order(dists[, 1]), ] #Sort the distance
+    
+    # Create a dataframe
+    
+    if (mile) {
+      
+      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
+                            latitude = sp::coordinates(rast_points)[, 2],
+                            distance = dists[, 2] * 0.621371/1000) #miles
+    } else {
+      
+      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
+                            latitude = sp::coordinates(rast_points)[, 2],
+                            distance = dists[, 2]/1000) #km
+      
+    }
+    
   } else {
     
-    dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                          latitude = sp::coordinates(rast_points)[, 2],
-                          distance = point_dists/1000) #km
+    # Calculate distance for each pixel and take the minimum
+    # Do the same for all the points of interest
+
+    progressr::with_progress({
+      
+      p <- progressr::progressor(steps = length(num_points))
+      
+      point_dists_list <- furrr::future_map(1:num_points, function(j, p) {
+        
+        # Distance from a point
+        geosphere::distVincentyEllipsoid(rast_points, point_df[j, ])
+        
+      }, p = p)
+      
+    })
+    
+    # Take the minimum
+    
+    point_dists <- do.call(pmin, point_dists_list)
+    
+    # Create a dataframe
+    
+    if (mile) {
+      
+      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
+                            latitude = sp::coordinates(rast_points)[, 2],
+                            distance = point_dists * 0.621371/1000) #miles
+    } else {
+      
+      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
+                            latitude = sp::coordinates(rast_points)[, 2],
+                            distance = point_dists/1000) #km
+      
+    }
     
   }
+  
   
   # Generate a plot
   
