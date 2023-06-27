@@ -109,7 +109,7 @@ causal_contrast <- get_causal_contrasts(estimates_scenario_1 = estimates_counter
 causal_contrast$plot
 ```
 
-How about from outcome locations?
+How about from outcome locations? Or multiple maps at once?
 
 
 

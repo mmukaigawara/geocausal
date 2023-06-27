@@ -117,9 +117,10 @@ counterfactual_multiply$plot
 dist_from_focus <- get_dist_focus(window = iraq_window,
                                   longitude = c(43.158),
                                   latitude = c(36.349), #Coodinates (lon and lat) of Mosul
-                                  resolution = 0.02,
+                                  resolution = 0.02, #Pick 0.02 or 0.01 (0.01 is more demanding)
                                   grayscale = FALSE,
-                                  mile = FALSE)
+                                  mile = FALSE,
+                                  preprocess = FALSE)
 
 dist_from_focus$plot #ggplot
 ```
@@ -131,7 +132,8 @@ dist_from_focus2 <- get_dist_focus(window = iraq_window,
                                    latitude = c(33.315, 36.349),
                                    resolution = 0.02,
                                    grayscale = FALSE,
-                                   mile = FALSE)
+                                   mile = FALSE,
+                                   preprocess = FALSE) #Set preprocess = FALSE if there are not so many points
 
 dist_from_focus2$plot
 ```
@@ -140,11 +142,15 @@ dist_from_focus2$plot
 dist_from_actual_points <- get_dist_focus(window = iraq_window,
                                           longitude = airstr_base$longitude, #Observed data points
                                           latitude = airstr_base$latitude,
-                                          resolution = 0.02,
+                                          resolution = 0.01,
                                           grayscale = FALSE,
-                                          mile = FALSE)
+                                          mile = FALSE,
+                                          preprocess = TRUE)
 
-dist_from_focus2$plot
+dist_from_actual_points$plot
+
+dist_actual_points <- exp(-dist_from_actual_points[[1]]/1000)/spatstat.geom::integral(dist_from_actual_points[[1]])
+plot(dist_actual_points)
 ```
 
 Convert to Gaussian then
