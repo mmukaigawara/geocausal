@@ -7,9 +7,10 @@
 #' @param window An owin object
 #' @param grayscale
 #' @param mile Whether to return the output in miles instead of kilometers
+#' @param preprocess Whether to pick a roughly closest object first (by default, TRUE)
 
 get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
-                          grayscale, mile, resolution, preprocess, ...){
+                          grayscale, mile, resolution, preprocess = TRUE, ...){
   
   # Convert owin into sp objects -----
   window_sp <- convert_owin_into_sf(window)

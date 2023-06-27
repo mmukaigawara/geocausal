@@ -10,7 +10,7 @@
 #' @param preprocess Whether to first pick the potentially closest point (better to set TRUE if there are many points)
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
-                           grayscale, mile, preprocess, ...){
+                           grayscale, mile, preprocess = FALSE, ...){
 
   # Convert owin into sp objects  
   window_sp <- convert_owin_into_sf(window)
