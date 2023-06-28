@@ -34,6 +34,7 @@ vis_hfr <- function(hfr,
   num_outcome_columns <- ncol(hfr_cleaned) - 1 #Subtract 1 d/t time column
   
   # Convert window to df
+  window <- spatstat.geom::Window(hfr_cleaned[1, which(colnames(hfr_cleaned) == subtype_column[1])][[1]])
   window_sp <- convert_owin_into_sf(window)
   polygon_df <- window_sp[[2]]
   
@@ -64,13 +65,13 @@ vis_hfr <- function(hfr,
     dat <- hfr_cleaned[1, 2][[1]] #Convert points to df
     df <- data.frame(longitude = dat$x, latitude = dat$y)
     
-    gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+    gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
       ggplot2::geom_point(shape = 1, size = 1.5) +
       ggplot2::coord_quickmap() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
       ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis, ")")) +
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
     ## If image -> TBD
     
@@ -96,15 +97,15 @@ vis_hfr <- function(hfr,
     
     df <- do.call(rbind, df_list)
     
-    gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+    gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
       ggplot2::geom_point(shape = 1, size = 1.5) +
       ggplot2::coord_quickmap() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
       ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), "\n(", time_vis, ")")) +
-      theme(strip.text = element_text(hjust = 0.5, face = "bold"),
-            strip.background = element_rect(fill = "white", color = "white"),
-            plot.title = element_text(hjust = 0.5, face = "bold")) +
+      ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
+                     strip.background = element_rect(fill = "white", color = "white"),
+                     plot.title = element_text(hjust = 0.5, face = "bold")) +
       ggplot2::facet_wrap(vars(subtype))
     
     ## If Image -> TBD
@@ -127,13 +128,13 @@ vis_hfr <- function(hfr,
       
       df <- do.call(rbind, df_list)
       
-      gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+      gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
         ggplot2::geom_point(shape = 1, size = 1.5) +
         ggplot2::coord_quickmap() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
         ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+        ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
       
     } else {
       
@@ -153,15 +154,15 @@ vis_hfr <- function(hfr,
       
       df <- do.call(rbind, df_list)
       
-      gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+      gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
         ggplot2::geom_point(shape = 1, size = 1.5) +
         ggplot2::coord_quickmap() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
         ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
-        theme(strip.text = element_text(hjust = 0.5, face = "bold"),
-              strip.background = element_rect(fill = "white", color = "white"),
-              plot.title = element_text(hjust = 0.5, face = "bold")) +
+        ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
+                       strip.background = element_rect(fill = "white", color = "white"),
+                       plot.title = element_text(hjust = 0.5, face = "bold")) +
         ggplot2::facet_wrap(vars(time_period))
       
     }
@@ -194,16 +195,16 @@ vis_hfr <- function(hfr,
     
     df <- do.call(rbind, df_list)
     
-    gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+    gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
       ggplot2::geom_point(shape = 1, size = 1.5) +
       ggplot2::coord_quickmap() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
       ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), 
                               "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
-      theme(strip.text = element_text(hjust = 0.5, face = "bold"),
-            strip.background = element_rect(fill = "white", color = "white"),
-            plot.title = element_text(hjust = 0.5, face = "bold")) +
+      ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
+                     strip.background = element_rect(fill = "white", color = "white"),
+                     plot.title = element_text(hjust = 0.5, face = "bold")) +
       ggplot2::facet_wrap(vars(subtype))
     
     ## If Image -> TBD  
