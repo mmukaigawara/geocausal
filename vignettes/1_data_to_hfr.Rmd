@@ -173,28 +173,15 @@ To use this function, you need to specify the following:
 - <tt>hfr</tt>: the name of the hyperframe;
 - <tt>subtype_column</tt>: the name of the column that specifies subtypes (of treatment or outcome);
 - <tt>time_column</tt>: the name of the column for time;
-- <tt>time_range</tt>: the range of time periods of your interest;
-- <tt>combined</tt>: whether you want to combine all observations as one plot; and
-- <tt>marks</tt>: whether to use the same mark (if combined = TRUE).
+- <tt>time_range</tt>: the range of time periods of your interest; and
+- <tt>combined</tt>: whether you want to combine all observations as one plot.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 vis_hfr(hfr = treatment_hfr,
-        subtype_column = "Airstrike",
+        subtype_column = c("Airstrike", "SOF"),
         time_column = "time",
         range = c("2007-02-23", "2007-02-28"),
-        combined = TRUE,
-        marks = TRUE) 
-```
-
-If you specify <tt>marks = FALSE</tt>, then each day is represented by different shapes.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-vis_hfr(hfr = treatment_hfr,
-        subtype_column = "Airstrike",
-        time_column = "time",
-        range = c("2007-02-23", "2007-02-28"),
-        combined = TRUE,
-        marks = FALSE)
+        combined = TRUE) 
 ```
 
 By setting <tt>combined = FALSE</tt>, you can also use this function to generate separate plots for each date.
