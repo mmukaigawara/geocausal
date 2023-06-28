@@ -6,7 +6,6 @@
 #' @param subtype_column A column of interest
 #' @param time_range The range of dates (e.g., c("2007-02-23", "2007-02-28"))
 #' @param combined Whether to combine all the point processes to one plot. By default = TRUE
-#' @param marks For a combined plot, whether to use the same marks. By default = FALSE
 #' @param scale_max Choose the maximum of the color scale (for visualizing images; by default = 100)
 
 vis_hfr <- function(hfr,
@@ -14,85 +13,208 @@ vis_hfr <- function(hfr,
                     time_column = "time",
                     range,
                     combined = TRUE,
-                    marks = FALSE,
                     scale_max = 100) {
-
-  # Clean the data ----------
+  
+  # Clean the hyperframe -----
   hfr_temp <- hfr
-
-  if (is.na(time_column) == FALSE) {
-
-    time_id <- which(names(hfr_temp) == time_column)
-    names(hfr_temp)[time_id] <- "time"
-    min_row <- which(hfr_temp$time == range[1])
-    max_row <- which(hfr_temp$time == range[2])
-
-  } else {
-    # If no time is specified, then simply use row IDs
-    min_row <- range[1]
-    max_row <- range[2]
-
-  }
-
-  Outcome_id <- which(names(hfr_temp) == subtype_column)
-  names(hfr_temp)[Outcome_id] <- "Outcome"
-
-  all_rows <- seq(min_row, max_row, by = 1)
-
-  hfr_temp <- hfr_temp[all_rows, ]
-
-  # If the object is smoothed outcomes (ie, pixel images) ----------
-  if (class(hfr_temp$Outcome)[1] == "imlist") {
-
-    if (combined == FALSE) {
-
-      plot_out <- plot(hfr_temp[, "Outcome"],
-                       main = paste0(subtype_column, " from ", range[1], " to ", range[2]),
-                       zlim = c(0, scale_max))
-
-    } else if (combined == TRUE) {
-
-      hfr_temp_selected <- hfr_temp[1, "Outcome"]
-
-      # First add up smoothed outcomes (add v of all density.ppp outputs)
-      smoothed_base <- hfr_temp$Outcome[[1]]$v
-
-      for (ii in 2 : length(all_rows)) {
-        smoothed_base <- smoothed_base + hfr_temp$Outcome[[ii]]$v
-      }
-
-      # Then use it for visualization
-      hfr_temp_selected$Outcome[[1]]$v <- smoothed_base
-
-      plot_out <- plot(hfr_temp_selected[, "Outcome"],
-                       main = paste0(subtype_column, "\n(", range[1], " - ", range[2], ")"),
-                       zlim = c(0, scale_max))
-
+  
+  if (length(range) == 1) { all_rows <- as.Date(range) } else 
+  { all_rows <- seq(min(as.Date(range)), max(as.Date(range)), by = 1)} #Sequence of all rows
+  
+  time_id <- which(names(hfr_temp) == time_column)
+  names(hfr_temp)[time_id] <- "time" #Rename the time column
+  
+  row_id <- which(hfr_temp$time %in% all_rows) #Obtain the time period row IDs
+  outcome_id <- which(names(hfr_temp) %in% subtype_column) #Obtain the outcome column IDs
+  
+  hfr_cleaned <- hfr_temp[row_id, c(time_id, outcome_id)] #Return necessary portions of hfr
+  
+  # Visualization (preparation) -----
+  num_time_period <- nrow(hfr_cleaned)
+  num_outcome_columns <- ncol(hfr_cleaned) - 1 #Subtract 1 d/t time column
+  
+  # Convert window to df
+  window_sp <- convert_owin_into_sf(window)
+  polygon_df <- window_sp[[2]]
+  
+  # Function for grayscaling (for density plot only)
+  convert_to_grayscale <- function(ggplot_object, grayscale) {
+    
+    if (grayscale) {
+      ggplot_obj <- ggplot_object +
+        ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
+    } else {
+      ggplot_obj <- ggplot_object +
+        ggplot2::scale_fill_viridis_c(option = "plasma")
     }
-
-  # If the object is point processes (ie, ppp) ----------
-
-  } else if (class(hfr_temp$Outcome)[1] == "ppplist")
-
-  if (combined == FALSE) {
-
-    plot_out <- plot(hfr_temp[, "Outcome"],
-                     main = paste0(subtype_column, " from ", range[1], " to ", range[2]))
-
-  } else if (combined == TRUE) {
-
-    out <- do.call(eval(parse(text = "spatstat.geom::superimpose")),
-                   hfr_temp$Outcome)
-
-    if (marks == TRUE) {
-      out$marks <- NULL # If marks = TRUE, use the same shape for all dates
-      }
-
-    plot_out <- plot(out, main = paste0(subtype_column, " from ",
-                                        range[1], " to ", range[2]))
-
+    
+    return(ggplot_obj)
+    
   }
-
-  return(plot_out)
-
+  
+  # Visualization (four patterns wrt time periods and outcome columns) -----
+  
+  if (num_time_period == 1 && num_outcome_columns == 1) {
+    
+    # Case 1: One time period x One outcome column
+    
+    ## If ppp
+    outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
+    time_vis <- hfr_cleaned$time[1]$time #Time period to visualize
+    dat <- hfr_cleaned[1, 2][[1]] #Convert points to df
+    df <- data.frame(longitude = dat$x, latitude = dat$y)
+    
+    gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+      ggplot2::geom_point(shape = 1, size = 1.5) +
+      ggplot2::coord_quickmap() +
+      ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
+      ggthemes::theme_map() +
+      ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis, ")")) +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    
+    ## If image -> TBD
+    
+  } else if (num_time_period == 1 && num_outcome_columns > 1) {
+    
+    # Case 2: One time period x Multiple outcome columns
+    
+    ## If ppp
+    outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
+    time_vis <- hfr_cleaned$time[1]$time #Time period to visualize
+    
+    df_list <- lapply(outcome_name, function(i) {
+      dat <- hfr_cleaned[1, which(outcome_name == i) + 1][[1]] #Convert points to df
+      df <- data.frame(longitude = dat$x, latitude = dat$y, subtype = i)
+      
+      if (length(dat$x) != 0) {
+        df <- df
+      } else {
+        df <- data.frame(longitude = NA, latitude = NA, subtype = i)
+      }
+      
+    })
+    
+    df <- do.call(rbind, df_list)
+    
+    gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+      ggplot2::geom_point(shape = 1, size = 1.5) +
+      ggplot2::coord_quickmap() +
+      ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
+      ggthemes::theme_map() +
+      ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), "\n(", time_vis, ")")) +
+      theme(strip.text = element_text(hjust = 0.5, face = "bold"),
+            strip.background = element_rect(fill = "white", color = "white"),
+            plot.title = element_text(hjust = 0.5, face = "bold")) +
+      ggplot2::facet_wrap(vars(subtype))
+    
+    ## If Image -> TBD
+    
+  } else if (num_time_period > 1 && num_outcome_columns == 1) {
+    
+    # Case 3: Multiple time periods x One outcome column
+    
+    ## If ppp
+    outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
+    time_vis <- hfr_cleaned$time #Time period to visualize
+    
+    ### If combined (everything in one plot)
+    if (combined) {
+      
+      df_list <- lapply(time_vis, function(x) {
+        dat <- hfr_cleaned[which(time_vis == x), 2][[1]] #Convert points to df
+        df <- data.frame(longitude = dat$x, latitude = dat$y)
+      })
+      
+      df <- do.call(rbind, df_list)
+      
+      gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+        ggplot2::geom_point(shape = 1, size = 1.5) +
+        ggplot2::coord_quickmap() +
+        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
+        ggthemes::theme_map() +
+        ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      
+    } else {
+      
+      ### If not combined
+      
+      df_list <- lapply(time_vis, function(i) {
+        dat <- hfr_cleaned[which(time_vis == i), 2][[1]] #Convert points to df
+        df <- data.frame(longitude = dat$x, latitude = dat$y, time_period = rep(i, length(dat$x)))
+        
+        if (length(dat$x) != 0) {
+          df <- df
+        } else {
+          df <- data.frame(longitude = NA, latitude = NA, time_period = i)
+        }
+        
+      })
+      
+      df <- do.call(rbind, df_list)
+      
+      gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+        ggplot2::geom_point(shape = 1, size = 1.5) +
+        ggplot2::coord_quickmap() +
+        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
+        ggthemes::theme_map() +
+        ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+        theme(strip.text = element_text(hjust = 0.5, face = "bold"),
+              strip.background = element_rect(fill = "white", color = "white"),
+              plot.title = element_text(hjust = 0.5, face = "bold")) +
+        ggplot2::facet_wrap(vars(time_period))
+      
+    }
+    
+    ## If Image -> TBD
+    
+  } else if (num_time_period > 1 && num_outcome_columns > 1) {
+    
+    # Case 4: Mutliple time periods x Multiple outcome columns
+    
+    ## If ppp
+    outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
+    time_vis <- hfr_cleaned$time #Time period to visualize
+    
+    i <- outcome_name[1]
+    
+    df_list <- lapply(outcome_name, function(i) {
+      dat <- hfr_cleaned[, which(outcome_name == i) + 1][[1]] #Convert points to df
+      
+      df_list_internal <- lapply(time_vis, function(j) {
+        df_internal <- data.frame(longitude = dat[[which(time_vis == j)]]$x,
+                                  latitude = dat[[which(time_vis == j)]]$y,
+                                  subtype = rep(i, length(dat[[which(time_vis == j)]]$x))) 
+        
+      })
+      
+      df <- do.call(rbind, df_list_internal)
+      
+    })
+    
+    df <- do.call(rbind, df_list)
+    
+    gg <- ggplot(data = df, aes(x = longitude, y = latitude)) +
+      ggplot2::geom_point(shape = 1, size = 1.5) +
+      ggplot2::coord_quickmap() +
+      ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
+      ggthemes::theme_map() +
+      ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), 
+                              "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+      theme(strip.text = element_text(hjust = 0.5, face = "bold"),
+            strip.background = element_rect(fill = "white", color = "white"),
+            plot.title = element_text(hjust = 0.5, face = "bold")) +
+      ggplot2::facet_wrap(vars(subtype))
+    
+    ## If Image -> TBD  
+    
+  }
+  
+  # If the object is smoothed outcomes (ie, pixel images) ----------
+  #if (class(hfr_temp$Outcome)[1] == "imlist") {
+  # If the object is point processes (ie, ppp) ----------
+  #} else if (class(hfr_temp$Outcome)[1] == "ppplist")
+  
+  return(gg)
+  
 }
