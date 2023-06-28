@@ -22,6 +22,7 @@ Imports:
     mclust,
     lubridate,
     stars,
+    ggplot2,
     ggthemes,
     ggpubr,
     RColorBrewer,
