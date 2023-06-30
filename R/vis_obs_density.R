@@ -15,8 +15,10 @@
 
 vis_obs_density <- function(actual_data,
                             density_1, density_2 = NA, density_3 = NA,
-                            color_actual,
-                            color_dens_1, color_dens_2, color_dens_3,
+                            color_actual = "darkgrey",
+                            color_dens_1 = "#D55E00", 
+                            color_dens_2 = "#0072B2", 
+                            color_dens_3 = "#009E73",
                             time_unit) {
   
   # Obtain the actual counts 
@@ -34,11 +36,19 @@ vis_obs_density <- function(actual_data,
     
     plot_compare <- plot_data %>%
       ggplot2::ggplot() +
-      ggplot2::geom_line(aes(x = time, y = actual_counts), color = color_actual) +
-      ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1) +
-      theme_bw() + labs(title = "Actual vs. predicted counts", x = time_unit, y = "Count")
+      ggplot2::geom_line(aes(x = time, y = actual_counts), color = color_actual, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1, size = 0.6) +
+      theme_bw() + labs(title = "Actual vs. Predicted Counts", x = time_unit, y = "Count") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
-    return(list(plot_data, plot_compare))
+    plot_residual <- plot_data %>%
+      ggplot2::ggplot() +
+      ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts - actual_counts), color = color_dens_1, size = 0.6) +
+      theme_bw() + labs(title = "Residual Plot", x = time_unit, y = "Predicted - Actual Counts") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    
+    return(list(plot_data = plot_data, plot_compare = plot_compare, plot_residual = plot_residual))
     
   } else if (is.na(density_3)[1]) {
     
@@ -54,12 +64,21 @@ vis_obs_density <- function(actual_data,
     
     plot_compare <- plot_data %>%
       ggplot2::ggplot() +
-      ggplot2::geom_line(aes(x = time, y = actual_counts), color = color_actual) +
-      ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1) +
-      ggplot2::geom_line(aes(x = time, y = predicted_counts_2), color = color_dens_2) +
-      theme_bw() + labs(title = "Actual vs. predicted counts", x = time_unit, y = "Count")
+      ggplot2::geom_line(aes(x = time, y = actual_counts), color = color_actual, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts_2), color = color_dens_2, size = 0.6) +
+      theme_bw() + labs(title = "Actual vs. Predicted Counts", x = time_unit, y = "Count") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
-    return(list(plot_data, plot_compare))
+    plot_residual <- plot_data %>%
+      ggplot2::ggplot() +
+      ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts - actual_counts), color = color_dens_1, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts_2 - actual_counts), color = color_dens_2, size = 0.6) +
+      theme_bw() + labs(title = "Residual Plot", x = time_unit, y = "Predicted - Actual Counts") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    
+    return(list(plot_data = plot_data, plot_compare = plot_compare, plot_residual = plot_residual))
     
   } else {
     
@@ -77,13 +96,23 @@ vis_obs_density <- function(actual_data,
     
     plot_compare <- plot_data %>%
       ggplot2::ggplot() +
-      ggplot2::geom_line(aes(x = time, y = actual_counts), color = color_actual) +
-      ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1) +
-      ggplot2::geom_line(aes(x = time, y = predicted_counts_2), color = color_dens_2) +
-      ggplot2::geom_line(aes(x = time, y = predicted_counts_3), color = color_dens_3) +
-      theme_bw() + labs(title = "Actual vs. predicted counts", x = time_unit, y = "Count")
+      ggplot2::geom_line(aes(x = time, y = actual_counts), color = color_actual, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts_2), color = color_dens_2, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts_3), color = color_dens_3, size = 0.6) +
+      theme_bw() + labs(title = "Actual vs. Predicted Counts", x = time_unit, y = "Count") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
-    return(list(plot_data, plot_compare))
+    plot_residual <- plot_data %>%
+      ggplot2::ggplot() +
+      ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts - actual_counts), color = color_dens_1, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts_2 - actual_counts), color = color_dens_2, size = 0.6) +
+      ggplot2::geom_line(aes(x = time, y = predicted_counts_3 - actual_counts), color = color_dens_3, size = 0.6) +
+      theme_bw() + labs(title = "Residual Plot", x = time_unit, y = "Predicted - Actual Counts") +
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    
+    return(list(plot_data = plot_data, plot_compare = plot_compare, plot_residual = plot_residual))
     
   }
   
