@@ -131,27 +131,30 @@ The output is a list, whose first element is the dataframe that is used to gener
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_compare <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
                                 density_1 = obs_density, density_2 = NA,
-                                color_actual = "darkgray", color_dens_1 = "red",
                                 time_unit = "Days")
 
-# Second element is the plot (the first element is the dataframe)
-plot_compare[[2]] +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 435, y = 20, size = 4, color = "red")
+plot_compare$plot_compare +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgrey") +
+  annotate("text", label = "Predicted", x = 435, y = 20, size = 4, color = "#D55E00")
+
+plot_compare$plot_residual
 ```
 
-Just in case, let's try if the changes in the number of grid cells can affect the estimates. Even if we increase the number of grid cells from 100 to 200, the results do not differ substantially.
+Just in case, let's try if the changes in the number of grid cells can affect the estimates. Even if we increase the number of grid cells from 100 to 200, the results do not differ substantially (red = 100, blue = 200).
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 obs_density_res <- get_obs_density(dat_hfr, "Airstrike", rhs_var, ngrid = 200, iraq_window)
 ##saveRDS(obs_density_res, file = "~/geocausal/Data/obs_density_res.rds")
+```
 
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_compare_double_grid <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
                                             density_1 = obs_density, density_2 = obs_density_res,
-                                            color_actual = "darkgray", color_dens_1 = "red", color_dens_2 = "blue",
                                             time_unit = "Days")
 
-plot_compare_double_grid[[2]]
+plot_compare_double_grid$plot_compare
+
+plot_compare_double_grid$plot_residual
 ```
 
 Why do results remain the same? This can be easily understood by visualizing the grid-cell-level intensities. As you can see, the intensity is almost the same as the one we obtained by setting <tt>ngrid = 100</tt>.
@@ -160,35 +163,14 @@ Why do results remain the same? This can be easily understood by visualizing the
 plot(obs_density_res$intensity_grid_cells[1], main = "Intensity (Grid cells)")
 ```
 
-And here's the residual plot.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-# Construct the residual data using the first element of plot_compare_double_plot
-data_compare_residual <- plot_compare_double_grid[[1]] %>%
-  dplyr::mutate(res_ng_100 = predicted_counts - actual_counts,
-                res_ng_200 = predicted_counts_2 - actual_counts)
-
-# Plot
-plot_compare_residual <- ggplot(data_compare_residual) +
-  geom_line(aes(x = time, y = res_ng_100), color = "red") +
-  geom_line(aes(x = time, y = res_ng_200), color = "blue") +
-  theme_bw() +
-  annotate("text", label = "Predicted\n(ngrid = 100)", x = 400, y = 70, size = 4, color = "red") +
-  annotate("text", label = "Predicted\n(ngrid = 200)", x = 430, y = 40, size = 4, color = "blue") +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(title = "Residual plot comparing ngrid = 100 and 200", x = "Days", y = "Residual") + ylim(-100, 100)
-
-plot_compare_residual
-```
-
 # Out-of-sample prediction
 
-Then let's turn to do some out-of-sample prediction. In this vignette, we do the following experiments.
+Then let's turn to check out-of-sample prediction. In this vignette, we do the following experiments.
 
 1. Dividing into test and training set and fitting the model to the training set
 2. Using the entire data to fit the model, and then applying it to a subset of the data (eg, Baghdad)
 
-To do this, we use a function called <tt>predict_obs_density</tt>. This function is basically the same as <tt>get_obs_density</tt> function, except for the fact that now we have <tt>ratio</tt> argument.
+To do this, we use a function called <tt>predict_obs_density</tt>. This function is basically the same as <tt>get_obs_density</tt> function, except for <tt>ratio</tt> argument to split out training and test samples.
 
 ## Using a subset of data to fit the model
 
@@ -212,45 +194,33 @@ obs_density_7 <- predict_obs_density(dat_hfr, ratio = 0.7, "Airstrike",
 
 # Plot
 plot_out_of_sample <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
-                                      density_1 = obs_density, density_2 = obs_density_8, density_3 = obs_density_7,
-                                      color_actual = "darkgray", 
-                                      color_dens_1 = "red", color_dens_2 = "blue",  color_dens_3 = "green4",
+                                      density_1 = obs_density, 
+                                      density_2 = obs_density_8, 
+                                      density_3 = obs_density_7,
                                       time_unit = "Days")
 
-plot_out_of_sample[[2]] +
+plot_out_of_sample$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "red") +
-  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
-  annotate("text", label = "Out-of-sample\n(80%)", x = 390, y = 50, size = 4, color = "blue") +
-  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
-  annotate("text", label = "Out-of-sample\n(70%)", x = 415, y = 80, size = 4, color = "green4") +
-  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4")
+  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "#D55E00") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "#D55E00") +
+  annotate("text", label = "Out-of-sample\n(80%)", x = 390, y = 50, size = 4, color = "#0072B2") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "#0072B2") +
+  annotate("text", label = "Out-of-sample\n(70%)", x = 415, y = 80, size = 4, color = "#009E73") +
+  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "#009E73")
 ```
 
 The residual plot can be found below.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-# Construct the residual data using the first element of plot_compare_double_plot
-data_out_of_sample_residual <- plot_out_of_sample[[1]] %>%
-  dplyr::mutate(res_pred = predicted_counts - actual_counts,
-                res_out_8 = predicted_out_8 - actual_counts,
-                res_out_7 = predicted_out_7 - actual_counts)
-
-plot_out_of_sample_residual <- ggplot(data_out_of_sample_residual) +
-  geom_line(aes(x = time, y = res_pred), color = "red") +
-  geom_line(aes(x = time, y = res_out_8), color = "blue") +
-  geom_line(aes(x = time, y = res_out_7), color = "green4") +
-  theme_bw() +
-  annotate("text", label = "Predicted", x = 430, y = -25, size = 4, color = "red") +
-  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
-  annotate("text", label = "Out-of-sample\n(80%)", x = 430, y = -50, size = 4, color = "blue") +
-  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
-  annotate("text", label = "Out-of-sample\n(70%)", x = 420, y = 80, size = 4, color = "green4") +
-  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4") +
+plot_out_of_sample$plot_residual +
+  annotate("text", label = "Predicted", x = 430, y = -25, size = 4, color = "#D55E00") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "#D55E00") +
+  annotate("text", label = "Out-of-sample\n(80%)", x = 430, y = -50, size = 4, color = "#0072B2") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "#0072B2") +
+  annotate("text", label = "Out-of-sample\n(70%)", x = 420, y = 80, size = 4, color = "#009E73") +
+  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "#009E73") +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(title = "Residual plot comparing 80% and 70% allocations", x = "Days", y = "Residual") + ylim(-100, 100)
-
-plot_out_of_sample_residual
 ```
 
 The out-of-sample prediction is not going well, particularly when we use the first 70% of the data to fit the model. We will revisit this issue later.
