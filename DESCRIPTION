@@ -18,7 +18,7 @@ Authors@R: c(
     person("Georgia", "Papadogeorgou", 
            email = "gpapadogeorgou@ufl.edu", 
            role = "aut",
-           comment = c(ORCID = "0000-0002-1982-2245")),
+           comment = c(ORCID = "0000-0002-1982-2245")))
 Maintainer: Mitsuru Mukaigawara <mitsuru_mukaigawara@g.harvard.edu>
 Description: Spatio-temporal causal inference based on point process data. 
     You provide the raw data of locations and timings of treatment and 
