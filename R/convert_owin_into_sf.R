@@ -1,11 +1,10 @@
 #' Function: convert_owin_into_sf
 #'
-#' A function that takes an owin object and returns sf-related objects
-#'
-#' @param expected_number The expected number of observations.
-#' @param baseline_density The baseline density (an im object)
-#' @param power_density The power density (an im object)
+#' @description A function that takes an owin object and returns sf-related objects
+#' 
 #' @param window An owin object
+#' 
+#' @returns A list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame objects
 
 convert_owin_into_sf <- function(window) {
   

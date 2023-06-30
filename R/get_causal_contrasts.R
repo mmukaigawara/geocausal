@@ -2,7 +2,8 @@
 #'
 #' A function that returns a figure with causal contrasts
 #'
-#' @param counterfactual_density_1 A counterfactual density (same for _2)
+#' @param estimates_scenario_1 A counterfactual scenario
+#' @param estimates_scenario_2 Another counterfactual scenario
  
 get_causal_contrasts <- function(estimates_scenario_1, #Contrast = scenario 2 - scenario 1
                                  estimates_scenario_2,

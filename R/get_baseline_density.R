@@ -1,12 +1,13 @@
 #' Function: get_baseline_density
 #'
-#' A function that takes a dataframe and returns the baseline densities
-#' using Scott's rule of thumb
+#' @description A function that takes a dataframe and returns the baseline densities using Scott's rule of thumb
 #'
 #' @param data A dataframe
 #' @param coordinates A vector of column names for longitudes and latitudes (in this order)
-#' @param indep_var A vector of names of independent variables
 #' @param window The window object of interest
+#' @param grayscale Whether to return a plot in grayscale (by default, FALSE)
+#' 
+#' @returns A list of density (im object), its plot (ggplot), and a plot of original data (points; ggplot)
 
 get_baseline_density <- function(data, 
                                  coordinates = c("longitude", "latitude"),
