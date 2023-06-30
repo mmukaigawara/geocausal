@@ -34,9 +34,9 @@ get_estimates(
 
 \item{distance_map_unit}{"km" or "mile"}
 
-\item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
+\item{grayscale}{Whether to use grayscale}
 
-\item{gray_scale}{Whether to use grayscale}
+\item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
 }
 \value{
 A list of an im object (weighted surface), counts of expected outcome events, weights, and plots

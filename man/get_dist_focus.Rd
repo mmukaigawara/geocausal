@@ -29,6 +29,8 @@ get_dist_focus(
 \item{mile}{Whether to return the output in miles instead of kilometers}
 
 \item{preprocess}{Whether to first pick the potentially closest point (better to set TRUE if there are many points)}
+
+\item{...}{Other parameters}
 }
 \value{
 A list of an im object and a corresponding ggplot object

@@ -25,9 +25,9 @@ get_distance_based_expectation(
 
 \item{distance_map_unit}{km or mile}
 
-\item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
+\item{grayscale}{Whether to use grayscale}
 
-\item{gray_scale}{Whether to use grayscale}
+\item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
 }
 \value{
 A ggplot object that summarizes how expectations change over distances from the focus

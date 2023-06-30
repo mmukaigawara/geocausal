@@ -29,6 +29,8 @@ get_dist_line(
 \item{resolution}{The resolution of raster objects}
 
 \item{preprocess}{Whether to pick a roughly closest object first (by default, TRUE)}
+
+\item{...}{Other parameters}
 }
 \value{
 A list of an im object and a corresponding ggplot object

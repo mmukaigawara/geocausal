@@ -21,7 +21,7 @@ simulate_counterfactual_density(
 
 \item{window}{An owin object}
 
-\item{gray_scale}{By default, FALSE}
+\item{grayscale}{By default, FALSE}
 }
 \value{
 A list of density, plot, and priorities
