@@ -2,11 +2,30 @@ Package: geocausal
 Type: Package
 Title: Causal Inference with Spatio-Temporal Data
 Version: 0.1.0
-Author: Who wrote it
+Authors@R: c(
+    person("Mitsuru", "Mukaigawara", 
+           email = "mitsuru_mukaigawara@g.harvard.edu", 
+           role = c("cre", "aut"),
+           comment = c(ORCID = "0000-0001-6530-2083")),
+    person("Kosuke", "Imai", 
+           email = "imai@harvard.edu", 
+           role = "aut",
+           comment = c(ORCID = "0000-0002-2748-1022")),
+    person("Jason", "Lyall", 
+           email = "Jason.Lyall@dartmouth.edu", 
+           role = "aut",
+           comment = c(ORCID = "0000-0001-9117-7503")),
+    person("Georgia", "Papadogeorgou", 
+           email = "gpapadogeorgou@ufl.edu", 
+           role = "aut",
+           comment = c(ORCID = "0000-0002-1982-2245")),
 Maintainer: Mitsuru Mukaigawara <mitsuru_mukaigawara@g.harvard.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Spatio-temporal causal inference based on point process data. 
+    You provide the raw data of locations and timings of treatment and 
+    outcome events, specify counterfactual scenarios, and the package 
+    estimates causal effects.
 License: `use_mit_license()`
+URL: https://www.github.com/mmukaigawara/geocausal
 Encoding: UTF-8
 LazyData: true
 Suggests: 
