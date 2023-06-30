@@ -48,3 +48,4 @@ Imports:
     latex2exp,
     geosphere,
     raster
+RoxygenNote: 7.2.2
