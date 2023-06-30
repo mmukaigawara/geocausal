@@ -9,6 +9,7 @@
 #' @param resolution The resolution of raster objects
 #' @param mile Whether to return the output in miles instead of kilometers
 #' @param preprocess Whether to pick a roughly closest object first (by default, TRUE)
+#' @param ... Other parameters
 #' 
 #' @returns A list of an im object and a corresponding ggplot object
 

@@ -9,6 +9,7 @@
 #' @param grayscale Whether to use grayscale
 #' @param mile Whether to return the output in miles instead of kilometers
 #' @param preprocess Whether to first pick the potentially closest point (better to set TRUE if there are many points)
+#' @param ... Other parameters
 #'
 #' @returns A list of an im object and a corresponding ggplot object
 

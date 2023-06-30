@@ -8,7 +8,7 @@
 #' @param density_of_interest A density that is being manipulated
 #' @param distance_map An image object whose cell values are the distance from the focus (e.g., city)
 #' @param distance_map_unit km or mile
-#' @param gray_scale Whether to use grayscale
+#' @param grayscale Whether to use grayscale
 #' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
 #' 
 #' @returns A ggplot object that summarizes how expectations change over distances from the focus

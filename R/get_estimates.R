@@ -11,7 +11,7 @@
 #' @param entire_window An owin object (the entire region of interest)
 #' @param distance_map An im object
 #' @param distance_map_unit "km" or "mile"
-#' @param gray_scale Whether to use grayscale
+#' @param grayscale Whether to use grayscale
 #' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
 #' 
 #' @returns A list of an im object (weighted surface), counts of expected outcome events, weights, and plots

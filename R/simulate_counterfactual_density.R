@@ -7,7 +7,7 @@
 #' @param baseline_density The baseline density (an im object)
 #' @param power_simulation_results The results obtained by simulate_power_density function
 #' @param window An owin object
-#' @param gray_scale By default, FALSE
+#' @param grayscale By default, FALSE
 #' 
 #' @returns A list of density, plot, and priorities
 
