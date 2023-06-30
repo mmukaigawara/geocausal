@@ -107,20 +107,20 @@ Additionally, just as we did for the hyperframe, we can run <tt>vis_hfr</tt> fun
 dat_hfr$smooth_IED <- smooth_IED
 
 # Run vis_hfr function (combined, max scale = 200)
-vis_hfr(hfr = dat_hfr,
-        subtype_column = "smooth_IED",
-        time_column = "time",
-        range = c("2007-02-23", "2007-02-28"),
-        combined = TRUE,
-        scale_max = 200)
+#vis_hfr(hfr = dat_hfr,
+#        subtype_column = "smooth_IED",
+#        time_column = "time",
+#        range = c("2007-02-23"), "2007-02-28"),
+#        combined = TRUE,
+#        scale_max = 200)
 
 # Run vis_hfr function (not combined, max scale = 50)
-vis_hfr(hfr = dat_hfr,
-        subtype_column = "smooth_IED",
-        time_column = "time",
-        range = c("2007-02-23", "2007-02-28"),
-        combined = FALSE,
-        scale_max = 50) 
+#vis_hfr(hfr = dat_hfr,
+#        subtype_column = "smooth_IED",
+#        time_column = "time",
+#        range = c("2007-02-23", "2007-02-28"),
+#        combined = FALSE,
+#        scale_max = 50) 
 ```
 
 Finally, we do the same for other types of outcomes and save each of them as a column of the hyperframe that we created.
