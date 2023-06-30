@@ -18,7 +18,7 @@ get_smoothed_outcome(
 
 \item{initialization}{Whether to use smaller samples to initialize mclust. Need to set seed for reproduction. By default = TRUE}
 
-\item{sampling}{Determines the proportion of data to use for initialization. By default = 0.05, ie using 5% of samples first}
+\item{sampling}{Determines the proportion of data to use for initialization. By default = 0.05, ie using 5\% of samples first}
 }
 \value{
 An im object of smoothed outcomes

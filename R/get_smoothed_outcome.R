@@ -5,7 +5,7 @@
 #' @param data_interest Data to convert; should be in the form of "hyperframe$column"
 #' @param method Methods for smoothing. Either "mclust" (fixed) or "abramson" (adaptive)
 #' @param initialization Whether to use smaller samples to initialize mclust. Need to set seed for reproduction. By default = TRUE
-#' @param sampling Determines the proportion of data to use for initialization. By default = 0.05, ie using 5% of samples first
+#' @param sampling Determines the proportion of data to use for initialization. By default = 0.05, ie using 5\% of samples first
 #' 
 #' @returns An im object of smoothed outcomes
 
