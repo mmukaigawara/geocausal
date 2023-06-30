@@ -9,6 +9,9 @@ get_elevation(load_path, ...)
 \arguments{
 \item{load_path}{A path to the shp file (note: a folder)}
 }
+\value{
+A list of raster layer, an im object, and a ggplot object
+}
 \description{
 A function that takes a directory that hosts shp file
 and returns an owin object

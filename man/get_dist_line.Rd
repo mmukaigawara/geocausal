@@ -22,9 +22,16 @@ get_dist_line(
 
 \item{line_data}{A sfc_MULTILINESTRING file (if available; if not the function creates it from a shapefile)}
 
+\item{grayscale}{Whether to use grayscale}
+
 \item{mile}{Whether to return the output in miles instead of kilometers}
 
+\item{resolution}{The resolution of raster objects}
+
 \item{preprocess}{Whether to pick a roughly closest object first (by default, TRUE)}
+}
+\value{
+A list of an im object and a corresponding ggplot object
 }
 \description{
 A function that generates a distance map from lines (e.g., roads and rivers)

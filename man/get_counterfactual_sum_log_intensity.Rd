@@ -11,6 +11,9 @@ get_counterfactual_sum_log_intensity(counterfactual_density, treatment_data)
 
 \item{treatment_data}{In the form of hyperframe$column}
 }
+\value{
+A numeric vector of sums of log densities for each time period
+}
 \description{
 A function that takes a hyperframe and returns the log counterfactual densities
 ie, the numerator of the equation

@@ -20,6 +20,11 @@ get_counterfactual_density(
 \item{power_density}{The power density (an im object)}
 
 \item{window}{An owin object}
+
+\item{grayscale}{Whether to grayscale the plot or not}
+}
+\value{
+A list of density (an im object) and a ggplot object
 }
 \description{
 A function that takes the target number, baseline density, and power density,

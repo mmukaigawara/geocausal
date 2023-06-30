@@ -23,6 +23,9 @@ simulate_counterfactual_density(
 
 \item{gray_scale}{By default, FALSE}
 }
+\value{
+A list of density, plot, and priorities
+}
 \description{
 A function that takes a list of power densities
 and returns simulated counterfactual densities

@@ -17,7 +17,26 @@ vis_obs_density(
 )
 }
 \arguments{
+\item{actual_data}{The data to visualize}
+
+\item{density_1}{An im object for density 1}
+
+\item{density_2}{Density 2 (if any)}
+
+\item{density_3}{Density 3 (if any)}
+
+\item{color_actual}{Specification for color for the actual data}
+
+\item{color_dens_1}{Color for density 1}
+
+\item{color_dens_2}{Color for density 2 (if any)}
+
+\item{color_dens_3}{Color for density 3 (if any)}
+
 \item{time_unit}{The label of the x-axis (time)}
+}
+\value{
+A list of plots: data, comparison, and residual plots
 }
 \description{
 A function that performs the visualization of actual counts and predicted counts

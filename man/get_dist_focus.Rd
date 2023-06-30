@@ -22,9 +22,16 @@ get_dist_focus(
 
 \item{latitude}{A vector of longitude and latitude of a point}
 
+\item{resolution}{The resolution of raster objects}
+
+\item{grayscale}{Whether to use grayscale}
+
 \item{mile}{Whether to return the output in miles instead of kilometers}
 
 \item{preprocess}{Whether to first pick the potentially closest point (better to set TRUE if there are many points)}
+}
+\value{
+A list of an im object and a corresponding ggplot object
 }
 \description{
 A function that generates a distance map from focus locations

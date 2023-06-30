@@ -26,6 +26,9 @@ simulate_power_density(
 
 \item{grayscale}{By default, FALSE}
 }
+\value{
+A list of densities, plot, and priorities
+}
 \description{
 A function that takes the target densities and their priorities
 and returns a power density image over a range of parameters

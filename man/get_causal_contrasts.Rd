@@ -12,9 +12,16 @@ get_causal_contrasts(
 )
 }
 \arguments{
-\item{estimates_scenario_1}{A counterfactual scenario}
+\item{estimates_scenario_1}{A counterfactual scenario (the output of get_estimates function)}
 
 \item{estimates_scenario_2}{Another counterfactual scenario}
+
+\item{grayscale}{Whether to grayscale}
+
+\item{expectation_use_raw}{If TRUE, the plot displays the raw expectations (if FALSE, max is set to 1)}
+}
+\value{
+A list of ggplot objects and the data
 }
 \description{
 A function that returns a figure with causal contrasts

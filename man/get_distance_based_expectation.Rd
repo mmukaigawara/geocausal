@@ -27,7 +27,10 @@ get_distance_based_expectation(
 
 \item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
 
-\item{gray_scale}{By default, FALSE}
+\item{gray_scale}{Whether to use grayscale}
+}
+\value{
+A ggplot object that summarizes how expectations change over distances from the focus
 }
 \description{
 A function that takes a list of power densities

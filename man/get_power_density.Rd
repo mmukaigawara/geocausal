@@ -12,6 +12,11 @@ get_power_density(target_densities, priorities, window, grayscale = FALSE)
 \item{priorities}{A vector of priorities for each of target densities}
 
 \item{window}{An owin object}
+
+\item{grayscale}{Whether to use grayscale}
+}
+\value{
+A list of an im object and a ggplot object of power densities
 }
 \description{
 A function that takes the target densities and their priorities

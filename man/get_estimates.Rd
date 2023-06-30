@@ -11,22 +11,35 @@ get_estimates(
   smoothed_outcome,
   lag,
   entire_window,
-  distance_map = dist_from_focus$distance_im,
+  distance_map,
   distance_map_unit = "km",
   grayscale,
   expectation_use_raw
 )
 }
 \arguments{
-\item{entire_window}{An owin object (the entire region)}
+\item{observed_density}{Observed density}
+
+\item{counterfactual_density}{Counterfactual density}
+
+\item{treatment_data}{A column of a hyperframe that summarizes treatment data}
+
+\item{smoothed_outcome}{A column of a hyperframe that summarizes the smoothed outcome data}
+
+\item{lag}{An integer (lags)}
+
+\item{entire_window}{An owin object (the entire region of interest)}
+
+\item{distance_map}{An im object}
+
+\item{distance_map_unit}{"km" or "mile"}
 
 \item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
 
-\item{counterfactual_simulation_results}{An output of the simulate_counterfactual_density function}
-
-\item{density_of_interest}{A density that is being manipulated}
-
-\item{gray_scale}{By default, FALSE}
+\item{gray_scale}{Whether to use grayscale}
+}
+\value{
+A list of an im object (weighted surface), counts of expected outcome events, weights, and plots
 }
 \description{
 A function that takes a list of power densities

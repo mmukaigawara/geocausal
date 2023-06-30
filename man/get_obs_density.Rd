@@ -17,6 +17,9 @@ get_obs_density(hfr, dep_var, indep_var, ngrid = 100, window)
 
 \item{window}{The window object of interest}
 }
+\value{
+A list of RHS variables, coefficients, an im object, counts, and sum of log intensities
+}
 \description{
 A function that takes a hyperframe and returns the observed densities
 ie, propensity scores; the denominators of the equation

@@ -19,6 +19,9 @@ get_history(tt, Xt, Yt = NA, lag, window, x_only = TRUE)
 
 \item{x_only}{Whether to generate treatment history only; by default, FALSE}
 }
+\value{
+A list of histories
+}
 \description{
 A function that takes hyperframe that was generated with get_hfr
 and generates treatment and outcome histories

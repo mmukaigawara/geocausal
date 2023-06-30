@@ -18,11 +18,16 @@ vis_hfr(
 
 \item{subtype_column}{A column of interest}
 
+\item{time_column}{A column for time variable}
+
+\item{range}{The range of dates (e.g., c("2007-02-23", "2007-02-28"))}
+
 \item{combined}{Whether to combine all the point processes to one plot. By default = TRUE}
 
 \item{scale_max}{Choose the maximum of the color scale (for visualizing images; by default = 100)}
-
-\item{time_range}{The range of dates (e.g., c("2007-02-23", "2007-02-28"))}
+}
+\value{
+A ggplot object
 }
 \description{
 A function that generates a plot of point processes

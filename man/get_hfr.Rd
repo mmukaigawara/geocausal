@@ -8,8 +8,8 @@ get_hfr(
   data,
   subtype_column,
   window,
-  time_column = "date",
-  time_range = c("2007-02-23", "2008-07-05"),
+  time_column,
+  time_range,
   coordinates = c("longitude", "latitude"),
   combined = TRUE
 )
@@ -28,6 +28,9 @@ get_hfr(
 \item{coordinates}{Names of columns for coordinates. By default, x = longitude and y = latitude}
 
 \item{combined}{Whether to generate output for all treatment and all outcomes combined. By default TRUE}
+}
+\value{
+A hyperframe
 }
 \description{
 A function that takes dataframes with coordinates

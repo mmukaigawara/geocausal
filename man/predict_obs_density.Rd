@@ -7,7 +7,20 @@
 predict_obs_density(hfr, ratio, dep_var, indep_var, ngrid = 100, window)
 }
 \arguments{
+\item{hfr}{A hyperframe}
+
 \item{ratio}{The ratio between training and test sets}
+
+\item{dep_var}{Dependent variables}
+
+\item{indep_var}{Independent variables}
+
+\item{ngrid}{The number of grids. By default, 100}
+
+\item{window}{An owin object}
+}
+\value{
+A list of RHS variables, coefficients, an im object, counts, sum of log intensities, and maximum row ID of the training data
 }
 \description{
 A function that performs out-of-sample prediction (separating data into training and test sets)

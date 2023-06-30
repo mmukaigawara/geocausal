@@ -20,6 +20,9 @@ get_smoothed_outcome(
 
 \item{sampling}{Determines the proportion of data to use for initialization. By default = 0.05, ie using 5% of samples first}
 }
+\value{
+An im object of smoothed outcomes
+}
 \description{
 A function that takes a column of hyperframes and generates a smoothed ppp
 }
