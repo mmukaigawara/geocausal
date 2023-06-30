@@ -1,9 +1,13 @@
 #' Function: get_causal_contrasts
 #'
-#' A function that returns a figure with causal contrasts
+#' @description A function that returns a figure with causal contrasts
 #'
-#' @param estimates_scenario_1 A counterfactual scenario
+#' @param estimates_scenario_1 A counterfactual scenario (the output of get_estimates function)
 #' @param estimates_scenario_2 Another counterfactual scenario
+#' @param grayscale Whether to grayscale
+#' @param expectation_use_raw If TRUE, the plot displays the raw expectations (if FALSE, max is set to 1)
+#' 
+#' @returns A list of ggplot objects and the data
  
 get_causal_contrasts <- function(estimates_scenario_1, #Contrast = scenario 2 - scenario 1
                                  estimates_scenario_2,

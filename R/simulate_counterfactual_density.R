@@ -1,6 +1,6 @@
 #' Function: simulate_counterfactual_density
 #'
-#' A function that takes a list of power densities
+#' @description A function that takes a list of power densities
 #' and returns simulated counterfactual densities
 #'
 #' @param expected_number The expected number of observations
@@ -8,6 +8,8 @@
 #' @param power_simulation_results The results obtained by simulate_power_density function
 #' @param window An owin object
 #' @param gray_scale By default, FALSE
+#' 
+#' @returns A list of density, plot, and priorities
 
 simulate_counterfactual_density <- function(expected_number,
                                             baseline_density,

@@ -5,9 +5,12 @@
 #' @param path_to_shapefile Path to shapefile
 #' @param line_data A sfc_MULTILINESTRING file (if available; if not the function creates it from a shapefile)
 #' @param window An owin object
-#' @param grayscale
+#' @param grayscale Whether to use grayscale
+#' @param resolution The resolution of raster objects
 #' @param mile Whether to return the output in miles instead of kilometers
 #' @param preprocess Whether to pick a roughly closest object first (by default, TRUE)
+#' 
+#' @returns A list of an im object and a corresponding ggplot object
 
 get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
                           grayscale, mile, resolution, preprocess = TRUE, ...){

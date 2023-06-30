@@ -1,10 +1,12 @@
 #' Function: get_counterfactual_sum_log_intensity
 #'
-#' A function that takes a hyperframe and returns the log counterfactual densities
+#' @description A function that takes a hyperframe and returns the log counterfactual densities
 #' ie, the numerator of the equation
 #'
 #' @param counterfactual_density A counterfactual density (an im object)
 #' @param treatment_data In the form of hyperframe$column
+#' 
+#' @returns A numeric vector of sums of log densities for each time period
 
 get_counterfactual_sum_log_intensity <- function(counterfactual_density,
                                                  treatment_data) {

@@ -1,14 +1,16 @@
 #' Function: predict_obs_density
 #'
-#' A function that performs out-of-sample prediction (separating data into training and test sets)
+#' @description A function that performs out-of-sample prediction (separating data into training and test sets)
 #' (Note that this funciton assumes the same window between training and test sets)
 #'
-#' @param hfr
+#' @param hfr A hyperframe
 #' @param ratio The ratio between training and test sets
-#' @param dep_var
-#' @param indep_var
-#' @param ngrid
-#' @param window
+#' @param dep_var Dependent variables
+#' @param indep_var Independent variables
+#' @param ngrid The number of grids. By default, 100
+#' @param window An owin object
+#' 
+#' @returns A list of RHS variables, coefficients, an im object, counts, sum of log intensities, and maximum row ID of the training data
 
 predict_obs_density <- function(hfr, ratio,
                                 dep_var, indep_var, ngrid = 100, window) {

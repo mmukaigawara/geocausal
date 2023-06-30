@@ -1,12 +1,15 @@
 #' Function: vis_hfr
 #'
-#' A function that generates a plot of point processes
+#' @description A function that generates a plot of point processes
 #'
 #' @param hfr A hyperframe to convert
 #' @param subtype_column A column of interest
-#' @param time_range The range of dates (e.g., c("2007-02-23", "2007-02-28"))
+#' @param time_column A column for time variable
+#' @param range The range of dates (e.g., c("2007-02-23", "2007-02-28"))
 #' @param combined Whether to combine all the point processes to one plot. By default = TRUE
 #' @param scale_max Choose the maximum of the color scale (for visualizing images; by default = 100)
+#' 
+#' @returns A ggplot object
 
 vis_hfr <- function(hfr,
                     subtype_column,

@@ -1,13 +1,20 @@
 #' Function: get_estimates
 #'
-#' A function that takes a list of power densities
+#' @description A function that takes a list of power densities
 #' and returns simulated counterfactual densities
 #'
-#' @param counterfactual_simulation_results An output of the simulate_counterfactual_density function
-#' @param density_of_interest A density that is being manipulated
-#' @param entire_window An owin object (the entire region)
-#' @param gray_scale By default, FALSE
+#' @param observed_density Observed density
+#' @param counterfactual_density Counterfactual density
+#' @param treatment_data A column of a hyperframe that summarizes treatment data
+#' @param smoothed_outcome A column of a hyperframe that summarizes the smoothed outcome data
+#' @param lag An integer (lags)
+#' @param entire_window An owin object (the entire region of interest)
+#' @param distance_map An im object
+#' @param distance_map_unit "km" or "mile"
+#' @param gray_scale Whether to use grayscale
 #' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
+#' 
+#' @returns A list of an im object (weighted surface), counts of expected outcome events, weights, and plots
 
 get_estimates <- function(observed_density, 
                           counterfactual_density,
@@ -15,7 +22,7 @@ get_estimates <- function(observed_density,
                           smoothed_outcome, 
                           lag,
                           entire_window, 
-                          distance_map = dist_from_focus$distance_im,
+                          distance_map,
                           distance_map_unit = "km",
                           grayscale,
                           expectation_use_raw) {

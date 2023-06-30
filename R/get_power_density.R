@@ -1,11 +1,14 @@
 #' Function: get_power_density
 #'
-#' A function that takes the target densities and their priorities
+#' @description A function that takes the target densities and their priorities
 #' and returns a power density image
 #'
 #' @param target_densities A list of target densities
 #' @param priorities A vector of priorities for each of target densities
 #' @param window An owin object
+#' @param grayscale Whether to use grayscale
+#' 
+#' @returns A list of an im object and a ggplot object of power densities
 
 
 get_power_density <- function(target_densities,

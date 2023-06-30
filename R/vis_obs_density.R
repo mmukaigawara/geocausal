@@ -1,17 +1,18 @@
 #' Function: vis_obs_density
 #'
-#' A function that performs the visualization of actual counts and predicted counts
+#' @description A function that performs the visualization of actual counts and predicted counts
 #'
-#' @param actual_data
-#' @param density_1
-#' @param density_2
-#' @param density_3
-#' @param color_actual
-#' @param color_dens_1
-#' @param color_dens_2
-#' @param color_dens_3
+#' @param actual_data The data to visualize
+#' @param density_1 An im object for density 1
+#' @param density_2 Density 2 (if any)
+#' @param density_3 Density 3 (if any)
+#' @param color_actual Specification for color for the actual data
+#' @param color_dens_1 Color for density 1
+#' @param color_dens_2 Color for density 2 (if any)
+#' @param color_dens_3 Color for density 3 (if any)
 #' @param time_unit The label of the x-axis (time) 
-
+#' 
+#' @returns A list of plots: data, comparison, and residual plots
 
 vis_obs_density <- function(actual_data,
                             density_1, density_2 = NA, density_3 = NA,

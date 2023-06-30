@@ -1,9 +1,11 @@
 #' Function: get_window
 #'
-#' A function that takes a directory that hosts shp file
+#' @description A function that takes a directory that hosts shp file
 #' and returns an owin object
 #'
 #' @param load_path A path to the shp file (note: a folder)
+#' 
+#' @returns An owin object
 
 get_window <- function(load_path) {
   

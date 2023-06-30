@@ -1,6 +1,6 @@
 #' Function: get_hfr
 #'
-#' A function that takes dataframes with coordinates
+#' @description A function that takes dataframes with coordinates
 #' and generates a hyperframe with point patterns
 #'
 #' @param data Data to convert
@@ -10,11 +10,13 @@
 #' @param time_range Range of time with min and max. By default, dates
 #' @param coordinates Names of columns for coordinates. By default, x = longitude and y = latitude
 #' @param combined Whether to generate output for all treatment and all outcomes combined. By default TRUE
+#' 
+#' @returns A hyperframe
 
 get_hfr <- function(data, subtype_column,
                     window,
-                    time_column = "date",
-                    time_range = c("2007-02-23", "2008-07-05"),
+                    time_column,
+                    time_range,
                     coordinates = c("longitude", "latitude"),
                     combined = TRUE) {
 

@@ -1,6 +1,6 @@
 #' Function: simulate_power_density
 #'
-#' A function that takes the target densities and their priorities
+#' @description A function that takes the target densities and their priorities
 #' and returns a power density image over a range of parameters
 #'
 #' @param target_densities A list of target densities
@@ -9,6 +9,8 @@
 #' @param priorities_for_manipulation A vector of priority values
 #' @param window An owin object
 #' @param grayscale By default, FALSE
+#' 
+#' @returns A list of densities, plot, and priorities
 
 simulate_power_density <- function(target_densities, #This must be a list element
                                    density_to_manipulate,

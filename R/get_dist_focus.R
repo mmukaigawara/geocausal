@@ -1,13 +1,16 @@
 #' Function: get_dist_focus
 #'
-#' A function that generates a distance map from focus locations
+#' @description A function that generates a distance map from focus locations
 #'
 #' @param longitude A vector of longitude and latitude of a point
 #' @param latitude A vector of longitude and latitude of a point
 #' @param window An owin object
-#' @param grayscale
+#' @param resolution The resolution of raster objects
+#' @param grayscale Whether to use grayscale
 #' @param mile Whether to return the output in miles instead of kilometers
 #' @param preprocess Whether to first pick the potentially closest point (better to set TRUE if there are many points)
+#'
+#' @returns A list of an im object and a corresponding ggplot object
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
                            grayscale, mile, preprocess = FALSE, ...){

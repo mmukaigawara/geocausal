@@ -1,6 +1,6 @@
 #' Function: get_history
 #'
-#' A function that takes hyperframe that was generated with get_hfr
+#' @description A function that takes hyperframe that was generated with get_hfr
 #' and generates treatment and outcome histories
 #'
 #' @param tt Point of time of interest
@@ -9,6 +9,8 @@
 #' @param lag Lag to aggregate treatment and outcome
 #' @param window Window, should be saved as an owin object
 #' @param x_only Whether to generate treatment history only; by default, FALSE
+#' 
+#' @returns A list of histories
 
 get_history <- function(tt, Xt, Yt = NA, lag, window, x_only = TRUE) {
 

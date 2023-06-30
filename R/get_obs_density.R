@@ -1,6 +1,6 @@
 #' Function: get_obs_density
 #'
-#' A function that takes a hyperframe and returns the observed densities
+#' @description A function that takes a hyperframe and returns the observed densities
 #' ie, propensity scores; the denominators of the equation
 #'
 #' @param hfr A hyperframe
@@ -8,6 +8,8 @@
 #' @param indep_var A vector of names of independent variables
 #' @param ngrid The number of grid cells. By default = 100
 #' @param window The window object of interest
+#' 
+#' @returns A list of RHS variables, coefficients, an im object, counts, and sum of log intensities
 
 get_obs_density <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
 

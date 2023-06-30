@@ -1,12 +1,15 @@
 #' Function: get_counterfactual_density
 #'
-#' A function that takes the target number, baseline density, and power density,
+#' @description A function that takes the target number, baseline density, and power density,
 #' and generates a hyperframe with point patterns
 #'
 #' @param expected_number The expected number of observations.
 #' @param baseline_density The baseline density (an im object)
 #' @param power_density The power density (an im object)
 #' @param window An owin object
+#' @param grayscale Whether to grayscale the plot or not
+#' 
+#' @returns A list of density (an im object) and a ggplot object
 
 get_counterfactual_density <- function(expected_number,
                                        baseline_density,
