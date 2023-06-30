@@ -229,7 +229,7 @@ The out-of-sample prediction is not going well, particularly when we use the fir
 
 We can use the fitted model to predict the number of airstrikes in a sub-region. In this case, we continue to use <tt>predict_obs_density</tt> function, but this time set <tt>ratio = 1</tt> and set <tt>window = windows\$Baghdad</tt>. That is, we use the entire dataset to fit the model, and then predict the counts in a window, this time Baghdad and outside of Baghdad. The window objects of Baghdad and outside of Baghdad are saved as <tt>windows\$Baghdad</tt> and <tt>windows\$outside_Baghdad</tt>, respectively.
 
-Let's take a look at Baghdad first. Notice that for the actual count of airstrikes in Baghdad, we need to change the window from the entire Iraq to Baghdad.
+Let's take a look at Baghdad first. Notice that to obtain the actual count of airstrikes in Baghdad, we need to change the window from the entire Iraq to Baghdad.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Baghdad
@@ -239,19 +239,16 @@ obs_density_baghdad <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike",
 # Change the window of interest for the actual data
 airstrikes_baghdad <- dat_hfr$Airstrike
 
-for(i in 1:nrow(dat_hfr)){
-  spatstat.geom::Window(airstrikes_baghdad[[i]]) <- windows$Baghdad
-}
+for(i in 1:nrow(dat_hfr)){ spatstat.geom::Window(airstrikes_baghdad[[i]]) <- windows$Baghdad }
 
 # Plot (Baghdad)
 plot_compare_bag <- vis_obs_density(actual_data = airstrikes_baghdad, 
                                     density_1 = obs_density_baghdad,
-                                    color_actual = "darkgray", color_dens_1 = "red",
                                     time_unit = "Days")
 
-plot_compare_bag[[2]] +
+plot_compare_bag$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 400, y = 70, size = 4, color = "red") +
+  annotate("text", label = "Predicted", x = 400, y = 70, size = 4, color = "#D55E00") +
   labs(title = "Actual vs. predicted counts of airstrikes (Baghdad)", x = "Days", y = "Count") + ylim(0, 100)
 ```
 
@@ -263,19 +260,15 @@ obs_density_out_bag <- predict_obs_density(dat_hfr, ratio = 1, "Airstrike",
                                            rhs_var, ngrid = 100, window = windows$outside_Baghdad)
 
 airstrikes_out_bag <- dat_hfr$Airstrike
-
-for(i in 1:nrow(dat_hfr)){
-  spatstat.geom::Window(airstrikes_out_bag[[i]]) <- windows$outside_Baghdad
-}
+for(i in 1:nrow(dat_hfr)){ spatstat.geom::Window(airstrikes_out_bag[[i]]) <- windows$outside_Baghdad }
 
 plot_compare_out_bag <- vis_obs_density(actual_data = airstrikes_out_bag, 
                                         density_1 = obs_density_out_bag,
-                                        color_actual = "darkgray", color_dens_1 = "blue",
                                         time_unit = "Days")
 
-plot_compare_out_bag[[2]] +
+plot_compare_out_bag$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 400, y = 40, size = 4, color = "blue") +
+  annotate("text", label = "Predicted", x = 400, y = 40, size = 4, color = "#D55E00") +
   labs(title = "Actual vs. predicted counts of airstrikes (Outside of Baghdad)", x = "Days", y = "Count") + ylim(0, 100)
 ```
 
@@ -299,14 +292,12 @@ obs_density_surge <- get_obs_density(dat_hfr, "Airstrike", rhs_var_surge,
 # Plot
 plot_compare_surge <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
                                       density_1 = obs_density, density_2 = obs_density_surge,
-                                      color_actual = "darkgray", 
-                                      color_dens_1 = "red", color_dens_2 = "blue",
                                       time_unit = "Days")
 
-plot_compare_surge[[2]] +
+plot_compare_surge$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
-  annotate("text", label = "Predicted\n(original)", x = 410, y = 30, size = 4, color = "red") +
-  annotate("text", label = "Predicted\n(surge)", x = 250, y = 70, size = 4, color = "blue") + ylim(0, 100)
+  annotate("text", label = "Predicted\n(original)", x = 410, y = 30, size = 4, color = "#D55E00") +
+  annotate("text", label = "Predicted\n(surge)", x = 250, y = 70, size = 4, color = "#0072B2") + ylim(0, 100)
 ```
 
 Let's check out-of-sample prediction performance.
@@ -325,33 +316,31 @@ plot_out_of_sample_8s <- vis_obs_density(actual_data = dat_hfr$Airstrike,
                                          density_1 = obs_density, 
                                          density_2 = obs_density_8, 
                                          density_3 = obs_density_8_surge,
-                                         color_actual = "darkgray", 
-                                         color_dens_1 = "red", color_dens_2 = "blue",  color_dens_3 = "green4",
                                          time_unit = "Days")
 
-plot_out_of_sample_8s[[2]] +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "red") +
-  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
-  annotate("text", label = "Out-of-sample\n(80%)", x = 390, y = 50, size = 4, color = "blue") +
-  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
-  annotate("text", label = "Out-of-sample\n(80%, surge)", x = 415, y = 30, size = 4, color = "green4") +
-  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4")
+plot_out_of_sample_8s$plot_compare +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgrey") +
+  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "#D55E00") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "#D55E00") +
+  annotate("text", label = "Out-of-sample\n(80%)", x = 390, y = 50, size = 4, color = "#0072B2") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "#0072B2") +
+  annotate("text", label = "Out-of-sample\n(80%, surge)", x = 415, y = 30, size = 4, color = "#009E73") +
+  geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "#009E73")
+```
 
+```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_out_of_sample_7s <- vis_obs_density(actual_data = dat_hfr$Airstrike, 
                                          density_1 = obs_density, 
                                          density_2 = obs_density_7, 
                                          density_3 = obs_density_7_surge,
-                                         color_actual = "darkgray", 
-                                         color_dens_1 = "red", color_dens_2 = "blue",  color_dens_3 = "green4",
                                          time_unit = "Days")
 
-plot_out_of_sample_7s[[2]] +
-  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
-  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "red") +
-  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "red") +
-  annotate("text", label = "Out-of-sample\n(70%)", x = 390, y = 50, size = 4, color = "blue") +
-  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "blue") +
+plot_out_of_sample_7s$plot_compare +
+  annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgrey") +
+  annotate("text", label = "Predicted", x = 435, y = 15, size = 4, color = "#D55E00") +
+  geom_vline(xintercept = nrow(dat_hfr), linetype = "dashed", color = "#D55E00") +
+  annotate("text", label = "Out-of-sample\n(70%)", x = 390, y = 50, size = 4, color = "#0072B2") +
+  geom_vline(xintercept = obs_density_8$training_row_max, linetype = "dashed", color = "#0072B2") +
   annotate("text", label = "Out-of-sample\n(70%, surge)", x = 230, y = 80, size = 4, color = "green4") +
   geom_vline(xintercept = obs_density_7$training_row_max, linetype = "dashed", color = "green4")
 ```
