@@ -7,14 +7,13 @@
 get_elevation(load_path, ...)
 }
 \arguments{
-\item{load_path}{A path to the shp file (note: a folder)}
+\item{load_path}{path to the shp file (note: a folder)}
 
-\item{...}{Other parameters}
+\item{...}{other parameters passed to `elevatr::get_elev_raster()`}
 }
 \value{
-A list of raster layer, an im object, and a ggplot object
+list of a raster layer, an im object, and a ggplot object of altitudes (in meters).
 }
 \description{
-A function that takes a directory that hosts shp file
-and returns an owin object
+`get_elevation()` takes a directory that hosts shapefile and returns an owin object of altitudes.
 }
