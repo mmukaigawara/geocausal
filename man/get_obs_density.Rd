@@ -7,20 +7,34 @@
 get_obs_density(hfr, dep_var, indep_var, ngrid = 100, window)
 }
 \arguments{
-\item{hfr}{A hyperframe}
+\item{hfr}{hyperframe}
 
-\item{dep_var}{A dependent variable}
+\item{dep_var}{The name of the dependent variable.
+Since we need to obtain the observed density of treatment events, 
+`dep_var` should be the name of the treatment variable.}
 
-\item{indep_var}{A vector of names of independent variables}
+\item{indep_var}{vector of names of independent variables (covariates)}
 
-\item{ngrid}{The number of grid cells. By default = 100}
+\item{ngrid}{the number of grid cells that is used to generate observed densities. 
+By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.}
 
-\item{window}{The window object of interest}
+\item{window}{owin object}
 }
 \value{
-A list of RHS variables, coefficients, an im object, counts, and sum of log intensities
+list of the following:
+     * `independent_variables`: independent variables
+     * `coefficients`: coefficients
+     * `intensity_grid_cells`: im object of observed densities for each time period
+     * `estimated_counts`: The number of events that is estimated by the poisson point process model for each time period
+     * `sum_log_intensity`: The sum of log intensities for each time period
 }
 \description{
-A function that takes a hyperframe and returns the observed densities
-ie, propensity scores; the denominators of the equation
+`get_obs_density()` takes a hyperframe and returns observed densities.
+The output is used as propensity scores.
+}
+\details{
+`get_obs_density()` assumes the poisson point process model and 
+calculates observed densities for each time period. It depends on `spatstat.model::mppm()`. 
+Users should note that the coefficients in the output are not directly interpretable, 
+since they are the coefficients inside the exponential of the poisson model.
 }
