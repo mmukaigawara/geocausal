@@ -1,20 +1,18 @@
-#' Function: get_dist_line
+#' @description `get_dist_line()` generates a distance map from lines and polygons.
 #'
-#' A function that generates a distance map from lines (e.g., roads and rivers)
-#'
-#' @param path_to_shapefile Path to shapefile
-#' @param line_data A sfc_MULTILINESTRING file (if available; if not the function creates it from a shapefile)
-#' @param window An owin object
-#' @param grayscale Whether to use grayscale
-#' @param resolution The resolution of raster objects
-#' @param mile Whether to return the output in miles instead of kilometers
-#' @param preprocess Whether to pick a roughly closest object first (by default, TRUE)
-#' @param ... Other parameters
+#' @param path_to_shapefile path to shapefile
+#' @param line_data sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)
+#' @param window owin object
+#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
+#' @param resolution resolution of raster objects
+#' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers.
+#' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point. 
+#' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
 #' 
-#' @returns A list of an im object and a corresponding ggplot object
+#' @returns A list of im and ggplot object
 
 get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
-                          grayscale, mile, resolution, preprocess = TRUE, ...){
+                          grayscale, mile, resolution, preprocess = TRUE){
   
   # Convert owin into sp objects -----
   window_sp <- convert_owin_into_sf(window)

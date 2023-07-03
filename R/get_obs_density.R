@@ -1,15 +1,29 @@
 #' Function: get_obs_density
 #'
-#' @description A function that takes a hyperframe and returns the observed densities
-#' ie, propensity scores; the denominators of the equation
+#' @description 
+#' `get_obs_density()` takes a hyperframe and returns observed densities.
+#' The output is used as propensity scores.
 #'
-#' @param hfr A hyperframe
-#' @param dep_var A dependent variable
-#' @param indep_var A vector of names of independent variables
-#' @param ngrid The number of grid cells. By default = 100
-#' @param window The window object of interest
+#' @param hfr hyperframe
+#' @param dep_var The name of the dependent variable.
+#' Since we need to obtain the observed density of treatment events, 
+#' `dep_var` should be the name of the treatment variable.
+#' @param indep_var vector of names of independent variables (covariates)
+#' @param ngrid the number of grid cells that is used to generate observed densities. 
+#' By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.
+#' @param window owin object
 #' 
-#' @returns A list of RHS variables, coefficients, an im object, counts, and sum of log intensities
+#' @returns list of the following:
+#'      * `independent_variables`: independent variables
+#'      * `coefficients`: coefficients
+#'      * `intensity_grid_cells`: im object of observed densities for each time period
+#'      * `estimated_counts`: The number of events that is estimated by the poisson point process model for each time period
+#'      * `sum_log_intensity`: The sum of log intensities for each time period
+#'      
+#' @details `get_obs_density()` assumes the poisson point process model and 
+#' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`. 
+#' Users should note that the coefficients in the output are not directly interpretable, 
+#' since they are the coefficients inside the exponential of the poisson model.
 
 get_obs_density <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
 
@@ -31,7 +45,7 @@ get_obs_density <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
     return(r)
   })
 
-  return(list(independent_variables = indep_var, #List of RHS variables
+  return(list(independent_variables = indep_var, #List of independent variables
               coefficients = coefficients, #Coefficients
               intensity_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Counts

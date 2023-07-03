@@ -1,11 +1,15 @@
 #' Function: get_baseline_summary
 #'
-#' @description A function that takes a column of dataframe and generates a plot and a summary
+#' @description `get_baseline_summary()` takes dataframe and summarizes it.
 #'
-#' @param data A dataframe
-#' @param time_column The name of the column for time variable 
+#' @param data dataframe
+#' @param time_column the name of time variable
 #' 
-#' @returns A list of a plot (ggplot) that shows temporal distribution of data, and the mean, variance, and quantiles of data
+#' @returns list of the following:
+#'     * `plot`: ggplot object that shows temporal distribution of data
+#'     * `quantile`: quantiles of counts 
+#'     * `mean`: the mean
+#'     * `variance`: the variance
 
 get_baseline_summary <- function(data, time_column) {
 

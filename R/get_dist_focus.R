@@ -1,17 +1,23 @@
-#' Function: get_dist_focus
-#'
 #' @description A function that generates a distance map from focus locations
 #'
-#' @param longitude A vector of longitude and latitude of a point
-#' @param latitude A vector of longitude and latitude of a point
-#' @param window An owin object
-#' @param resolution The resolution of raster objects
-#' @param grayscale Whether to use grayscale
-#' @param mile Whether to return the output in miles instead of kilometers
-#' @param preprocess Whether to first pick the potentially closest point (better to set TRUE if there are many points)
-#' @param ... Other parameters
+#' @param longitude vector of longitudes
+#' @param latitude vector of latitudes
+#' @param window owin object
+#' @param resolution resolution of raster objects
+#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
+#' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers.
+#' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point. 
+#' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
 #'
-#' @returns A list of an im object and a corresponding ggplot object
+#' @returns A list of im and ggplot object
+#' 
+#' @details `get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`. 
+#' Since it calculates accurate distances considering the ellipsoid, the process sometimes 
+#' becomes computationally demanding, namely when we need to obtain distances from many points. 
+#' In that case, users can set `preprocess = TRUE`. With this option, `get_dist_focus()` calculates 
+#' distances from points by first identifying the closest point using `sf::st_nearest_feature()` with approximations.
+#' This process is more efficient than computing distances from all the points 
+#' with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances.
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
                            grayscale, mile, preprocess = FALSE, ...){
