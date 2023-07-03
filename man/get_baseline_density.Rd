@@ -12,17 +12,21 @@ get_baseline_density(
 )
 }
 \arguments{
-\item{data}{A dataframe}
+\item{data}{dataframe}
 
-\item{coordinates}{A vector of column names for longitudes and latitudes (in this order)}
+\item{coordinates}{vector of column names of longitudes and latitudes (in this order)}
 
-\item{window}{The window object of interest}
+\item{window}{owin object}
 
-\item{grayscale}{Whether to return a plot in grayscale (by default, FALSE)}
+\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
-A list of density (im object), its plot (ggplot), and a plot of original data (points; ggplot)
+list of the following:
+    * `density`: im object of baseline density
+    * `density_plot`: ggplot object of baseline density
+    * `point_plot`: ggplot object of raw data
 }
 \description{
-A function that takes a dataframe and returns the baseline densities using Scott's rule of thumb
+`get_baseline_density()` takes a dataframe and 
+returns the baseline densities using Scott's rule of thumb.
 }

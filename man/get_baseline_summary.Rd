@@ -7,13 +7,17 @@
 get_baseline_summary(data, time_column)
 }
 \arguments{
-\item{data}{A dataframe}
+\item{data}{dataframe}
 
-\item{time_column}{The name of the column for time variable}
+\item{time_column}{the name of time variable}
 }
 \value{
-A list of a plot (ggplot) that shows temporal distribution of data, and the mean, variance, and quantiles of data
+list of the following:
+    * `plot`: ggplot object that shows temporal distribution of data
+    * `quantile`: quantiles of counts 
+    * `mean`: the mean
+    * `variance`: the variance
 }
 \description{
-A function that takes a column of dataframe and generates a plot and a summary
+`get_baseline_summary()` takes dataframe and summarizes it.
 }

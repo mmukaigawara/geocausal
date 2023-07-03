@@ -11,30 +11,28 @@ get_dist_line(
   grayscale,
   mile,
   resolution,
-  preprocess = TRUE,
-  ...
+  preprocess = TRUE
 )
 }
 \arguments{
-\item{window}{An owin object}
+\item{window}{owin object}
 
-\item{path_to_shapefile}{Path to shapefile}
+\item{path_to_shapefile}{path to shapefile}
 
-\item{line_data}{A sfc_MULTILINESTRING file (if available; if not the function creates it from a shapefile)}
+\item{line_data}{sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)}
 
-\item{grayscale}{Whether to use grayscale}
+\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
-\item{mile}{Whether to return the output in miles instead of kilometers}
+\item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers.}
 
-\item{resolution}{The resolution of raster objects}
+\item{resolution}{resolution of raster objects}
 
-\item{preprocess}{Whether to pick a roughly closest object first (by default, TRUE)}
-
-\item{...}{Other parameters}
+\item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point. 
+It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
 }
 \value{
-A list of an im object and a corresponding ggplot object
+A list of im and ggplot object
 }
 \description{
-A function that generates a distance map from lines (e.g., roads and rivers)
+`get_dist_line()` generates a distance map from lines and polygons.
 }

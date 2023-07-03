@@ -13,20 +13,27 @@ get_counterfactual_density(
 )
 }
 \arguments{
-\item{expected_number}{The expected number of observations.}
+\item{expected_number}{the expected number of observations.}
 
-\item{baseline_density}{The baseline density (an im object)}
+\item{baseline_density}{baseline density (im object)}
 
-\item{power_density}{The power density (an im object)}
+\item{power_density}{power density (im object)}
 
-\item{window}{An owin object}
+\item{window}{owin object}
 
-\item{grayscale}{Whether to grayscale the plot or not}
+\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
-A list of density (an im object) and a ggplot object
+A list of counterfactual density (im object) and a ggplot object
 }
 \description{
-A function that takes the target number, baseline density, and power density,
-and generates a hyperframe with point patterns
+`get_counterfactual_density` takes the target (expected) number, baseline density, 
+and power density, and generates a hyperframe with counterfactual densities.
+}
+\details{
+There are two ways of generating counterfactual densities. 
+First, users can keep the locations of observations as they are and change the expected number of observations. 
+In this case, users do not have to set `power_density` and simply modify `expected_number`. 
+Alternatively, users can shift the locations as well. In this case, `power_density` must be specified. 
+To obtain power densities, refer to [get_power_density()].
 }

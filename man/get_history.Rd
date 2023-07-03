@@ -7,22 +7,22 @@
 get_history(tt, Xt, Yt = NA, lag, window, x_only = TRUE)
 }
 \arguments{
-\item{tt}{Point of time of interest}
+\item{tt}{values of the time variable of interest for which `get_history()` generates histories}
 
-\item{Xt}{A treatment column of a hyperframe}
+\item{Xt}{the name of a treatment column}
 
-\item{Yt}{An outcome column of a hyperframe}
+\item{Yt}{the name of an outcome column}
 
-\item{lag}{Lag to aggregate treatment and outcome}
+\item{lag}{numeric. `lag` specifies the number of time periods over which 
+`get_history()` aggregates treatment and outcome columns.}
 
-\item{window}{Window, should be saved as an owin object}
+\item{window}{owin object.}
 
-\item{x_only}{Whether to generate treatment history only; by default, FALSE}
+\item{x_only}{logical. `x_only` specifies whether to generate only treatment history (no outcome history). By default, `FALSE`.}
 }
 \value{
-A list of histories
+list of treatment and outcome histories
 }
 \description{
-A function that takes hyperframe that was generated with get_hfr
-and generates treatment and outcome histories
+`get_history()` takes a hyperframe and time and columns of interest, and generates histories of events of interest.
 }

@@ -16,25 +16,33 @@ get_dist_focus(
 )
 }
 \arguments{
-\item{window}{An owin object}
+\item{window}{owin object}
 
-\item{longitude}{A vector of longitude and latitude of a point}
+\item{longitude}{vector of longitudes}
 
-\item{latitude}{A vector of longitude and latitude of a point}
+\item{latitude}{vector of latitudes}
 
-\item{resolution}{The resolution of raster objects}
+\item{resolution}{resolution of raster objects}
 
-\item{grayscale}{Whether to use grayscale}
+\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
-\item{mile}{Whether to return the output in miles instead of kilometers}
+\item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers.}
 
-\item{preprocess}{Whether to first pick the potentially closest point (better to set TRUE if there are many points)}
-
-\item{...}{Other parameters}
+\item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point. 
+It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
 }
 \value{
-A list of an im object and a corresponding ggplot object
+A list of im and ggplot object
 }
 \description{
 A function that generates a distance map from focus locations
+}
+\details{
+`get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`. 
+Since it calculates accurate distances considering the ellipsoid, the process sometimes 
+becomes computationally demanding, namely when we need to obtain distances from many points. 
+In that case, users can set `preprocess = TRUE`. With this option, `get_dist_focus()` calculates 
+distances from points by first identifying the closest point using `sf::st_nearest_feature()` with approximations.
+This process is more efficient than computing distances from all the points 
+with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances.
 }

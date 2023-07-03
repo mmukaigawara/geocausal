@@ -1,3 +1,5 @@
+#' Function: get_dist_focus
+#'
 #' @description A function that generates a distance map from focus locations
 #'
 #' @param longitude vector of longitudes

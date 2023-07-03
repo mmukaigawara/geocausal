@@ -1,3 +1,5 @@
+#' Function: get_dist_line
+#'
 #' @description `get_dist_line()` generates a distance map from lines and polygons.
 #'
 #' @param path_to_shapefile path to shapefile
