@@ -1,13 +1,35 @@
 #' Function: get_smoothed_outcome
 #'
-#' @description A function that takes a column of hyperframes and generates a smoothed ppp
+#' @description 
+#' `get_smoothed_outcome()` takes a column of hyperframes (ppp objects) and smoothes them.
 #'
-#' @param data_interest Data to convert; should be in the form of "hyperframe$column"
-#' @param method Methods for smoothing. Either "mclust" (fixed) or "abramson" (adaptive)
-#' @param initialization Whether to use smaller samples to initialize mclust. Need to set seed for reproduction. By default = TRUE
-#' @param sampling Determines the proportion of data to use for initialization. By default = 0.05, ie using 5\% of samples first
+#' @param data_interest the name of a hyperframe and column of interest. 
+#' `data_interest` should be in the form of `"hyperframe$column"`.
+#' @param method methods for smoothing ppp objects. 
+#' Either `"mclust"` or `"abramson"`. See details.
+#' @param initialization logical. 
+#' `initialization` specifies whether to use a smaller number of samples to initialize 
+#' fitting the Gaussian mixture model. By default = TRUE
+#' @param sampling numeric between 0 and 1. `sampling` determines the proportion of data 
+#' to use for initialization (see `initialization`). 
+#' By default, `0.05`, which means that `get_smoothed_outcome()` uses 5\% of samples for initialization.
 #' 
-#' @returns An im object of smoothed outcomes
+#' @returns im objects
+#' 
+#' @details To smooth ppp objects, users can choose either the Gaussian mixture model (`method = "mclust"`) 
+#' or Abramson's adaptive smoothing (`method = "abram"`). 
+#' The Gaussian mixture model is essentially the method that performs model-based clustering of all the observed points. 
+#' In this package, we employ the EII model (equal volume, round shape (spherical covariance)).
+#' This means that we model observed points by several Gaussian densities with the same, round shape.
+#' This is why this model is called fixed-bandwidth smoothing. This is a simple model to smooth observed points, 
+#' yet given that analyzing spatiotemporal data is often computationally demanding, it is often the best place to start (and end). 
+#' Sometimes this process can also take time, which is why an option for `initialization` is included in this function.
+#' 
+#' Another, more precise method for smoothing is adaptive smoothing (`method = "abram"`). 
+#' This method allows users to vary bandwidths based on `Abramson (1982)`. 
+#' Essentially, this model assumes that the bandwidth is inversely proportional to the square root of the target densities. 
+#' Since the bandwidth is adaptive, the estimation is usually more precise than the Gaussian mixture model. 
+#' However, the caveat is that this method is often highly computationally demanding.
 
 get_smoothed_outcome <- function(data_interest,
                                  method,

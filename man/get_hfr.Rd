@@ -15,24 +15,35 @@ get_hfr(
 )
 }
 \arguments{
-\item{data}{Data to convert}
+\item{data}{dataframe. The dataframe must have time and location variables. 
+Location variables should be standard coordinates (i.e., longitudes and latitudes).}
 
-\item{subtype_column}{Name of the column that specifies subtypes}
+\item{subtype_column}{the name of the column for subtypes of events of interest}
 
-\item{window}{Window, which should be saved as an owin object}
+\item{window}{owin object (for more information, refer to `spatstat.geom::owin()`). 
+Basically, an owin object specifies the geographical boundaries of areas of interest.}
 
-\item{time_column}{Name of the column for time. By default, dates}
+\item{time_column}{the name of the column for time variable}
 
-\item{time_range}{Range of time with min and max. By default, dates}
+\item{time_range}{numeric vector. `time_range` specifies the range of time variables 
+(i.e., min and max of time variables). 
+The current version assumes that the unit of this time variable is dates.}
 
-\item{coordinates}{Names of columns for coordinates. By default, x = longitude and y = latitude}
+\item{coordinates}{character vector. `coordinates` specifies the names of columns for locations. 
+By default, `c("longitude", "latitude")` in this order.}
 
-\item{combined}{Whether to generate output for all treatment and all outcomes combined. By default TRUE}
+\item{combined}{logical. `combined` tells whether to generate output for all subtypes of events combined. 
+By default, `TRUE`, which means that a column of ppp objects with all subtypes combined is generated in the output.}
 }
 \value{
-A hyperframe
+A hyperframe is generated with rows representing time and columns representing the following:
+    * The first column: time variable
+    * The middle columns: ppp objects (see `spatstat.geom::ppp()`) generated for each subtype of events of interest
+    * The last column (if `combined = TRUE`): ppp objects with all subtypes combined. This column is named as `all_combined`.
 }
 \description{
-A function that takes dataframes with coordinates
-and generates a hyperframe with point patterns
+`get_hfr()` takes a dataframe with time and location variables 
+and generates a hyperframe with point patterns.
+`get_hfr()` is usually the first function that users employ in order to 
+perform spatiotemporal causal inference analytic methods.
 }

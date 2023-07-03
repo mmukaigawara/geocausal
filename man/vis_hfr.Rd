@@ -4,31 +4,26 @@
 \alias{vis_hfr}
 \title{Function: vis_hfr}
 \usage{
-vis_hfr(
-  hfr,
-  subtype_column,
-  time_column = "time",
-  range,
-  combined = TRUE,
-  scale_max = 100
-)
+vis_hfr(hfr, subtype_column, time_column = "time", range, combined = TRUE)
 }
 \arguments{
-\item{hfr}{A hyperframe to convert}
+\item{hfr}{hyperframe}
 
-\item{subtype_column}{A column of interest}
+\item{subtype_column}{The name/s of a column of interest. 
+To specify multiple columns, users should list column names as a character vector.}
 
-\item{time_column}{A column for time variable}
+\item{time_column}{The name of the column of time variable. By default, `"time"`.}
 
-\item{range}{The range of dates (e.g., c("2007-02-23", "2007-02-28"))}
+\item{range}{vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)}
 
-\item{combined}{Whether to combine all the point processes to one plot. By default = TRUE}
-
-\item{scale_max}{Choose the maximum of the color scale (for visualizing images; by default = 100)}
+\item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot. 
+This argument applies only to the case when users specify one column with multiple time periods. 
+By default = TRUE}
 }
 \value{
-A ggplot object
+ggplot object that displays ppp objects of interest
 }
 \description{
-A function that generates a plot of point processes
+`vis_hfr()` takes a hyperframe and visualizes columns that users specify. 
+`vis_hfr()` is used mainly for the visualization of the output of [get_hfr()] function.
 }
