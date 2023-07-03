@@ -1,20 +1,29 @@
 #' Function: get_estimates
 #'
-#' @description A function that takes a list of power densities
-#' and returns simulated counterfactual densities
+#' @description 
+#' `get_estimates()` generates causal estimates comparing two counterfactual scenarios.
 #'
-#' @param observed_density Observed density
-#' @param counterfactual_density Counterfactual density
-#' @param treatment_data A column of a hyperframe that summarizes treatment data
-#' @param smoothed_outcome A column of a hyperframe that summarizes the smoothed outcome data
-#' @param lag An integer (lags)
-#' @param entire_window An owin object (the entire region of interest)
-#' @param distance_map An im object
-#' @param distance_map_unit "km" or "mile"
-#' @param grayscale Whether to use grayscale
-#' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
+#' @param observed_density observed density
+#' @param counterfactual_density counterfactual density
+#' @param treatment_data column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.
+#' @param smoothed_outcome column of a hyperframe that summarizes the smoothed outcome data
+#' @param lag integer that specifies lags to calculate causal estimates
+#' @param entire_window owin object (the entire region of interest)
+#' @param distance_map im object (distance map)
+#' @param distance_map_unit `"km"` or `"mile"`
+#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
+#' @param expectation_use_raw logical. `expectation_use_raw` specifies whether to use the raw value of expectations or percentiles. 
+#' By default, `FALSE`.
 #' 
-#' @returns A list of an im object (weighted surface), counts of expected outcome events, weights, and plots
+#' @returns list of the following:
+#' `average_expected_events`: Hajek estimators (counts, the entire window)
+#' `average_expected_events_quantiles`: percentiles of Hajek estimators
+#' `weights`: weights
+#' `average_weights`: mean of `weights`
+#' `plot`: plot showing distance-based expectations
+#' `distance_quantiles`: quantiles of distances
+#' `expectation_plot`: plot of expectations
+#' `window_plot`: plot of windows
 
 get_estimates <- function(observed_density, 
                           counterfactual_density,

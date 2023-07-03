@@ -1,6 +1,7 @@
 #' Function: get_dist_line
 #'
-#' @description `get_dist_line()` generates a distance map from lines and polygons.
+#' @description 
+#' `get_dist_line()` generates a distance map from lines and polygons.
 #'
 #' @param path_to_shapefile path to shapefile
 #' @param line_data sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)

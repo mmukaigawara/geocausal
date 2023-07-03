@@ -1,17 +1,21 @@
 #' Function: get_distance_based_expectation
 #'
-#' @description A function that takes a list of power densities
-#' and returns simulated counterfactual densities
+#' @description 
+#' `get_distance_based_expectation()` takes counterfactual densities and 
+#' and returns the expected number of treatment events based on distances 
+#' from a user-specified focus.
 #'
-#' @param counterfactual_simulation_results An output of the simulate_counterfactual_density function
-#' @param entire_window An owin object (the entire region)
-#' @param density_of_interest A density that is being manipulated
-#' @param distance_map An image object whose cell values are the distance from the focus (e.g., city)
-#' @param distance_map_unit km or mile
-#' @param grayscale Whether to use grayscale
-#' @param expectation_use_raw Whether to use the actual expectation or proportion for the y-axis. By default, FALSE
+#' @param counterfactual_simulation_results output of `simulate_counterfactual_density()`
+#' @param entire_window owin object of the entire region
+#' @param density_of_interest density to manipulate
+#' @param distance_map im object whose cell values are the distance from a focus (e.g., city)
+#' @param distance_map_unit `"km"` or `"mile"`
+#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
+#' @param expectation_use_raw logical. `expectation_use_raw` specifies whether to use the raw value of expectations or percentiles. 
+#' By default, `FALSE`.
+#' whether to use the actual expectation or proportion for the y-axis. By default, `FALSE`.
 #' 
-#' @returns A ggplot object that summarizes how expectations change over distances from the focus
+#' @returns ggplot object that summarizes how expectations change over distances from a focus
 
 
 get_distance_based_expectation <- function(counterfactual_simulation_results,

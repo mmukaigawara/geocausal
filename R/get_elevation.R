@@ -1,12 +1,12 @@
 #' Function: get_elevation
 #'
-#' @description A function that takes a directory that hosts shp file
-#' and returns an owin object
+#' @description 
+#' `get_elevation()` takes a directory that hosts shapefile and returns an owin object of altitudes.
 #'
-#' @param load_path A path to the shp file (note: a folder)
-#' @param ... Other parameters
+#' @param load_path path to the shp file (note: a folder)
+#' @param ... other parameters passed to `elevatr::get_elev_raster()`
 #' 
-#' @returns A list of raster layer, an im object, and a ggplot object
+#' @returns list of a raster layer, an im object, and a ggplot object of altitudes (in meters).
 
 get_elevation <- function(load_path, ...) {
   
@@ -45,7 +45,7 @@ get_elevation <- function(load_path, ...) {
   temp_combined <- sf::st_union(sf::st_as_sf(temp))
   
   # Get elevation data using elevatr (z indicates resolutions)
-  elevation_data <- elevatr::get_elev_raster(locations = temp, z = 5, clip = "locations")
+  elevation_data <- elevatr::get_elev_raster(locations = temp, clip = "locations", ...)
   # Convert it to a dataframe
   elevation_data_df <- raster::as.data.frame(elevation_data, xy = TRUE)
   colnames(elevation_data_df)[3] <- "z"

@@ -1,6 +1,7 @@
 #' Function: get_dist_focus
 #'
-#' @description A function that generates a distance map from focus locations
+#' @description 
+#' `get_dist_focus()` generates a distance map from focus locations.
 #'
 #' @param longitude vector of longitudes
 #' @param latitude vector of latitudes
@@ -13,7 +14,8 @@
 #'
 #' @returns A list of im and ggplot object
 #' 
-#' @details `get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`. 
+#' @details
+#' `get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`. 
 #' Since it calculates accurate distances considering the ellipsoid, the process sometimes 
 #' becomes computationally demanding, namely when we need to obtain distances from many points. 
 #' In that case, users can set `preprocess = TRUE`. With this option, `get_dist_focus()` calculates 

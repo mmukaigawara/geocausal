@@ -1,16 +1,24 @@
 #' Function: predict_obs_density
 #'
-#' @description A function that performs out-of-sample prediction (separating data into training and test sets)
-#' (Note that this funciton assumes the same window between training and test sets)
+#' @description 
+#' `predict_obs_density()` performs out-of-sample prediction 
+#' (separating data into training and test sets).
+#' It assumes that training and test sets have the same window.
 #'
-#' @param hfr A hyperframe
-#' @param ratio The ratio between training and test sets
-#' @param dep_var Dependent variables
-#' @param indep_var Independent variables
-#' @param ngrid The number of grids. By default, 100
-#' @param window An owin object
+#' @param hfr hyperframe
+#' @param ratio numeric. ratio between training and test sets
+#' @param dep_var dependent variables
+#' @param indep_var independent variables
+#' @param ngrid the number of grids. By default, `100`.
+#' @param window owin object
 #' 
-#' @returns A list of RHS variables, coefficients, an im object, counts, sum of log intensities, and maximum row ID of the training data
+#' @returns list of the following:
+#'      * `independent_variables`: independent variables
+#'      * `coefficients`: coefficients
+#'      * `intensity_grid_cells`: im object of observed densities for each time period
+#'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
+#'      * `sum_log_intensity`: the sum of log intensities for each time period
+#'      * `training_row_max`: the max row ID of the training set
 
 predict_obs_density <- function(hfr, ratio,
                                 dep_var, indep_var, ngrid = 100, window) {

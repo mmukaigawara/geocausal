@@ -17,8 +17,8 @@
 #'      * `independent_variables`: independent variables
 #'      * `coefficients`: coefficients
 #'      * `intensity_grid_cells`: im object of observed densities for each time period
-#'      * `estimated_counts`: The number of events that is estimated by the poisson point process model for each time period
-#'      * `sum_log_intensity`: The sum of log intensities for each time period
+#'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
+#'      * `sum_log_intensity`: the sum of log intensities for each time period
 #'      
 #' @details `get_obs_density()` assumes the poisson point process model and 
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`. 

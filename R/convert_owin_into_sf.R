@@ -1,10 +1,11 @@
 #' Function: convert_owin_into_sf
 #'
-#' @description A function that takes an owin object and returns sf-related objects
+#' @description `convert_owin_into_sf` takes an owin object and converts it to sf-related objects. 
+#' This function is mostly an internal function of other functions.
 #' 
-#' @param window An owin object
+#' @param window owin object
 #' 
-#' @returns A list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame objects
+#' @returns list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame objects
 
 convert_owin_into_sf <- function(window) {
   
