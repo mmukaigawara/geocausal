@@ -7,12 +7,12 @@
 get_window(load_path)
 }
 \arguments{
-\item{load_path}{A path to the shp file (note: a folder)}
+\item{load_path}{path to the shp file}
 }
 \value{
-An owin object
+owin object
 }
 \description{
-A function that takes a directory that hosts shp file
-and returns an owin object
+`get_window()` takes a directory that hosts a shapefile
+and returns an owin object.
 }

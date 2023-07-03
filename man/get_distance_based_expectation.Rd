@@ -15,24 +15,27 @@ get_distance_based_expectation(
 )
 }
 \arguments{
-\item{counterfactual_simulation_results}{An output of the simulate_counterfactual_density function}
+\item{counterfactual_simulation_results}{output of `simulate_counterfactual_density()`}
 
-\item{entire_window}{An owin object (the entire region)}
+\item{entire_window}{owin object of the entire region}
 
-\item{density_of_interest}{A density that is being manipulated}
+\item{density_of_interest}{density to manipulate}
 
-\item{distance_map}{An image object whose cell values are the distance from the focus (e.g., city)}
+\item{distance_map}{im object whose cell values are the distance from a focus (e.g., city)}
 
-\item{distance_map_unit}{km or mile}
+\item{distance_map_unit}{`"km"` or `"mile"`}
 
-\item{grayscale}{Whether to use grayscale}
+\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
-\item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
+\item{expectation_use_raw}{logical. `expectation_use_raw` specifies whether to use the raw value of expectations or percentiles. 
+By default, `FALSE`.
+whether to use the actual expectation or proportion for the y-axis. By default, `FALSE`.}
 }
 \value{
-A ggplot object that summarizes how expectations change over distances from the focus
+ggplot object that summarizes how expectations change over distances from a focus
 }
 \description{
-A function that takes a list of power densities
-and returns simulated counterfactual densities
+`get_distance_based_expectation()` takes counterfactual densities and 
+and returns the expected number of treatment events based on distances 
+from a user-specified focus.
 }

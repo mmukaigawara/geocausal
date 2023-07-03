@@ -7,18 +7,18 @@
 get_power_density(target_densities, priorities, window, grayscale = FALSE)
 }
 \arguments{
-\item{target_densities}{A list of target densities}
+\item{target_densities}{list of target densities}
 
-\item{priorities}{A vector of priorities for each of target densities}
+\item{priorities}{vector of priorities for each of target densities}
 
-\item{window}{An owin object}
+\item{window}{owin object}
 
-\item{grayscale}{Whether to use grayscale}
+\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
-A list of an im object and a ggplot object of power densities
+list of an im object and a ggplot object of power densities
 }
 \description{
-A function that takes the target densities and their priorities
-and returns a power density image
+`get_power_density()` takes the target densities and their priorities
+and returns a power density.
 }

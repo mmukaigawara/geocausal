@@ -18,30 +18,38 @@ get_estimates(
 )
 }
 \arguments{
-\item{observed_density}{Observed density}
+\item{observed_density}{observed density}
 
-\item{counterfactual_density}{Counterfactual density}
+\item{counterfactual_density}{counterfactual density}
 
-\item{treatment_data}{A column of a hyperframe that summarizes treatment data}
+\item{treatment_data}{column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.}
 
-\item{smoothed_outcome}{A column of a hyperframe that summarizes the smoothed outcome data}
+\item{smoothed_outcome}{column of a hyperframe that summarizes the smoothed outcome data}
 
-\item{lag}{An integer (lags)}
+\item{lag}{integer that specifies lags to calculate causal estimates}
 
-\item{entire_window}{An owin object (the entire region of interest)}
+\item{entire_window}{owin object (the entire region of interest)}
 
-\item{distance_map}{An im object}
+\item{distance_map}{im object (distance map)}
 
-\item{distance_map_unit}{"km" or "mile"}
+\item{distance_map_unit}{`"km"` or `"mile"`}
 
-\item{grayscale}{Whether to use grayscale}
+\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
-\item{expectation_use_raw}{Whether to use the actual expectation or proportion for the y-axis. By default, FALSE}
+\item{expectation_use_raw}{logical. `expectation_use_raw` specifies whether to use the raw value of expectations or percentiles. 
+By default, `FALSE`.}
 }
 \value{
-A list of an im object (weighted surface), counts of expected outcome events, weights, and plots
+list of the following:
+`average_expected_events`: Hajek estimators (counts, the entire window)
+`average_expected_events_quantiles`: percentiles of Hajek estimators
+`weights`: weights
+`average_weights`: mean of `weights`
+`plot`: plot showing distance-based expectations
+`distance_quantiles`: quantiles of distances
+`expectation_plot`: plot of expectations
+`window_plot`: plot of windows
 }
 \description{
-A function that takes a list of power densities
-and returns simulated counterfactual densities
+`get_estimates()` generates causal estimates comparing two counterfactual scenarios.
 }

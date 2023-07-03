@@ -7,11 +7,12 @@
 convert_owin_into_sf(window)
 }
 \arguments{
-\item{window}{An owin object}
+\item{window}{owin object}
 }
 \value{
-A list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame objects
+list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame objects
 }
 \description{
-A function that takes an owin object and returns sf-related objects
+`convert_owin_into_sf` takes an owin object and converts it to sf-related objects. 
+This function is mostly an internal function of other functions.
 }

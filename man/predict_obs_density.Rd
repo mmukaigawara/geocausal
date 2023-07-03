@@ -7,22 +7,29 @@
 predict_obs_density(hfr, ratio, dep_var, indep_var, ngrid = 100, window)
 }
 \arguments{
-\item{hfr}{A hyperframe}
+\item{hfr}{hyperframe}
 
-\item{ratio}{The ratio between training and test sets}
+\item{ratio}{numeric. ratio between training and test sets}
 
-\item{dep_var}{Dependent variables}
+\item{dep_var}{dependent variables}
 
-\item{indep_var}{Independent variables}
+\item{indep_var}{independent variables}
 
-\item{ngrid}{The number of grids. By default, 100}
+\item{ngrid}{the number of grids. By default, `100`.}
 
-\item{window}{An owin object}
+\item{window}{owin object}
 }
 \value{
-A list of RHS variables, coefficients, an im object, counts, sum of log intensities, and maximum row ID of the training data
+list of the following:
+     * `independent_variables`: independent variables
+     * `coefficients`: coefficients
+     * `intensity_grid_cells`: im object of observed densities for each time period
+     * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
+     * `sum_log_intensity`: the sum of log intensities for each time period
+     * `training_row_max`: the max row ID of the training set
 }
 \description{
-A function that performs out-of-sample prediction (separating data into training and test sets)
-(Note that this funciton assumes the same window between training and test sets)
+`predict_obs_density()` performs out-of-sample prediction 
+(separating data into training and test sets).
+It assumes that training and test sets have the same window.
 }

@@ -35,7 +35,7 @@ It is recommended to set `preprocess = TRUE` if users need to obtain distances f
 A list of im and ggplot object
 }
 \description{
-A function that generates a distance map from focus locations
+`get_dist_focus()` generates a distance map from focus locations.
 }
 \details{
 `get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`. 
