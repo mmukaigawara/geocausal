@@ -1,21 +1,22 @@
-#' Function: simulate_counterfactual_density
+#' Function: sim_counterfactual_density
 #'
-#' @description A function that takes a list of power densities
-#' and returns simulated counterfactual densities
+#' @description 
+#' `sim_counterfactual_density()` takes a list of power densities
+#' and returns simulated counterfactual densities.
 #'
-#' @param expected_number The expected number of observations
-#' @param baseline_density The baseline density (an im object)
-#' @param power_simulation_results The results obtained by simulate_power_density function
-#' @param window An owin object
-#' @param grayscale By default, FALSE
+#' @param expected_number the expected number of observations
+#' @param baseline_density the baseline density (im object)
+#' @param power_simulation_results the results obtained by `simulate_power_density()`
+#' @param window owin object
+#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' 
-#' @returns A list of density, plot, and priorities
+#' @returns list of counterfactual densities, a ggplot, and priorities
 
-simulate_counterfactual_density <- function(expected_number,
-                                            baseline_density,
-                                            power_simulation_results,
-                                            window,
-                                            grayscale = FALSE) {
+sim_counterfactual_density <- function(expected_number,
+                                       baseline_density,
+                                       power_simulation_results,
+                                       window,
+                                       grayscale = FALSE) {
   
   power_densities <- power_simulation_results$densities
   powers <- power_simulation_results$priorities

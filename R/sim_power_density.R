@@ -1,23 +1,23 @@
-#' Function: simulate_power_density
+#' Function: sim_power_density
 #'
 #' @description A function that takes the target densities and their priorities
 #' and returns a power density image over a range of parameters
 #'
-#' @param target_densities A list of target densities
-#' @param density_to_manipulate One target density for which we manipulate the value of alpha
-#' @param priorities A vector of priorities for each of target densities
-#' @param priorities_for_manipulation A vector of priority values
-#' @param window An owin object
-#' @param grayscale By default, FALSE
+#' @param target_densities list of target densities. This should always be a list, even if there is only one target density.
+#' @param density_to_manipulate a target density for which we manipulate the value of priorities
+#' @param priorities numeric. `priorities` specifies the priority for the target density that we do not manipulate.
+#' @param priorities_for_manipulation vector of priorities for the density that we manipulate.
+#' @param window owin object
+#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' 
-#' @returns A list of densities, plot, and priorities
+#' @returns list of densities, plot, and priorities
 
-simulate_power_density <- function(target_densities, #This must be a list element
-                                   density_to_manipulate,
-                                   priorities,
-                                   priorities_for_manipulation,
-                                   window,
-                                   grayscale = FALSE) {
+sim_power_density <- function(target_densities, #This must be a list element
+                              density_to_manipulate,
+                              priorities,
+                              priorities_for_manipulation,
+                              window,
+                              grayscale = FALSE) {
   
   # Obtaining each target density ^ alpha
   target_alpha <- lapply(1:length(target_densities), function(x) target_densities[[x]] ^ priorities[x])
