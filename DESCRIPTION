@@ -3,22 +3,22 @@ Type: Package
 Title: Causal Inference with Spatio-Temporal Data
 Version: 0.1.0
 Authors@R: c(
-    person("Mitsuru", "Mukaigawara", 
+    person(given = "Mitsuru", family = "Mukaigawara", 
            email = "mitsuru_mukaigawara@g.harvard.edu", 
            role = c("cre", "aut"),
            comment = c(ORCID = "0000-0001-6530-2083")),
-    person("Kosuke", "Imai", 
-           email = "imai@harvard.edu", 
+    person(given = "Georgia", family = "Papadogeorgou", 
+           email = "gpapadogeorgou@ufl.edu", 
            role = "aut",
-           comment = c(ORCID = "0000-0002-2748-1022")),
-    person("Jason", "Lyall", 
+           comment = c(ORCID = "0000-0002-1982-2245")),
+    person(given = "Jason", family = "Lyall", 
            email = "Jason.Lyall@dartmouth.edu", 
            role = "aut",
            comment = c(ORCID = "0000-0001-9117-7503")),
-    person("Georgia", "Papadogeorgou", 
-           email = "gpapadogeorgou@ufl.edu", 
+    person(given = "Kosuke", family = "Imai", 
+           email = "imai@harvard.edu", 
            role = "aut",
-           comment = c(ORCID = "0000-0002-1982-2245")))
+           comment = c(ORCID = "0000-0002-2748-1022")))
 Maintainer: Mitsuru Mukaigawara <mitsuru_mukaigawara@g.harvard.edu>
 Description: Spatio-temporal causal inference based on point process data. 
     You provide the raw data of locations and timings of treatment and 
