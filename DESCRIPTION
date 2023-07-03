@@ -24,7 +24,7 @@ Description: Spatio-temporal causal inference based on point process data.
     You provide the raw data of locations and timings of treatment and 
     outcome events, specify counterfactual scenarios, and the package 
     estimates causal effects.
-License: `use_mit_license()`
+License: MIT + file LICENSE
 URL: https://www.github.com/mmukaigawara/geocausal
 Encoding: UTF-8
 LazyData: true
@@ -33,19 +33,19 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports:
-    spatstat,
-    dplyr,
     data.table,
-    purrr,
+    dplyr,
     furrr,
-    mclust,
-    lubridate,
-    stars,
-    ggplot2,
-    ggthemes,
-    ggpubr,
-    RColorBrewer,
-    latex2exp,
     geosphere,
-    raster
+    ggplot2,
+    ggpubr,
+    ggthemes,
+    latex2exp,
+    lubridate,
+    mclust,
+    purrr,
+    raster,
+    RColorBrewer,
+    spatstat,
+    stars
 RoxygenNote: 7.2.2
