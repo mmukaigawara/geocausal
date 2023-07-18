@@ -1,4 +1,4 @@
-#' Function: sim_cf_dens
+#' Simulate counterfactual densities
 #'
 #' @description 
 #' `sim_cf_dens()` takes a list of power densities
