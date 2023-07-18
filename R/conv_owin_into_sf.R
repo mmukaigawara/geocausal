@@ -1,13 +1,13 @@
-#' Function: convert_owin_into_sf
+#' Convert windows into sf objects
 #'
-#' @description `convert_owin_into_sf` takes an owin object and converts it to sf-related objects. 
+#' @description `conv_owin_into_sf` takes an owin object and converts it to sf-related objects. 
 #' This function is mostly an internal function of other functions.
 #' 
 #' @param window owin object
 #' 
 #' @returns list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame objects
 
-convert_owin_into_sf <- function(window) {
+conv_owin_into_sf <- function(window) {
   
   # Convert owin to polygonal object
   window_polygon <- spatstat.geom::as.polygonal(window)
