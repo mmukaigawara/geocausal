@@ -1,4 +1,4 @@
-#' Function: get_history
+#' Obtain histories of treatment or outcome events
 #'
 #' @description 
 #' `get_hist()` takes a hyperframe and time and columns of interest, and generates histories of events of interest.
