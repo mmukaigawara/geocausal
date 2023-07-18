@@ -1,10 +1,10 @@
-#' Function: get_power_density
+#' Get power densities
 #'
 #' @description 
-#' `get_power_density()` takes the target densities and their priorities
+#' `get_power_dens()` takes the target densities and their priorities
 #' and returns a power density.
 #'
-#' @param target_densities list of target densities
+#' @param target_dens list of target densities
 #' @param priorities vector of priorities for each of target densities
 #' @param window owin object
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
@@ -12,19 +12,19 @@
 #' @returns list of an im object and a ggplot object of power densities
 
 
-get_power_density <- function(target_densities,
-                              priorities,
-                              window,
-                              grayscale = FALSE) {
+get_power_dens <- function(target_dens,
+                           priorities,
+                           window,
+                           grayscale = FALSE) {
   
   # Obtaining each target density ^ alpha
-  target_alpha <- lapply(1:length(target_densities), function(x) target_densities[[x]] ^ priorities[x])
+  target_alpha <- lapply(1:length(target_dens), function(x) target_dens[[x]] ^ priorities[x])
 
   power_density <- target_alpha[[1]]
   
-  if (length(target_densities) > 1){
+  if (length(target_dens) > 1){
     
-    for (ii in 2:length(target_densities)){ suppressWarnings( #Suppress warnings
+    for (ii in 2:length(target_dens)){ suppressWarnings( #Suppress warnings
       power_density <- power_density * target_alpha[[ii]]
       ) }
   } 
