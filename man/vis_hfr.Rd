@@ -2,7 +2,7 @@
 % Please edit documentation in R/vis_hfr.R
 \name{vis_hfr}
 \alias{vis_hfr}
-\title{Function: vis_hfr}
+\title{Visualize hyperframes}
 \usage{
 vis_hfr(hfr, subtype_column, time_column = "time", range, combined = TRUE)
 }

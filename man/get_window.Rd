@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_window.R
 \name{get_window}
 \alias{get_window}
-\title{Function: get_window}
+\title{Generate a window}
 \usage{
 get_window(load_path)
 }

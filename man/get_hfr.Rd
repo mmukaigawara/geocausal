@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_hfr.R
 \name{get_hfr}
 \alias{get_hfr}
-\title{Function: get_hfr}
+\title{Create a hyperframe}
 \usage{
 get_hfr(
   data,

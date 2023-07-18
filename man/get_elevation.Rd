@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_elevation.R
 \name{get_elevation}
 \alias{get_elevation}
-\title{Function: get_elevation}
+\title{Get elevation data}
 \usage{
 get_elevation(load_path, ...)
 }

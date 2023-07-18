@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_dist_line.R
 \name{get_dist_line}
 \alias{get_dist_line}
-\title{Function: get_dist_line}
+\title{Get distance maps from lines and polygons}
 \usage{
 get_dist_line(
   window,

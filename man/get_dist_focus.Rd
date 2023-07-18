@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_dist_focus.R
 \name{get_dist_focus}
 \alias{get_dist_focus}
-\title{Function: get_dist_focus}
+\title{Get distance maps}
 \usage{
 get_dist_focus(
   window,

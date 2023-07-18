@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_smoothed_outcome.R
 \name{get_smoothed_outcome}
 \alias{get_smoothed_outcome}
-\title{Function: get_smoothed_outcome}
+\title{Smooth outcome events}
 \usage{
 get_smoothed_outcome(
   data_interest,

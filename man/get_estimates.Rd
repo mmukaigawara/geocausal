@@ -2,25 +2,25 @@
 % Please edit documentation in R/get_estimates.R
 \name{get_estimates}
 \alias{get_estimates}
-\title{Function: get_estimates}
+\title{Get causal estimates comparing two scenarios}
 \usage{
 get_estimates(
-  observed_density,
-  counterfactual_density,
+  obs_dens,
+  cf_dens,
   treatment_data,
   smoothed_outcome,
   lag,
   entire_window,
-  distance_map,
-  distance_map_unit = "km",
+  dist_map,
+  dist_map_unit = "km",
   grayscale,
-  expectation_use_raw
+  use_raw
 )
 }
 \arguments{
-\item{observed_density}{observed density}
+\item{obs_dens}{observed density}
 
-\item{counterfactual_density}{counterfactual density}
+\item{cf_dens}{counterfactual density}
 
 \item{treatment_data}{column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.}
 
@@ -30,13 +30,13 @@ get_estimates(
 
 \item{entire_window}{owin object (the entire region of interest)}
 
-\item{distance_map}{im object (distance map)}
+\item{dist_map}{im object (distance map)}
 
-\item{distance_map_unit}{`"km"` or `"mile"`}
+\item{dist_map_unit}{`"km"` or `"mile"`}
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
-\item{expectation_use_raw}{logical. `expectation_use_raw` specifies whether to use the raw value of expectations or percentiles. 
+\item{use_raw}{logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
 By default, `FALSE`.}
 }
 \value{
