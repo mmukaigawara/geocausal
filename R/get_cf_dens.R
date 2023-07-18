@@ -1,11 +1,11 @@
-#' Function: get_counterfactual_density
+#' Get counterfactual densities
 #'
-#' @description `get_counterfactual_density` takes the target (expected) number, baseline density, 
+#' @description `get_cf_dens` takes the target (expected) number, baseline density, 
 #' and power density, and generates a hyperframe with counterfactual densities.
 #'
 #' @param expected_number the expected number of observations.
-#' @param baseline_density baseline density (im object)
-#' @param power_density power density (im object)
+#' @param base_dens baseline density (im object)
+#' @param power_dens power density (im object)
 #' @param window owin object
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' 
@@ -13,23 +13,23 @@
 #' 
 #' @details There are two ways of generating counterfactual densities. 
 #' First, users can keep the locations of observations as they are and change the expected number of observations. 
-#' In this case, users do not have to set `power_density` and simply modify `expected_number`. 
-#' Alternatively, users can shift the locations as well. In this case, `power_density` must be specified. 
-#' To obtain power densities, refer to [get_power_density()].
+#' In this case, users do not have to set `power_dens` and simply modify `expected_number`. 
+#' Alternatively, users can shift the locations as well. In this case, `power_dens` must be specified. 
+#' To obtain power densities, refer to [get_power_dens()].
 
-get_counterfactual_density <- function(expected_number,
-                                       baseline_density,
-                                       power_density = NA,
-                                       window,
-                                       grayscale = FALSE) {
+get_cf_dens <- function(expected_number,
+                        base_dens,
+                        power_dens = NA,
+                        window,
+                        grayscale = FALSE) {
   
-  if (is.na(power_density[1])) { # counterfactual_type = intensity only -> multiply by the expectation
+  if (is.na(power_dens[1])) { # counterfactual_type = intensity only -> multiply by the expectation
     
-    counterfactual_density <- expected_number * baseline_density
+    counterfactual_density <- expected_number * base_dens
     
   } else { # counterfactual_type = location as well
     
-    product_power_baseline <- baseline_density * power_density
+    product_power_baseline <- base_dens * power_dens
     counterfactual_density <- product_power_baseline/
       integral(product_power_baseline, W = window) * expected_number
     
