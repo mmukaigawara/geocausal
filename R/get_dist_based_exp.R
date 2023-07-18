@@ -1,37 +1,35 @@
-#' Function: get_distance_based_expectation
+#' Get the expectation of treatment events with arbitrary distances
 #'
 #' @description 
-#' `get_distance_based_expectation()` takes counterfactual densities and 
+#' `get_dist_based_exp()` takes counterfactual densities and 
 #' and returns the expected number of treatment events based on distances 
 #' from a user-specified focus.
 #'
-#' @param counterfactual_simulation_results output of `simulate_counterfactual_density()`
+#' @param cf_sim_results output of `sim_cf_dens()`
 #' @param entire_window owin object of the entire region
-#' @param density_of_interest density to manipulate
-#' @param distance_map im object whose cell values are the distance from a focus (e.g., city)
-#' @param distance_map_unit `"km"` or `"mile"`
+#' @param dist_map im object whose cell values are the distance from a focus (e.g., city)
+#' @param dist_map_unit `"km"` or `"mile"`
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
-#' @param expectation_use_raw logical. `expectation_use_raw` specifies whether to use the raw value of expectations or percentiles. 
+#' @param use_raw logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
 #' By default, `FALSE`.
 #' whether to use the actual expectation or proportion for the y-axis. By default, `FALSE`.
 #' 
 #' @returns ggplot object that summarizes how expectations change over distances from a focus
 
 
-get_distance_based_expectation <- function(counterfactual_simulation_results,
-                                           entire_window,
-                                           density_of_interest,
-                                           distance_map,
-                                           distance_map_unit = "km",
-                                           grayscale = FALSE,
-                                           expectation_use_raw = FALSE) {
+get_dist_based_exp <- function(cf_sim_results,
+                               entire_window,
+                               dist_map,
+                               dist_map_unit = "km",
+                               grayscale = FALSE,
+                               use_raw = FALSE) {
 
   # Get the range and quantiles of standardized distances 
-  distance_range <- range(`distance_map`$v, na.rm = TRUE)
+  distance_range <- range(`dist_map`$v, na.rm = TRUE)
   distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
   
   # Convert the distance map to windows
-  distance_window <- matrix(`distance_map`$v, nrow = nrow(`distance_map`$v))
+  distance_window <- matrix(`dist_map`$v, nrow = nrow(`dist_map`$v))
   distance_windows <- lapply(distance_quantiles, function(x) distance_window < x) # A list of binary matrices based on quantiles
   distance_owin <- lapply(distance_windows, function(x) {
     spatstat.geom::owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
@@ -39,7 +37,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
 
   # Get the expectation
   partial_expectations <- lapply(distance_owin, function(x) {
-    lapply(`counterfactual_simulation_results`$densities, function(y) {
+    lapply(`cf_sim_results`$densities, function(y) {
       counter <- y
       spatstat.geom::Window(counter) <- x
       return(spatstat.geom::integral(counter))
@@ -47,25 +45,25 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
   })
 
   # Convert it to a dataframe
-  if (expectation_use_raw) {
+  if (use_raw) {
     expectation_results <- data.table::rbindlist(partial_expectations)
   } else {
     expectation_results <- data.table::rbindlist(partial_expectations)/
-      spatstat.geom::integral(`counterfactual_simulation_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
+      spatstat.geom::integral(`cf_sim_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
   }
   
   result_data <- data.frame(expectation = c(unlist(expectation_results)),
-                            alpha = rep(`counterfactual_simulation_results`$priorities, each = 101),
+                            alpha = rep(`cf_sim_results`$priorities, each = 101),
                             distance = distance_quantiles)
   result_data$alpha <- factor(result_data$alpha)
 
   # Plot
   
-  x_label_text <- paste0("Distance from the focus (", distance_map_unit, ")")
+  x_label_text <- paste0("Distance from the focus (", dist_map_unit, ")")
   
   if(grayscale) {
     
-    if (expectation_use_raw) {
+    if (use_raw) {
       
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
@@ -91,7 +89,7 @@ get_distance_based_expectation <- function(counterfactual_simulation_results,
     
   } else {
     
-    if (expectation_use_raw) {
+    if (use_raw) {
       
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation, group = alpha, color = alpha)) +
