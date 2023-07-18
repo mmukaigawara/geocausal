@@ -41,8 +41,8 @@ get_estimates <- function(observed_density,
   cat("Calculating weights...\n")
   
   # 1-1. Log density
-  counterfactual_sum_log <- get_counterfactual_sum_log_intensity(counterfactual_density = counterfactual_density,
-                                                                 treatment_data = treatment_data)
+  counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = counterfactual_density,
+                                                  treatment_data = treatment_data)
   
   observed_sum_log <- observed_density$sum_log_intensity
   
