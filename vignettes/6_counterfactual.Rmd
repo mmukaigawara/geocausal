@@ -70,10 +70,10 @@ head(airstr_base)
 range(airstr_base$date)
 
 # Get baseline density
-baseline <- get_baseline_density(data = airstr_base, 
-                                 coordinates = c("longitude", "latitude"),
-                                 window = iraq_window,
-                                 grayscale = FALSE)
+baseline <- get_base_dens(data = airstr_base, 
+                          coordinates = c("longitude", "latitude"),
+                          window = iraq_window,
+                          grayscale = FALSE)
 plot(baseline$density)
 baseline$density_plot
 baseline$point_plot
