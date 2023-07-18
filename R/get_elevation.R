@@ -1,4 +1,4 @@
-#' Function: get_elevation
+#' Get elevation data
 #'
 #' @description 
 #' `get_elevation()` takes a directory that hosts shapefile and returns an owin object of altitudes.
