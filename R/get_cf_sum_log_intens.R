@@ -1,18 +1,18 @@
-#' Function: get_counterfactual_sum_log_intensity
+#' Calculate the log counterfactual densities
 #'
 #' @description A function that takes a hyperframe and returns the log counterfactual densities
 #' ie, the numerator of the equation
 #'
-#' @param counterfactual_density A counterfactual density (an im object)
+#' @param cf_dens A counterfactual density (an im object)
 #' @param treatment_data In the form of hyperframe$column
 #' 
 #' @returns A numeric vector of sums of log densities for each time period
 
-get_counterfactual_sum_log_intensity <- function(counterfactual_density,
-                                                 treatment_data) {
+get_cf_sum_log_intens <- function(cf_dens,
+                                  treatment_data) {
   
   intensity_of_each_obs <- lapply(1:length(treatment_data), function(t) {
-    spatstat.geom::interp.im(counterfactual_density, 
+    spatstat.geom::interp.im(cf_dens, 
                              x = treatment_data[[t]],
                              bilinear = TRUE)
   })
