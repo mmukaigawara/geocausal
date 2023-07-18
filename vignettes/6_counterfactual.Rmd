@@ -82,8 +82,8 @@ Get the summary and plot so that we can see the expected number of airstrikes.
 
 ```{r}
 # Get the target number
-baseline_summary <- get_baseline_summary(data = airstr_base, 
-                                         time_column = "date")
+baseline_summary <- get_base_sum(data = airstr_base, 
+                                 time_column = "date")
 
 baseline_summary$quantile
 baseline_summary$mean
@@ -100,10 +100,10 @@ Then first try the simple multiplication. Since the baseline density is standard
 baseline_density <- baseline$density
 target_number <- 3
 
-counterfactual_multiply <- get_counterfactual_density(baseline_density = baseline_density,
-                                                      expected_number = target_number,
-                                                      window = iraq_window,
-                                                      grayscale = FALSE)
+counterfactual_multiply <- get_cf_dens(base_dens = baseline_density,
+                                       expected_number = target_number,
+                                       window = iraq_window,
+                                       grayscale = FALSE)
 
 counterfactual_multiply$plot
 ```
@@ -212,7 +212,7 @@ target_sunni_routes <- list(sunni, dist_from_routes)
 priorities <- c(2, 2)
 
 # Example 1: Sectarian x Routes
-power_sunni_routes <- get_power_density(target_densities = target_sunni_routes, 
+power_sunni_routes <- get_power_dens(target_dens = target_sunni_routes, 
                                         priorities = priorities, 
                                         window = iraq_window,
                                         grayscale = FALSE)
@@ -223,7 +223,7 @@ power_sunni_routes$plot
 ```{r}
 # Example 2: Sectarian x City
 target_sunni_mosul <- list(sunni, dist_mosul)
-power_sunni_mosul <- get_power_density(target_densities = target_sunni_mosul, 
+power_sunni_mosul <- get_power_dens(target_dens = target_sunni_mosul, 
                                        priorities = priorities, 
                                        window = iraq_window,
                                        grayscale = FALSE)
@@ -235,7 +235,7 @@ power_sunni_mosul$plot
 ```{r}
 # Example 3: Roads x City
 target_road_mosul <- list(dist_from_routes, dist_mosul)
-power_road_mosul <- get_power_density(target_densities = target_road_mosul, 
+power_road_mosul <- get_power_dens(target_dens = target_road_mosul, 
                                       priorities = priorities, 
                                       window = iraq_window,
                                       grayscale = FALSE)
@@ -247,7 +247,7 @@ power_road_mosul$plot
 ```{r}
 # Example 4: Elevation x Sectarian
 target_elevation_sunni <- list(elevation, sunni)
-power_elevation_sunni <- get_power_density(target_densities = target_elevation_sunni,
+power_elevation_sunni <- get_power_dens(target_dens = target_elevation_sunni,
                                            priorities = priorities,
                                            window = iraq_window,
                                            grayscale = FALSE)
@@ -261,7 +261,7 @@ For visualization purposes, consider two scenarios (Mosul+Roads vs Mosul+Bagh)
 ```{r}
 # Counterfactual 1: Mosul and roads
 target_mosul_road <- list(dist_mosul, dist_from_routes)
-power_mosul_road <- get_power_density(target_densities = target_mosul_road,
+power_mosul_road <- get_power_dens(target_dens = target_mosul_road,
                                            priorities = c(5, 1),
                                            window = iraq_window,
                                            grayscale = FALSE)
@@ -273,7 +273,7 @@ plot(power_mosul_road$density)
 ```{r}
 # Counterfactual 2: Mosul and Bagh
 target_mos_bagh <- list(dist_mos_bagh)
-power_mos_bagh <- get_power_density(target_densities = target_mos_bagh,
+power_mos_bagh <- get_power_dens(target_dens = target_mos_bagh,
                                            priorities = c(3),
                                            window = iraq_window,
                                            grayscale = FALSE)
@@ -316,12 +316,12 @@ Simulation and visualization exercises for power density
 
 ```{r}
 # For counterfactual scenario 1
-sim_power_mosul <- sim_power_density(target_densities = list(dist_from_routes), #This must be a list element
-                                          density_to_manipulate = dist_mosul,
-                                          priorities = 1,
-                                          priorities_for_manipulation = c(1, 2, 5, 10, 15, 50),
-                                          window = iraq_window,
-                                          grayscale = FALSE)
+sim_power_mosul <- sim_power_dens(target_dens = list(dist_from_routes), #This must be a list element
+                                  dens_manip = dist_mosul,
+                                  priorities = 1,
+                                  priorities_manip = c(1, 2, 5, 10, 15, 50),
+                                  window = iraq_window,
+                                  grayscale = FALSE)
 
 plot(sim_power_mosul$densities[[6]])
 sim_power_mosul$plot
@@ -331,11 +331,11 @@ Simulation for counterfactual densities
 
 ```{r}
 # Simulation
-sim_counter_mosul <- sim_counterfactual_density(expected_number = target_number,
-                                                baseline_density = baseline_density,
-                                                power_simulation_results = sim_power_mosul,
-                                                window = iraq_window,
-                                                grayscale = FALSE)
+sim_counter_mosul <- sim_cf_dens(expected_number = target_number,
+                                 baseline_density = base_dens,
+                                 power_sim_results = sim_power_mosul,
+                                 window = iraq_window,
+                                 grayscale = FALSE)
 
 sim_counter_mosul$plot
 ```
@@ -343,13 +343,12 @@ sim_counter_mosul$plot
 Then choose which density? Use these as inputs
 
 ```{r}
-expectation_mosul <- get_distance_based_expectation(counterfactual_simulation_results = sim_counter_mosul, 
-                                                    entire_window = iraq_window, 
-                                                    density_of_interest = dist_mosul,
-                                                    distance_map = dist_from_focus$distance_im,
-                                                    distance_map_unit = "km",
-                                                    grayscale = FALSE,
-                                                    expectation_use_raw = TRUE)
+expectation_mosul <- get_dist_based_exp(cf_sim_results = sim_counter_mosul, 
+                                        entire_window = iraq_window, 
+                                        dist_map = dist_from_focus$distance_im,
+                                        dist_map_unit = "km",
+                                        grayscale = FALSE,
+                                        use_raw = TRUE)
 
 expectation_mosul
 ```
@@ -358,35 +357,34 @@ Simulate with the opposite
 
 ```{r}
 # Switching roads and mosul
-sim_power_road <- sim_power_density(target_densities = list(dist_mosul), #This must be a list element
-                                    density_to_manipulate = dist_from_routes,
-                                    priorities = 1,
-                                    priorities_for_manipulation = c(1, 2, 5, 10, 15, 20),
-                                    window = iraq_window,
-                                    grayscale = FALSE)
+sim_power_road <- sim_power_dens(target_dens = list(dist_mosul), #This must be a list element
+                                 density_manip = dist_from_routes,
+                                 priorities = 1,
+                                 priorities_manip = c(1, 2, 5, 10, 15, 20),
+                                 window = iraq_window,
+                                 grayscale = FALSE)
 
 plot(sim_power_road$densities[[6]])
 sim_power_road$plot
 ```
 
 ```{r}
-sim_counter_road <- sim_counterfactual_density(expected_number = target_number,
-                                               baseline_density = baseline_density,
-                                               power_simulation_results = sim_power_road,
-                                               window = iraq_window,
-                                               grayscale = FALSE)
+sim_counter_road <- sim_cf_dens(expected_number = target_number,
+                                base_dens = baseline_density,
+                                power_sim_results = sim_power_road,
+                                window = iraq_window,
+                                grayscale = FALSE)
 
 sim_counter_road$plot
 ```
 
 ```{r}
-expectation_road <- get_distance_based_expectation(counterfactual_simulation_results = sim_counter_road, 
-                                                   entire_window = iraq_window, 
-                                                   density_of_interest = dist_from_routes,
-                                                   distance_map = dist_from_line$distance_im,
-                                                   distance_map_unit = "km",
-                                                   grayscale = FALSE,
-                                                   expectation_use_raw = TRUE)
+expectation_road <- get_dist_based_exp(cf_sim_results = sim_counter_road, 
+                                       entire_window = iraq_window, 
+                                       dist_map = dist_from_line$distance_im,
+                                       dist_map_unit = "km",
+                                       grayscale = FALSE,
+                                       use_raw = TRUE)
 
 expectation_road
 ```

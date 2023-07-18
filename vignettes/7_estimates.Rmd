@@ -65,16 +65,16 @@ counter_d1 <- counter_d[[1]] #Mosul x roads
 counter_d2 <- counter_d[[2]] #Mosul x Bagh
 
 # Run fx for counter_d1
-estimates_counter_mosul <- get_estimates(observed_density = obs_density_surge,
-                                         counterfactual_density = counter_d1,
+estimates_counter_mosul <- get_estimates(obs_dens = obs_density_surge,
+                                         cf_dens = counter_d1,
                                          treatment_data = dat_hfr$Airstrike,
                                          smoothed_outcome = dat_hfr$smooth_allout,
                                          lag = 3,
                                          entire_window = iraq_window,
-                                         distance_map = dist_from_focus$distance_im,
-                                         distance_map_unit = "km",
+                                         dist_map = dist_from_focus$distance_im,
+                                         dist_map_unit = "km",
                                          grayscale = FALSE,
-                                         expectation_use_raw = TRUE)
+                                         use_raw = TRUE)
 
 estimates_counter_mosul$plot
 ```
@@ -82,16 +82,16 @@ estimates_counter_mosul$plot
 With another couterfactual scenario (Baghdad focus)
 
 ```{r}
-estimates_counter_bagh <- get_estimates(observed_density = obs_density_surge,
-                                        counterfactual_density = counter_d2,
+estimates_counter_bagh <- get_estimates(obs_dens = obs_density_surge,
+                                        cf_dens = counter_d2,
                                         treatment_data = dat_hfr$Airstrike,
                                         smoothed_outcome = dat_hfr$smooth_allout,
                                         lag = 3,
                                         entire_window = iraq_window,
-                                        distance_map = dist_from_focus$distance_im,
-                                        distance_map_unit = "km",
+                                        dist_map = dist_from_focus$distance_im,
+                                        dist_map_unit = "km",
                                         grayscale = FALSE,
-                                        expectation_use_raw = TRUE)
+                                        use_raw = TRUE)
 
 estimates_counter_bagh$plot
 
@@ -101,10 +101,10 @@ estimates_counter_bagh$plot
 
 ```{r}
 # Get the causal contrasts (with CI)
-causal_contrast <- get_causal_contrasts(estimates_scenario_1 = estimates_counter_mosul,
-                                        estimates_scenario_2 = estimates_counter_bagh,
-                                        grayscale = FALSE,
-                                        expectation_use_raw = TRUE)
+causal_contrast <- get_causal_cont(scenario_1 = estimates_counter_mosul,
+                                   scenario_2 = estimates_counter_bagh,
+                                   grayscale = FALSE,
+                                   use_raw = TRUE)
 
 causal_contrast$plot
 ```

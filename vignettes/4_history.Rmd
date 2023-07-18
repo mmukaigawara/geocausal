@@ -61,7 +61,7 @@ As a final step of data preparation, we obtain histories of treatment and outcom
 
 # History of treatment and outcomes
 
-We consider the history of treatment and outcomes as covariates. To create columns for the treatment and outcome history, we aggregate treatment and outcomes over 1, 7, and 30 days. To do so, we use <tt>get_history</tt> function by specifying data to convert, the lag, and the window. 
+We consider the history of treatment and outcomes as covariates. To create columns for the treatment and outcome history, we aggregate treatment and outcomes over 1, 7, and 30 days. To do so, we use <tt>get_hist</tt> function by specifying data to convert, the lag, and the window. 
 
 For example, if you want to convert all outcomes (saved as <tt>dat_hfr\$all_outcome</tt>) aggregated over the past 30 days in Iraq, then you set <tt>Xt = dat_hfr\$all_outcome</tt>, <tt>lag = 30</tt>, and <tt>window = iraq_window</tt> (the window is saved as <tt>iraq_window</tt> in our case).
 
@@ -72,13 +72,13 @@ time_interval <- 1:nrow(dat_hfr)
 # History of all outcomes (allout = Activity in the original code)
 
 ## Point process
-hist_allout_1 <- lapply(time_interval, get_history,
+hist_allout_1 <- lapply(time_interval, get_hist,
                         Xt = dat_hfr$all_outcome,
                         lag = lags[1], window = iraq_window)
-hist_allout_7 <- lapply(time_interval, get_history,
+hist_allout_7 <- lapply(time_interval, get_hist,
                         Xt = dat_hfr$all_outcome,
                         lag = lags[2], window = iraq_window)
-hist_allout_30 <- lapply(time_interval, get_history,
+hist_allout_30 <- lapply(time_interval, get_hist,
                          Xt = dat_hfr$all_outcome,
                          lag = lags[3], window = iraq_window)
 
@@ -129,13 +129,13 @@ dat_hfr$hist_allout_30[401:469] <- get_smoothed_outcome(data_interest = dat_hfr$
 # History of airstrikes
 
 ## Point process
-hist_kinetic_1  <- lapply(time_interval, get_history,
+hist_kinetic_1  <- lapply(time_interval, get_hist,
                           Xt = dat_hfr$Airstrike,
                           lag = lags[1], window = iraq_window)
-hist_kinetic_7  <- lapply(time_interval, get_history,
+hist_kinetic_7  <- lapply(time_interval, get_hist,
                           Xt = dat_hfr$Airstrike,
                           lag = lags[2], window = iraq_window)
-hist_kinetic_30  <- lapply(time_interval, get_history,
+hist_kinetic_30  <- lapply(time_interval, get_hist,
                            Xt = dat_hfr$Airstrike,
                            lag = lags[3], window = iraq_window)
 
@@ -161,13 +161,13 @@ dat_hfr$hist_kinetic_30 <- get_smoothed_outcome(data_interest = dat_hfr$hist_kin
 # History of SOFs
 
 ## Point process
-hist_SOF_1  <- lapply(time_interval, get_history,
+hist_SOF_1  <- lapply(time_interval, get_hist,
                       Xt = dat_hfr$SOF,
                       lag = lags[1], window = iraq_window)
-hist_SOF_7  <- lapply(time_interval, get_history,
+hist_SOF_7  <- lapply(time_interval, get_hist,
                       Xt = dat_hfr$SOF,
                       lag = lags[2], window = iraq_window)
-hist_SOF_30  <- lapply(time_interval, get_history,
+hist_SOF_30  <- lapply(time_interval, get_hist,
                        Xt = dat_hfr$SOF,
                        lag = lags[3], window = iraq_window)
 
