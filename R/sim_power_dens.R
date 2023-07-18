@@ -1,46 +1,46 @@
-#' Function: sim_power_density
+#' Simulate power densities
 #'
 #' @description A function that takes the target densities and their priorities
 #' and returns a power density image over a range of parameters
 #'
-#' @param target_densities list of target densities. This should always be a list, even if there is only one target density.
-#' @param density_to_manipulate a target density for which we manipulate the value of priorities
+#' @param target_dens list of target densities. This should always be a list, even if there is only one target density.
+#' @param dens_manip a target density for which we manipulate the value of priorities
 #' @param priorities numeric. `priorities` specifies the priority for the target density that we do not manipulate.
-#' @param priorities_for_manipulation vector of priorities for the density that we manipulate.
+#' @param priorities_manip vector of priorities for the density that we manipulate.
 #' @param window owin object
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' 
 #' @returns list of densities, plot, and priorities
 
-sim_power_density <- function(target_densities, #This must be a list element
-                              density_to_manipulate,
-                              priorities,
-                              priorities_for_manipulation,
-                              window,
-                              grayscale = FALSE) {
+sim_power_dens <- function(target_dens, #This must be a list element
+                           dens_manip,
+                           priorities,
+                           priorities_manip,
+                           window,
+                           grayscale = FALSE) {
   
   # Obtaining each target density ^ alpha
-  target_alpha <- lapply(1:length(target_densities), function(x) target_densities[[x]] ^ priorities[x])
+  target_alpha <- lapply(1:length(target_dens), function(x) target_dens[[x]] ^ priorities[x])
   
   power_density <- target_alpha[[1]]
   
-  if (length(target_densities) > 1){
+  if (length(target_dens) > 1){
     
-    for (ii in 2:length(target_densities)){ power_density <- power_density * target_alpha[[ii]] }
+    for (ii in 2:length(target_dens)){ power_density <- power_density * target_alpha[[ii]] }
     
   } 
 
   power_density_list <- list()
   
-  for (jj in 1:length(priorities_for_manipulation)){
-    temp <- power_density * density_to_manipulate ^ priorities_for_manipulation[jj]
+  for (jj in 1:length(priorities_manip)){
+    temp <- power_density * dens_manip ^ priorities_manip[jj]
     temp <- temp/spatstat.geom::integral(temp, domain = window)
     power_density_list[[jj]] <- temp
   }
   
-  power_density_list <- lapply(1:length(priorities_for_manipulation),
+  power_density_list <- lapply(1:length(priorities_manip),
                                function(x) {
-                                 temp <- power_density * density_to_manipulate ^ priorities_for_manipulation[x]
+                                 temp <- power_density * dens_manip ^ priorities_manip[x]
                                  temp <- temp/spatstat.geom::integral(temp, domain = window)
                                  return(temp)
                                }
@@ -69,7 +69,7 @@ sim_power_density <- function(target_densities, #This must be a list element
                             ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") + 
                             ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
                             ggthemes::theme_map() +
-                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_for_manipulation[a], "$"))) +
+                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_manip[a], "$"))) +
                             labs(fill = "Density") +
                             theme(plot.title = element_text(hjust = 0.5))
                           
@@ -85,7 +85,7 @@ sim_power_density <- function(target_densities, #This must be a list element
                             ggplot2::scale_fill_viridis_c(option = "plasma", limits = c(NA, max_val)) + 
                             ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
                             ggthemes::theme_map() +
-                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_for_manipulation[a], "$"))) +
+                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_manip[a], "$"))) +
                             labs(fill = "Density") +
                             theme(plot.title = element_text(hjust = 0.5))
                           
@@ -99,6 +99,6 @@ sim_power_density <- function(target_densities, #This must be a list element
   
   return(list(densities = power_density_list,
               plot = plot,
-              priorities = priorities_for_manipulation))
+              priorities = priorities_manip))
 
 }
