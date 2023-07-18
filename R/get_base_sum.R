@@ -1,6 +1,6 @@
-#' Function: get_baseline_summary
+#' Summarize baseline densities
 #'
-#' @description `get_baseline_summary()` takes dataframe and summarizes it.
+#' @description `get_base_sum()` takes dataframe and summarizes it.
 #'
 #' @param data dataframe
 #' @param time_column the name of time variable
@@ -11,7 +11,7 @@
 #'     * `mean`: the mean
 #'     * `variance`: the variance
 
-get_baseline_summary <- function(data, time_column) {
+get_base_sum <- function(data, time_column) {
 
   # Generate a plot of counts over the entire time period
   dat_count <- airstr_base %>%
