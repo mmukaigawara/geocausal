@@ -1,4 +1,4 @@
-#' Function: get_dist_line
+#' Get distance maps from lines and polygons
 #'
 #' @description 
 #' `get_dist_line()` generates a distance map from lines and polygons.
