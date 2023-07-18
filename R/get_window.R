@@ -1,4 +1,4 @@
-#' Function: get_window
+#' Generate a window
 #'
 #' @description `get_window()` takes a directory that hosts a shapefile
 #' and returns an owin object.
