@@ -18,7 +18,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
                           grayscale, mile, resolution, preprocess = TRUE){
   
   # Convert owin into sp objects -----
-  window_sp <- convert_owin_into_sf(window)
+  window_sp <- conv_owin_into_sf(window)
   polygon <- window_sp[[1]]
   polygon_df <- window_sp[[2]]
   polygon_sfc <- window_sp[[3]]

@@ -41,7 +41,7 @@ vis_hfr <- function(hfr,
   
   # Convert window to df
   window <- spatstat.geom::Window(hfr_cleaned[1, which(colnames(hfr_cleaned) == subtype_column[1])][[1]])
-  window_sp <- convert_owin_into_sf(window)
+  window_sp <- conv_owin_into_sf(window)
   polygon_df <- window_sp[[2]]
   
   # Function for grayscaling (for density plot only)
