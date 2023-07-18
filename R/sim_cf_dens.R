@@ -1,30 +1,30 @@
-#' Function: sim_counterfactual_density
+#' Function: sim_cf_dens
 #'
 #' @description 
-#' `sim_counterfactual_density()` takes a list of power densities
+#' `sim_cf_dens()` takes a list of power densities
 #' and returns simulated counterfactual densities.
 #'
 #' @param expected_number the expected number of observations
-#' @param baseline_density the baseline density (im object)
-#' @param power_simulation_results the results obtained by `simulate_power_density()`
+#' @param base_dens the baseline density (im object)
+#' @param power_sim_results the results obtained by `simulate_power_density()`
 #' @param window owin object
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' 
 #' @returns list of counterfactual densities, a ggplot, and priorities
 
-sim_counterfactual_density <- function(expected_number,
-                                       baseline_density,
-                                       power_simulation_results,
-                                       window,
-                                       grayscale = FALSE) {
+sim_cf_dens <- function(expected_number,
+                        base_dens,
+                        power_sim_results,
+                        window,
+                        grayscale = FALSE) {
   
-  power_densities <- power_simulation_results$densities
-  powers <- power_simulation_results$priorities
+  power_densities <- power_sim_results$densities
+  powers <- power_sim_results$priorities
   
   # Obtaining a list of counterfactual densities based on simluations
   counterfactual_density_list <- lapply(1:length(power_densities),
                                         function(x) { #Suppress warnings for incompatibility of images
-                                          suppressWarnings( product_power_baseline <- baseline_density * power_densities[[x]] )
+                                          suppressWarnings( product_power_baseline <- base_dens * power_densities[[x]] )
                                           counterfactual_density <- product_power_baseline/
                                             spatstat.geom::integral(product_power_baseline, W = window) * expected_number
                                           return(counterfactual_density)
@@ -87,6 +87,6 @@ sim_counterfactual_density <- function(expected_number,
   
   return(list(densities = counterfactual_density_list,
               plot = plot,
-              priorities = power_simulation_results$priorities))
+              priorities = power_sim_results$priorities))
   
 }
