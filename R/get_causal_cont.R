@@ -1,24 +1,25 @@
-#' Function: get_causal_contrasts
+#' Generate a figure with causal contrasts
 #'
 #' @description A function that returns a figure with causal contrasts
 #'
-#' @param estimates_scenario_1 A counterfactual scenario (the output of get_estimates function)
-#' @param estimates_scenario_2 Another counterfactual scenario
+#' @param scenario_1 A counterfactual scenario (the output of get_estimates function)
+#' @param scenario_2 Another counterfactual scenario
 #' @param grayscale Whether to grayscale
-#' @param expectation_use_raw If TRUE, the plot displays the raw expectations (if FALSE, max is set to 1)
+#' @param use_raw If TRUE, the plot displays the raw expectations (if FALSE, max is set to 1)
 #' 
 #' @returns A list of ggplot objects and the data
  
-get_causal_contrasts <- function(estimates_scenario_1, #Contrast = scenario 2 - scenario 1
-                                 estimates_scenario_2,
-                                 grayscale, expectation_use_raw) {
+get_causal_cont <- function(scenario_1, #Contrast = scenario 2 - scenario 1
+                            scenario_2,
+                            grayscale, 
+                            use_raw) {
   
   
   # Create a dataframe for causal contrast
-  causal_contrast <- estimates_scenario_2$average_expected_events_quantiles - 
-    estimates_scenario_1$average_expected_events_quantiles
+  causal_contrast <- scenario_2$average_expected_events_quantiles - 
+    scenario_1$average_expected_events_quantiles
   
-  distance_quantiles <- estimates_scenario_1$distance_quantiles
+  distance_quantiles <- scenario_1$distance_quantiles
   
   result_data <- data.frame(expectation = causal_contrast,
                             distance = distance_quantiles)
@@ -29,7 +30,7 @@ get_causal_contrasts <- function(estimates_scenario_1, #Contrast = scenario 2 - 
   
   if(grayscale) {
     
-    if (expectation_use_raw) {
+    if (use_raw) {
       
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation)) +
@@ -57,7 +58,7 @@ get_causal_contrasts <- function(estimates_scenario_1, #Contrast = scenario 2 - 
     
   } else {
     
-    if (expectation_use_raw) {
+    if (use_raw) {
       
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation)) +
@@ -86,7 +87,7 @@ get_causal_contrasts <- function(estimates_scenario_1, #Contrast = scenario 2 - 
   }
   
   # Color and plot
-  window_plot <- estimates_scenario_1$window_plot
+  window_plot <- scenario_1$window_plot
   
   entire_plot <- ggpubr::ggarrange(expectation_plot, window_plot, nrow = 2, heights = c(0.7, 0.3))
   titletext <- "Causal Effects Per Time Period:\nThe Expected Number of Outcome Events\nComparing Two Counterfactual Scenarios"
