@@ -1,4 +1,4 @@
-#' Function: get_hfr
+#' Create a hyperframe
 #'
 #' @description 
 #' `get_hfr()` takes a dataframe with time and location variables 
