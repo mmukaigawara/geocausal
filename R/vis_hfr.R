@@ -1,4 +1,4 @@
-#' Function: vis_hfr
+#' Visualize hyperframes
 #'
 #' @description 
 #' `vis_hfr()` takes a hyperframe and visualizes columns that users specify. 
