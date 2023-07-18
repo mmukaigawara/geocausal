@@ -1,7 +1,7 @@
-#' Function: get_obs_density
+#' Generate observed densities
 #'
 #' @description 
-#' `get_obs_density()` takes a hyperframe and returns observed densities.
+#' `get_obs_dens()` takes a hyperframe and returns observed densities.
 #' The output is used as propensity scores.
 #'
 #' @param hfr hyperframe
@@ -25,7 +25,7 @@
 #' Users should note that the coefficients in the output are not directly interpretable, 
 #' since they are the coefficients inside the exponential of the poisson model.
 
-get_obs_density <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
+get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
 
   # Define function -----
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
