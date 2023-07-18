@@ -1,4 +1,4 @@
-#' Function: get_smoothed_outcome
+#' Smooth outcome events
 #'
 #' @description 
 #' `get_smoothed_outcome()` takes a column of hyperframes (ppp objects) and smoothes them.
