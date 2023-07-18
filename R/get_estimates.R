@@ -1,18 +1,18 @@
-#' Function: get_estimates
+#' Get causal estimates comparing two scenarios
 #'
 #' @description 
 #' `get_estimates()` generates causal estimates comparing two counterfactual scenarios.
 #'
-#' @param observed_density observed density
-#' @param counterfactual_density counterfactual density
+#' @param obs_dens observed density
+#' @param cf_dens counterfactual density
 #' @param treatment_data column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.
 #' @param smoothed_outcome column of a hyperframe that summarizes the smoothed outcome data
 #' @param lag integer that specifies lags to calculate causal estimates
 #' @param entire_window owin object (the entire region of interest)
-#' @param distance_map im object (distance map)
-#' @param distance_map_unit `"km"` or `"mile"`
+#' @param dist_map im object (distance map)
+#' @param dist_map_unit `"km"` or `"mile"`
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
-#' @param expectation_use_raw logical. `expectation_use_raw` specifies whether to use the raw value of expectations or percentiles. 
+#' @param use_raw logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
 #' By default, `FALSE`.
 #' 
 #' @returns list of the following:
@@ -25,26 +25,26 @@
 #' `expectation_plot`: plot of expectations
 #' `window_plot`: plot of windows
 
-get_estimates <- function(observed_density, 
-                          counterfactual_density,
+get_estimates <- function(obs_dens, 
+                          cf_dens,
                           treatment_data, 
                           smoothed_outcome, 
                           lag,
                           entire_window, 
-                          distance_map,
-                          distance_map_unit = "km",
+                          dist_map,
+                          dist_map_unit = "km",
                           grayscale,
-                          expectation_use_raw) {
+                          use_raw) {
   
   # 1. Weight
   
   cat("Calculating weights...\n")
   
   # 1-1. Log density
-  counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = counterfactual_density,
+  counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens,
                                                   treatment_data = treatment_data)
   
-  observed_sum_log <- observed_density$sum_log_intensity
+  observed_sum_log <- obs_dens$sum_log_intensity
   
   # 1-2. Log density ratio (LDR)
   log_density_ratio <- counterfactual_sum_log - observed_sum_log
@@ -80,11 +80,11 @@ get_estimates <- function(observed_density,
   cat("Calculating expectations...\n")
   
   ## Get the range and quantiles of standardized distances 
-  distance_range <- range(`distance_map`$v, na.rm = TRUE)
+  distance_range <- range(`dist_map`$v, na.rm = TRUE)
   distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
   
   ## Convert the distance map to windows
-  distance_window <- matrix(`distance_map`$v, nrow = nrow(`distance_map`$v))
+  distance_window <- matrix(`dist_map`$v, nrow = nrow(`dist_map`$v))
   distance_windows <- lapply(distance_quantiles, function(x) distance_window < x) # A list of binary matrices based on quantiles
   distance_owin <- lapply(distance_windows, function(x) {
     spatstat.geom::owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
@@ -125,7 +125,7 @@ get_estimates <- function(observed_density,
   cat("Generating a plot...\n")
   
   ## Convert partial_expectations to a dataframe
-  if (expectation_use_raw) {
+  if (use_raw) {
     expectation_results <- as.numeric(unlist(partial_expectations))
   } else {
     expectation_results <- as.numeric(unlist(partial_expectations))/
@@ -137,11 +137,11 @@ get_estimates <- function(observed_density,
 
   ## Plot for distance-based expectations
   
-  x_label_text <- paste0("Distance from the focus (", distance_map_unit, ")")
+  x_label_text <- paste0("Distance from the focus (", dist_map_unit, ")")
   
   if(grayscale) {
     
-    if (expectation_use_raw) {
+    if (use_raw) {
       
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation)) +
@@ -167,7 +167,7 @@ get_estimates <- function(observed_density,
     
   } else {
     
-    if (expectation_use_raw) {
+    if (use_raw) {
       
       expectation_plot <- ggplot(result_data) +
         ggplot2::geom_line(aes(x = distance, y = expectation)) +
