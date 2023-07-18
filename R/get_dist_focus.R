@@ -1,4 +1,4 @@
-#' Function: get_dist_focus
+#' Get distance maps
 #'
 #' @description 
 #' `get_dist_focus()` generates a distance map from focus locations.
@@ -27,7 +27,7 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
                            grayscale, mile, preprocess = FALSE, ...){
 
   # Convert owin into sp objects  
-  window_sp <- convert_owin_into_sf(window)
+  window_sp <- conv_owin_into_sf(window)
   polygon <- window_sp[[1]]
   polygon_df <- window_sp[[2]]
   polygon_sfc <- window_sp[[3]]
