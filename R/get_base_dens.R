@@ -1,6 +1,6 @@
-#' Function: get_baseline_density
+#' Get baseline densities
 #'
-#' @description `get_baseline_density()` takes a dataframe and 
+#' @description `get_base_dens()` takes a dataframe and 
 #' returns the baseline densities using Scott's rule of thumb.
 #'
 #' @param data dataframe
@@ -13,10 +13,10 @@
 #'     * `density_plot`: ggplot object of baseline density
 #'     * `point_plot`: ggplot object of raw data
 
-get_baseline_density <- function(data, 
-                                 coordinates = c("longitude", "latitude"),
-                                 window,
-                                 grayscale = FALSE){
+get_base_dens <- function(data, 
+                          coordinates = c("longitude", "latitude"),
+                          window,
+                          grayscale = FALSE){
   
   # Convert data to ppp
   coordinates_data <- airstr_base[, coordinates]
