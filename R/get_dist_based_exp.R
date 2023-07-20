@@ -8,11 +8,10 @@
 #' @param cf_sim_results output of `sim_cf_dens()`
 #' @param entire_window owin object of the entire region
 #' @param dist_map im object whose cell values are the distance from a focus (e.g., city)
-#' @param dist_map_unit `"km"` or `"mile"`
+#' @param dist_map_unit either `"km"` or `"mile"`
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' @param use_raw logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
 #' By default, `FALSE`.
-#' whether to use the actual expectation or proportion for the y-axis. By default, `FALSE`.
 #' 
 #' @returns ggplot object that summarizes how expectations change over distances from a focus
 
@@ -140,16 +139,16 @@ get_dist_based_exp <- function(cf_sim_results,
   }
   
   window_plot_list[[1]] <- window_plot_list[[1]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["80%"]), 1), "km from the focus \n(", 80, " percentile)")) + 
+    ggtitle(paste0(round(as.numeric(distance_quantiles["80%"]), 1), "km \n(", 80, " percentile)")) + 
     theme(plot.title = element_text(hjust = 0.5))
   window_plot_list[[2]] <- window_plot_list[[2]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["60%"]), 1), "km from the focus \n(", 60, " percentile)")) + 
+    ggtitle(paste0(round(as.numeric(distance_quantiles["60%"]), 1), "km \n(", 60, " percentile)")) + 
     theme(plot.title = element_text(hjust = 0.5))
   window_plot_list[[3]] <- window_plot_list[[3]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["40%"]), 1), "km from the focus \n(", 40, " percentile)")) + 
+    ggtitle(paste0(round(as.numeric(distance_quantiles["40%"]), 1), "km \n(", 40, " percentile)")) + 
     theme(plot.title = element_text(hjust = 0.5))
   window_plot_list[[4]] <- window_plot_list[[4]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["20%"]), 1), "km from the focus \n(", 20, " percentile)")) + 
+    ggtitle(paste0(round(as.numeric(distance_quantiles["20%"]), 1), "km \n(", 20, " percentile)")) + 
     theme(plot.title = element_text(hjust = 0.5))
   
   w_plot_list <- list(window_plot_list[[4]], window_plot_list[[3]], window_plot_list[[2]], window_plot_list[[1]])
