@@ -85,7 +85,7 @@ ps_covs <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities",
              "Settle.IQ.G17", "Settle.IQ.G18")
 ```
 
-In this vignette, we will walk through the covariates. Our example considers the following covariates:
+Our example has the following covariates:
 
 - <tt>sectarian</tt>: settlement patterns and the population (logged, in 2003) of the governorate in which the airstrikes took place;
 - <tt>cities_dist</tt>: distances from major cities;
@@ -139,26 +139,7 @@ dat_hfr$logPopulation <- spatstat.geom::as.im(log(sectarian$total_pop), dimyx = 
 head(cities_dist)
 ```
 
-The point processes summarize the locations of major cities based on the population size.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-vis_hfr(hfr = cities_dist,
-        subtype_column = "Points",
-        time_column = NA,
-        range = c(1, 6),
-        combined = TRUE)
-```
-
-The pixel images show the distances from major cities.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-vis_hfr(hfr = cities_dist,
-        subtype_column = "distance",
-        time_column = NA,
-        range = c(1, 6),
-        combined = FALSE,
-        scale_max = 8) 
-```
+The point processes summarize the locations of major cities based on the population size. The pixel images show the distances from major cities.
 
 We save these distances after multiplying by some constants and exponentiating them. We ignore small cities whose population < 50k. Additionally, we combine all five pixel images as one map and save it as a map that shows distances from all types of cities.
 
@@ -214,28 +195,7 @@ The structure of <tt>settle_dist</tt> is similar to <tt>cities_dist</tt>. It is 
 head(settle_dist)
 ```
 
-The point processes show the locations of settlements in each Governorate in Iraq.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-vis_hfr(hfr = settle_dist,
-        subtype_column = "Points",
-        time_column = NA,
-        range = c(1, 18),
-        combined = FALSE) 
-```
-
-Additionally, pixel images show the distances from the settlements.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-vis_hfr(hfr = settle_dist,
-        subtype_column = "distance",
-        time_column = NA,
-        range = c(1, 18),
-        combined = FALSE,
-        scale_max = 10) 
-```
-
-We save each of these after multiplying by some constants and then exponentiating them.
+The point processes show the locations of settlements in each Governorate in Iraq. The pixel images show the distances from the settlements. We save each of these after multiplying by some constants and then exponentiating them.
 
 ```{r}
 for (jj in 1 : 18) {
@@ -282,14 +242,8 @@ We then convert it to pixel images.
 Each of pixel images is the summary of aid spending over the past one month in each district.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_3.rds")
-
-vis_hfr(hfr = dat_hfr,
-        subtype_column = "aid",
-        time_column = "time",
-        range = c("2007-02-23", "2007-02-28"),
-        combined = FALSE,
-        scale_max = 20)
+#try <- readRDS("~/geocausal/Data/dat_hfr_3.rds")
+#dat_hfr$aid <- try$aid
 ```
 
 ## Splines of time
@@ -298,11 +252,6 @@ Additionally, we have temporal splines as a covariate. This is the B-spline basi
 
 ```{r}
 time_splines <- splines::ns(1 : nrow(dat_hfr), df = 3)
-#for (jj in 1 : 3) {
-#  dat_hfr$Extra <- time_splines[, jj]
-#  names(dat_hfr)[ncol(dat_hfr)] <- paste0("time.", jj)
-#}
-
 head(time_splines)
 ```
 
@@ -323,4 +272,8 @@ ggplot(spline_data) +
 
 ```{r, include = FALSE}
 #saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_3.rds")
+rm(aid_district, cities_dist, covs_priority_coefs, 
+   iraq3, rivers_dist, routes_dist,
+   sectarian, settle_dist, spline_data, 
+   time_splines, try)
 ```
