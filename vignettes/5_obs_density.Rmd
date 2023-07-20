@@ -51,7 +51,9 @@ devtools::load_all()
 
 ```{r load data, include = FALSE}
 dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
-
+try <- readRDS("~/geocausal/Data/dat_hfr_1.rds")
+dat_hfr$time <- try$time[31:499]
+rm(try)
 load("~/geocausal/Data/iraq_window.Rda")
 load("~/geocausal/Data/windows.RData")
 
@@ -60,7 +62,7 @@ load("~/geocausal/Data/windows.RData")
 
 # 1. Obtaining observed densities
 
-Now that we have all the required data, let's move on to obtain the observed densities. The observed densities of treatment (in our example, airstrikes) will eventually be used to estimate causal effects.
+Now that we have all the required data, let's move on to calculate observed densities. The observed densities of treatment events (in our example, airstrikes) will be used to estimate causal effects.
 
 The function that we use here is <tt>get_obs_dens</tt>. This function has the following arguments.
 
@@ -70,24 +72,24 @@ The function that we use here is <tt>get_obs_dens</tt>. This function has the fo
 - <tt>ngrid</tt>: The number of grids (by default, 100)
 - <tt>window</tt>: The window
 
-<tt>get_obs_dens</tt> function does the following tasks.
+<tt>get_obs_dens</tt> function does the following tasks:
 
-1. Fit an inhomogeneous Poisson model of <tt>treatment ~ rhs_list</tt>;
-2. Obtain intensities $\lambda$ of the entire window by segmenting windows into $n = \text{ngrid}$ grid cells;
-3. Integrate $\lambda$ over the entire window, which is equivalent to the estimate number of outcome events for each time period; and
-4. Calculate the sum of log intensities of all observations for each time period.
+1. fit an inhomogeneous Poisson model of <tt>treatment ~ rhs_list</tt>;
+2. obtain intensities $\lambda$ of the entire window by segmenting windows into $n = \text{ngrid}$ grid cells;
+3. integrate $\lambda$ over the entire window, which is equivalent to the estimate number of outcome events for each time period; and
+4. calculate the sum of log intensities of all observations for each time period.
 
 The output of this function is a list of the following.
 
-- <tt>independent_variables</tt>: A vector of the names of RHS variables
-- <tt>coefficients</tt>: Coefficients of the model
-- <tt>intensity_grid_cells</tt>: Intensities as images for each time period
-- <tt>estimated_counts</tt>: Integrated intensities, which is the number of estimated outcome events for each time period
-- <tt>sum_log_intensity</tt>: The sum of log intensities of all observations for each time period
+- <tt>indep_var</tt>: a vector of the names of RHS variables
+- <tt>coef</tt>: coefficients of the model
+- <tt>intens_grid_cells</tt>: intensities as pixel images for each time period
+- <tt>estimated_counts</tt>: integrated intensities, which is the number of estimated outcome events for each time period
+- <tt>sum_log_intens</tt>: the sum of log intensities of all observations for each time period
 
-For the estimation of causal events, we will use <tt>sum_log_intensity</tt>, but <tt>estimated_counts</tt> and <tt>intensity_grid_cells</tt> are also useful to evaluate how well our model estimates the number of outcome events.
+To estimate causal effects, we will use <tt>sum_log_intens</tt>, but <tt>estimated_counts</tt> and <tt>intens_grid_cells</tt> are also useful in evaluating how well our model estimates the number of outcome events.
 
-Let's use the function <tt>get_obs_dens</tt>. Since estimating the intensities over the entire window is computationally demanding, we use $\text{ngrid} = 100$.
+Let's use the function <tt>get_obs_dens</tt>. Since estimating intensities over the entire window is computationally demanding, we set $\text{ngrid} = 100$.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # List of RHS variables
@@ -104,34 +106,29 @@ rhs_var <- c("logPopulation", "prior_rivers", "prior_roads", "All_Cities", "aid"
 
 # Get observed density over the entire window, for the entire period
 obs_density <- get_obs_dens(dat_hfr, "Airstrike", rhs_var, 
-                               ngrid = 100, window = iraq_window)
+                            ngrid = 100, window = iraq_window)
 ##saveRDS(obs_density, file = "~/geocausal/Data/obs_density.rds")
 ```
 
-Again, the output is a list of five elements that are summarized above. To see how each estimated intensities look like visually, we use plot function and select the date of interest. For example, if we are interested in the intensities of the first date of the data, then we can do the following. (We truncate the first 30 days from the original data, which is why the row ID is 31.)
+To visualize obtained intensities, we use plot function and select the time period of interest. For example, if we are interested in intensities of the first time period, then we can do the following. (We truncate the first 30 days from the original data, which is why the row ID is 31.)
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(obs_density$intensity_grid_cells[1], main = "Intensity (Grid cells)")
+plot(obs_density$intens_grid_cells[1], main = "Intensity (Grid cells)")
 ```
 
-Also, we can compare the estimated and actual count measures by plotting them. 
+Additionally, we can compare the estimated and actual count measures by plotting them. To do so, we use a function called <tt>vis_obs_dens</tt>. This function takes the following input:
 
-To do so, we use a function called <tt>vis_obs_dens</tt>. This function takes the following input:
+- actual_data: the actual (observed) data in the form of <tt>hyperframe$column</tt>
+- dens_1, dens_2, dens_3: densities as image objects (maximum 3 densities can be used)
+- color_actual, color_dens_1, color_dens_2, color_dens_3: colors to visualize each density
+- time_unit: the unit of the time variable
 
-- actual_data
-- dens_1, dens_2, dens_3
-- color_actual
-- color_dens_1, color_dens_2, color_dens_3
-- time_unit
-
-(add explanation here)
-
-The output is a list, whose first element is the dataframe that is used to generate the plot and second element is the ggplot object.
+The output is a list, whose first element is a dataframe that is used to generate the resulting plot and second element is a ggplot object.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_compare <- vis_obs_dens(actual_data = dat_hfr$Airstrike, 
-                                dens_1 = obs_density, dens_2 = NA,
-                                time_unit = "Days")
+                             dens_1 = obs_density, dens_2 = NA,
+                             time_unit = "Days")
 
 plot_compare$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgrey") +
@@ -149,8 +146,8 @@ obs_density_res <- get_obs_dens(dat_hfr, "Airstrike", rhs_var, ngrid = 200, iraq
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_compare_double_grid <- vis_obs_dens(actual_data = dat_hfr$Airstrike, 
-                                            dens_1 = obs_density, dens_2 = obs_density_res,
-                                            time_unit = "Days")
+                                         dens_1 = obs_density, dens_2 = obs_density_res,
+                                         time_unit = "Days")
 
 plot_compare_double_grid$plot_compare
 
@@ -160,33 +157,33 @@ plot_compare_double_grid$plot_residual
 Why do results remain the same? This can be easily understood by visualizing the grid-cell-level intensities. As you can see, the intensity is almost the same as the one we obtained by setting <tt>ngrid = 100</tt>.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(obs_density_res$intensity_grid_cells[1], main = "Intensity (Grid cells)")
+plot(obs_density_res$intens_grid_cells[1], main = "Intensity (Grid cells)")
 ```
 
 # Out-of-sample prediction
 
-Then let's turn to check out-of-sample prediction. In this vignette, we do the following experiments.
+Now let's turn to check out-of-sample prediction. In this vignette, we do the following experiments:
 
-1. Dividing into test and training set and fitting the model to the training set
-2. Using the entire data to fit the model, and then applying it to a subset of the data (eg, Baghdad)
+1. dividing into test and training set and fitting the model to the training set; and
+2. using the entire data to fit the model, and then applying it to a subset of the data (e.g., Baghdad).
 
-To do this, we use a function called <tt>predict_obs_dens</tt>. This function is basically the same as <tt>get_obs_dens</tt> function, except for <tt>ratio</tt> argument to split out training and test samples.
+We use a function called <tt>predict_obs_dens</tt>. This function is basically the same as <tt>get_obs_dens</tt> function, except for <tt>ratio</tt> argument to split out training and test samples.
 
 ## Using a subset of data to fit the model
 
-When you want to use a fraction of data as a training set, then you set the ratio argument of <tt>predict_obs_dens</tt>. For example, if you set <tt>ratio = 0.8</tt>, then it uses the first 80% of observations as a training set and fits the model.
+To use a fraction of data as a training set, we need to set the ratio argument. For example, if you set <tt>ratio = 0.8</tt>, then the function uses the first 80% of observations as a training set and fits the model.
 
 We use 70% and 80% of the data (first 70% and 80% observations) as training sets. Since we have a spike in the dataset, the 70% one fails to perform out-of-sample prediction.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # 80% training
 obs_density_8 <- predict_obs_dens(dat_hfr, ratio = 0.8, "Airstrike", 
-                                     rhs_var, ngrid = 100, iraq_window)
+                                  rhs_var, ngrid = 100, iraq_window)
 #predicted_out_8 <- out_obs_density_8$estimated_counts
 
 # 70% training
 obs_density_7 <- predict_obs_dens(dat_hfr, ratio = 0.7, "Airstrike", 
-                                     rhs_var, ngrid = 100, iraq_window)
+                                  rhs_var, ngrid = 100, iraq_window)
 #predicted_out_7 <- out_obs_density_7$estimated_counts
 
 ##out_obs_density <- list(out_obs_density_8, out_obs_density_7)
@@ -194,10 +191,10 @@ obs_density_7 <- predict_obs_dens(dat_hfr, ratio = 0.7, "Airstrike",
 
 # Plot
 plot_out_of_sample <- vis_obs_dens(actual_data = dat_hfr$Airstrike, 
-                                      dens_1 = obs_density, 
-                                      dens_2 = obs_density_8, 
-                                      dens_3 = obs_density_7,
-                                      time_unit = "Days")
+                                   dens_1 = obs_density, 
+                                   dens_2 = obs_density_8, 
+                                   dens_3 = obs_density_7,
+                                   time_unit = "Days")
 
 plot_out_of_sample$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
@@ -223,18 +220,18 @@ plot_out_of_sample$plot_residual +
   labs(title = "Residual plot comparing 80% and 70% allocations", x = "Days", y = "Residual") + ylim(-100, 100)
 ```
 
-The out-of-sample prediction is not going well, particularly when we use the first 70% of the data to fit the model. We will revisit this issue later.
+The out-of-sample prediction is not working well, particularly when we use the first 70% of the data to fit the model. We will revisit this issue later.
 
 ## Using the entire data to fit the model, and then integrate over a subset of the data
 
-We can use the fitted model to predict the number of airstrikes in a sub-region. In this case, we continue to use <tt>predict_obs_dens</tt> function, but this time set <tt>ratio = 1</tt> and set <tt>window = windows\$Baghdad</tt>. That is, we use the entire dataset to fit the model, and then predict the counts in a window, this time Baghdad and outside of Baghdad. The window objects of Baghdad and outside of Baghdad are saved as <tt>windows\$Baghdad</tt> and <tt>windows\$outside_Baghdad</tt>, respectively.
+In addition to the out-of-sample prediction with respect to time, we can use the fitted model to predict the number of outcome events in a sub-region. In this case, we continue to use <tt>predict_obs_dens</tt> function, but this time set <tt>ratio = 1</tt> and set <tt>window = windows\$Baghdad</tt>. That is, we use the entire dataset to fit the model and then predict the counts in a window, this time Baghdad and outside of Baghdad. The window objects of Baghdad and outside of Baghdad are saved as <tt>windows\$Baghdad</tt> and <tt>windows\$outside_Baghdad</tt>, respectively.
 
-Let's take a look at Baghdad first. Notice that to obtain the actual count of airstrikes in Baghdad, we need to change the window from the entire Iraq to Baghdad.
+Let's take a look at Baghdad first. Notice that to obtain the actual count of airstrikes in Baghdad, we need to change the window from the entire Iraq to Baghdad only.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Baghdad
 obs_density_baghdad <- predict_obs_dens(dat_hfr, ratio = 1, "Airstrike", 
-                                           rhs_var, ngrid = 100, window = windows$Baghdad)
+                                        rhs_var, ngrid = 100, window = windows$Baghdad)
 
 # Change the window of interest for the actual data
 airstrikes_baghdad <- dat_hfr$Airstrike
@@ -243,8 +240,8 @@ for(i in 1:nrow(dat_hfr)){ spatstat.geom::Window(airstrikes_baghdad[[i]]) <- win
 
 # Plot (Baghdad)
 plot_compare_bag <- vis_obs_dens(actual_data = airstrikes_baghdad, 
-                                    dens_1 = obs_density_baghdad,
-                                    time_unit = "Days")
+                                 dens_1 = obs_density_baghdad,
+                                 time_unit = "Days")
 
 plot_compare_bag$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
@@ -257,14 +254,14 @@ Then let's do the same for outside of Baghdad.
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Outside of Baghdad
 obs_density_out_bag <- predict_obs_dens(dat_hfr, ratio = 1, "Airstrike", 
-                                           rhs_var, ngrid = 100, window = windows$outside_Baghdad)
+                                        rhs_var, ngrid = 100, window = windows$outside_Baghdad)
 
 airstrikes_out_bag <- dat_hfr$Airstrike
 for(i in 1:nrow(dat_hfr)){ spatstat.geom::Window(airstrikes_out_bag[[i]]) <- windows$outside_Baghdad }
 
 plot_compare_out_bag <- vis_obs_dens(actual_data = airstrikes_out_bag, 
-                                        dens_1 = obs_density_out_bag,
-                                        time_unit = "Days")
+                                     dens_1 = obs_density_out_bag,
+                                     time_unit = "Days")
 
 plot_compare_out_bag$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
@@ -274,7 +271,7 @@ plot_compare_out_bag$plot_compare +
 
 # Considering the model appropriateness
 
-The predicted results follow the actual trend. Yet the surge around days 300-350 seems to drive our results. This is somehow expected because we know that the new troops arrived in Baghdad on February 14, 2007 and left on July 13, 2008. Much of the actual combat was over by January 1, 2008. Hence, it would make sense to include an indicator variable for the surge. Let's try it.
+The predicted results follow the actual trend. Yet the surge around days 300-350 seems to drive our results. This is expected because we know that new troops arrived in Baghdad on February 14, 2007 and left on July 13, 2008. Much of the actual combat was over by January 1, 2008. Hence, it is reasonable for us to include an indicator variable for the surge. Let's try it to see if it changes the results.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # Add indicator variables
@@ -286,13 +283,13 @@ rhs_var_surge <-  c(rhs_var, "surge")
 
 # Get observed density over the entire window, for the entire period
 obs_density_surge <- get_obs_dens(dat_hfr, "Airstrike", rhs_var_surge, 
-                                     ngrid = 100, window = iraq_window)
+                                  ngrid = 100, window = iraq_window)
 ##saveRDS(obs_density_surge, file = "~/geocausal/Data/obs_density_surge.RData")
 
 # Plot
 plot_compare_surge <- vis_obs_dens(actual_data = dat_hfr$Airstrike, 
-                                      dens_1 = obs_density, dens_2 = obs_density_surge,
-                                      time_unit = "Days")
+                                   dens_1 = obs_density, dens_2 = obs_density_surge,
+                                   time_unit = "Days")
 
 plot_compare_surge$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
@@ -305,18 +302,18 @@ Let's check out-of-sample prediction performance.
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # 80% training with surge
 obs_density_8_surge <- predict_obs_dens(dat_hfr, ratio = 0.8, "Airstrike", 
-                                           rhs_var_surge, ngrid = 100, iraq_window)
+                                        rhs_var_surge, ngrid = 100, iraq_window)
 
 # 70% training with surge
 obs_density_7_surge <- predict_obs_dens(dat_hfr, ratio = 0.7, "Airstrike", 
-                                           rhs_var_surge, ngrid = 100, iraq_window)
+                                        rhs_var_surge, ngrid = 100, iraq_window)
 
 # Plot
 plot_out_of_sample_8s <- vis_obs_dens(actual_data = dat_hfr$Airstrike, 
-                                         dens_1 = obs_density, 
-                                         dens_2 = obs_density_8, 
-                                         dens_3 = obs_density_8_surge,
-                                         time_unit = "Days")
+                                      dens_1 = obs_density, 
+                                      dens_2 = obs_density_8, 
+                                      dens_3 = obs_density_8_surge,
+                                      time_unit = "Days")
 
 plot_out_of_sample_8s$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgrey") +
@@ -330,10 +327,10 @@ plot_out_of_sample_8s$plot_compare +
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 plot_out_of_sample_7s <- vis_obs_dens(actual_data = dat_hfr$Airstrike, 
-                                         dens_1 = obs_density, 
-                                         dens_2 = obs_density_7, 
-                                         dens_3 = obs_density_7_surge,
-                                         time_unit = "Days")
+                                      dens_1 = obs_density, 
+                                      dens_2 = obs_density_7, 
+                                      dens_3 = obs_density_7_surge,
+                                      time_unit = "Days")
 
 plot_out_of_sample_7s$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgrey") +
