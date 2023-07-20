@@ -14,13 +14,13 @@
 #' @param window owin object
 #' 
 #' @returns list of the following:
-#'      * `independent_variables`: independent variables
-#'      * `coefficients`: coefficients
-#'      * `intensity_grid_cells`: im object of observed densities for each time period
+#'      * `indep_var`: independent variables
+#'      * `coef`: coefficients
+#'      * `intens_grid_cells`: im object of observed densities for each time period
 #'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
-#'      * `sum_log_intensity`: the sum of log intensities for each time period
+#'      * `sum_log_intens`: the sum of log intensities for each time period
 #'      
-#' @details `get_obs_density()` assumes the poisson point process model and 
+#' @details `get_obs_dens()` assumes the poisson point process model and 
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`. 
 #' Users should note that the coefficients in the output are not directly interpretable, 
 #' since they are the coefficients inside the exponential of the poisson model.
@@ -45,10 +45,10 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
     return(r)
   })
 
-  return(list(independent_variables = indep_var, #List of independent variables
-              coefficients = coefficients, #Coefficients
-              intensity_grid_cells = intensity_grid_cells, #Integrated intensity as images
+  return(list(indep_var = indep_var, #List of independent variables
+              coef = coefficients, #Coefficients
+              intens_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Counts
-              sum_log_intensity = sum_log_intensity)) #Sum of log(intensity) for each time period
+              sum_log_intens = sum_log_intensity)) #Sum of log(intensity) for each time period
 
 }
