@@ -274,11 +274,15 @@ plot_compare_out_bag$plot_compare +
 The predicted results follow the actual trend. Yet the surge around days 300-350 seems to drive our results. This is expected because we know that new troops arrived in Baghdad on February 14, 2007 and left on July 13, 2008. Much of the actual combat was over by January 1, 2008. Hence, it is reasonable for us to include an indicator variable for the surge. Let's try it to see if it changes the results.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-# Add indicator variables
-min(dat_hfr$time) #The min is March 25, 2007
-max(dat_hfr$time) #The max is July 5, 2008, hence the dataset is within the range of the surge
+# Add an indicator variable
+min(dat_hfr$time) #The min (day 31) is equivalent to March 25, 2007
+max(dat_hfr$time) #The max (day 499) is July 5, 2008
 
-dat_hfr$surge <- ifelse(dat_hfr$time <= "2008-01-01", 1, 0)
+# Pick the date when the actual combat was over
+surge_date <- as.numeric(as.Date("2008-01-01") - as.Date("2007-03-25") 
+                         + min(dat_hfr$time))
+
+dat_hfr$surge <- ifelse(dat_hfr$time <= surge_date, 1, 0)
 rhs_var_surge <-  c(rhs_var, "surge")
 
 # Get observed density over the entire window, for the entire period
@@ -294,7 +298,8 @@ plot_compare_surge <- vis_obs_dens(actual_data = dat_hfr$Airstrike,
 plot_compare_surge$plot_compare +
   annotate("text", label = "Actual", x = 150, y = 50, size = 4, color = "darkgray") +
   annotate("text", label = "Predicted\n(original)", x = 410, y = 30, size = 4, color = "#D55E00") +
-  annotate("text", label = "Predicted\n(surge)", x = 250, y = 70, size = 4, color = "#0072B2") + ylim(0, 100)
+  annotate("text", label = "Predicted\n(surge)", x = 250, y = 70, size = 4, color = "#0072B2") +
+  ylim(0, 100)
 ```
 
 Let's check out-of-sample prediction performance.
