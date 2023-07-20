@@ -8,7 +8,7 @@
 #' @param window owin object
 #' @param resolution resolution of raster objects
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
-#' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers.
+#' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point. 
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
 #'
@@ -21,10 +21,11 @@
 #' In that case, users can set `preprocess = TRUE`. With this option, `get_dist_focus()` calculates 
 #' distances from points by first identifying the closest point using `sf::st_nearest_feature()` with approximations.
 #' This process is more efficient than computing distances from all the points 
-#' with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances.
+#' with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances. 
+#' By default, `get_dist_focus()` returns distances in kilometers unless users set `mile =  TRUE`.
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
-                           grayscale, mile, preprocess = FALSE, ...){
+                           grayscale, mile = FALSE, preprocess = FALSE, ...){
 
   # Convert owin into sp objects  
   window_sp <- conv_owin_into_sf(window)

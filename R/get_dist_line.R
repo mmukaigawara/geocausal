@@ -8,14 +8,14 @@
 #' @param window owin object
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' @param resolution resolution of raster objects
-#' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers.
+#' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point. 
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
 #' 
 #' @returns A list of im and ggplot object
 
 get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
-                          grayscale, mile, resolution, preprocess = TRUE){
+                          grayscale, mile = FALSE, resolution, preprocess = TRUE){
   
   # Convert owin into sp objects -----
   window_sp <- conv_owin_into_sf(window)
