@@ -21,11 +21,11 @@ predict_obs_dens(hfr, ratio, dep_var, indep_var, ngrid = 100, window)
 }
 \value{
 list of the following:
-     * `independent_variables`: independent variables
-     * `coefficients`: coefficients
-     * `intensity_grid_cells`: im object of observed densities for each time period
+     * `indep_var`: independent variables
+     * `coef`: coefficients
+     * `intens_grid_cells`: im object of observed densities for each time period
      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
-     * `sum_log_intensity`: the sum of log intensities for each time period
+     * `sum_log_intens`: the sum of log intensities for each time period
      * `training_row_max`: the max row ID of the training set
 }
 \description{

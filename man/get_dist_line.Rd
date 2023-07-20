@@ -9,7 +9,7 @@ get_dist_line(
   path_to_shapefile,
   line_data = NULL,
   grayscale,
-  mile,
+  mile = FALSE,
   resolution,
   preprocess = TRUE
 )
@@ -23,7 +23,7 @@ get_dist_line(
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
-\item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers.}
+\item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).}
 
 \item{resolution}{resolution of raster objects}
 

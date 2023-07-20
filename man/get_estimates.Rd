@@ -32,7 +32,7 @@ get_estimates(
 
 \item{dist_map}{im object (distance map)}
 
-\item{dist_map_unit}{`"km"` or `"mile"`}
+\item{dist_map_unit}{either `"km"` or `"mile"`}
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 

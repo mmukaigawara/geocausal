@@ -4,12 +4,20 @@
 \alias{get_causal_cont}
 \title{Generate a figure with causal contrasts}
 \usage{
-get_causal_cont(scenario_1, scenario_2, grayscale, use_raw)
+get_causal_cont(
+  scenario_1,
+  scenario_2,
+  dist_map_unit = "km",
+  grayscale,
+  use_raw
+)
 }
 \arguments{
 \item{scenario_1}{A counterfactual scenario (the output of get_estimates function)}
 
 \item{scenario_2}{Another counterfactual scenario}
+
+\item{dist_map_unit}{either `"km"` or `"mile"`}
 
 \item{grayscale}{Whether to grayscale}
 
@@ -20,4 +28,9 @@ A list of ggplot objects and the data
 }
 \description{
 A function that returns a figure with causal contrasts
+}
+\details{
+`get_causal_cont()` returns a figure with causal contrasts. 
+A causal contrast is the difference between expected numbers of outcome events of two counterfactual scenarios. 
+The baseline scenario is `scenario_1`.
 }

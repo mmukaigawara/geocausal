@@ -22,18 +22,18 @@ By default = 100. Notice that as you increase `ngrid`, the process gets computat
 }
 \value{
 list of the following:
-     * `independent_variables`: independent variables
-     * `coefficients`: coefficients
-     * `intensity_grid_cells`: im object of observed densities for each time period
+     * `indep_var`: independent variables
+     * `coef`: coefficients
+     * `intens_grid_cells`: im object of observed densities for each time period
      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
-     * `sum_log_intensity`: the sum of log intensities for each time period
+     * `sum_log_intens`: the sum of log intensities for each time period
 }
 \description{
 `get_obs_dens()` takes a hyperframe and returns observed densities.
 The output is used as propensity scores.
 }
 \details{
-`get_obs_density()` assumes the poisson point process model and 
+`get_obs_dens()` assumes the poisson point process model and 
 calculates observed densities for each time period. It depends on `spatstat.model::mppm()`. 
 Users should note that the coefficients in the output are not directly interpretable, 
 since they are the coefficients inside the exponential of the poisson model.

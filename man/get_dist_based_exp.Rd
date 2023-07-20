@@ -20,13 +20,12 @@ get_dist_based_exp(
 
 \item{dist_map}{im object whose cell values are the distance from a focus (e.g., city)}
 
-\item{dist_map_unit}{`"km"` or `"mile"`}
+\item{dist_map_unit}{either `"km"` or `"mile"`}
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
 \item{use_raw}{logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
-By default, `FALSE`.
-whether to use the actual expectation or proportion for the y-axis. By default, `FALSE`.}
+By default, `FALSE`.}
 }
 \value{
 ggplot object that summarizes how expectations change over distances from a focus

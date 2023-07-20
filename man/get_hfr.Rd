@@ -23,14 +23,14 @@ Location variables should be standard coordinates (i.e., longitudes and latitude
 \item{window}{owin object (for more information, refer to `spatstat.geom::owin()`). 
 Basically, an owin object specifies the geographical boundaries of areas of interest.}
 
-\item{time_column}{the name of the column for time variable}
+\item{time_column}{the name of the column for time variable. Note that the time variable must be integers.}
 
-\item{time_range}{numeric vector. `time_range` specifies the range of time variables 
-(i.e., min and max of time variables). 
+\item{time_range}{numeric vector. `time_range` specifies the range of the time variable 
+(i.e., min and max of the time variable). 
 The current version assumes that the unit of this time variable is dates.}
 
 \item{coordinates}{character vector. `coordinates` specifies the names of columns for locations. 
-By default, `c("longitude", "latitude")` in this order.}
+By default, `c("longitude", "latitude")` in this order. Note that the coordinates must be in decimal degree formats.}
 
 \item{combined}{logical. `combined` tells whether to generate output for all subtypes of events combined. 
 By default, `TRUE`, which means that a column of ppp objects with all subtypes combined is generated in the output.}
