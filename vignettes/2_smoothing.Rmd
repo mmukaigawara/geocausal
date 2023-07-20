@@ -39,6 +39,7 @@ knitr::opts_chunk$set(
 options(rmarkdown.html_vignette.check_title = FALSE)
 
 library(readr)
+library(gridExtra)
 ```
 
 ```{r setup, include = FALSE}
@@ -50,11 +51,11 @@ devtools::load_all()
 dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_1.rds")
 ```
 
-By the end of this vignette, users will be able to smooth the point process data and understand the usage of <tt>get_smoothed_outcome</tt> function.
+The second step of spatiotemporal causal inference is smoothing outcomes. We employ <tt>get_smoothed_outcome</tt> function to work on this step. 
 
 # Smoothing outcomes
 
-A key step of spatiotemporal causal inference is the smoothing of outcomes. To do so, we use <tt>get_smoothed_outcome</tt> function. This function has following arguments:
+<tt>get_smoothed_outcome</tt> function has following arguments:
 
 - <tt>data_interest</tt>: a hyperframe column that you want to convert; and
 - <tt>method</tt>: a method of smoothing (either <tt>mclust</tt> or <tt>abram</tt>).
@@ -63,20 +64,20 @@ We have two methodological options for smoothing, which we will walk through bel
 
 ## Option 1: Gaussian mixture model
 
-Let's first use the Gaussian mixture model, which is the simplest method for smoothing.
+Let's first use the Gaussian mixture model, which is the simplest and fast method for smoothing point processes.
 
 This method does the following:
 
-- performing model-based clustering;
-- obtaining the common variance (i.e., modeling all clusters with the common variance);
-- using the common variance as the variance of the isotropic smoothing kernel; and
-- performing smoothing of the point processes.
+- perform model-based clustering;
+- obtain the common variance (i.e., model all clusters with the common variance);
+- use the common variance as the variance of the isotropic smoothing kernel; and
+- perform smoothing of the point processes.
 
 [Figure here]
 
-The key advantage of choosing the Gaussian mixture model is its computational speed. Since our function assumes EII (equal volume, round shape), it is much faster than the adaptive smoothing.
+The key advantage of choosing the Gaussian mixture model is its computational speed. Since our function employs the EII model (equal volume, round shape), the Gaussian mixture model is much faster than adaptive smoothing.
 
-To use this method, users first need to set <tt>method = "mclust"</tt> and then specify the <tt>initialization</tt> argument. By setting <tt>initialization = TRUE</tt>, the function uses a small fraction of data to obtain the common variance, which makes the entire process even faster.
+To use this method, users need to set <tt>method = "mclust"</tt> and specify the <tt>initialization</tt> argument. By setting <tt>initialization = TRUE</tt>, the function uses a small fraction of data to obtain the common variance, which makes the entire process even faster.
 
 For example, if you want to use 5% of data for initialization, then you can run the following code.
 
@@ -86,7 +87,7 @@ smooth_IED <- get_smoothed_outcome(data_interest = dat_hfr$IED,
                                    sampling = 0.05)
 ```
 
-It takes some time to complete this process, so it is highly recommended that you save the output.
+It takes some time to complete this process, so it is highly recommended that you save the output and avoid running the process multiple times.
 
 Now, let's take a look at the output. it is a list of pixel images, each representing smoothed outcomes (in this case, IED) of each date.
 
@@ -97,33 +98,10 @@ head(smooth_IED)
 To visualize this, you can simply use <tt>plot</tt> function. For example, if you want to visualize the first day, you can run the following.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(smooth_IED[[1]], main = "Smoothed IED (2007-02-23)")
+plot(smooth_IED[[1]], main = "Smoothed IED\n(Time Period 1, 2007-02-23)")
 ```
 
-Additionally, just as we did for the hyperframe, we can run <tt>vis_hfr</tt> function. To do so, save the output as a column of the hyperframe that we generated. Since we are visualizing pixel images, you can now specify the maximum value for scaling by specifying the argument <tt>scale_max</tt>.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-# Save the output as a column of the hyperframe
-dat_hfr$smooth_IED <- smooth_IED
-
-# Run vis_hfr function (combined, max scale = 200)
-#vis_hfr(hfr = dat_hfr,
-#        subtype_column = "smooth_IED",
-#        time_column = "time",
-#        range = c("2007-02-23"), "2007-02-28"),
-#        combined = TRUE,
-#        scale_max = 200)
-
-# Run vis_hfr function (not combined, max scale = 50)
-#vis_hfr(hfr = dat_hfr,
-#        subtype_column = "smooth_IED",
-#        time_column = "time",
-#        range = c("2007-02-23", "2007-02-28"),
-#        combined = FALSE,
-#        scale_max = 50) 
-```
-
-Finally, we do the same for other types of outcomes and save each of them as a column of the hyperframe that we created.
+We do the same for other types of outcomes and save each of them as a column of the hyperframe that we created.
 
 ```{r}
 smooth_SAF <- get_smoothed_outcome(data_interest = dat_hfr$SAF,
@@ -139,23 +117,33 @@ smooth_allout <- get_smoothed_outcome(data_interest = dat_hfr$all_outcome,
                                       sampling = 0.05)
 
 # Save 
+dat_hfr$smooth_IED <- smooth_IED
 dat_hfr$smooth_SAF <- smooth_SAF
 dat_hfr$smooth_other <- smooth_other
 dat_hfr$smooth_allout <- smooth_allout
 ```
 
-```{r, include = FALSE}
-#saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_2.rds")
-rm(smooth_IED, smooth_SAF, smooth_other, smooth_allout)
-```
-
 ## Option 2: Abramson's adaptive smoothing
 
-The Gaussian mixture model is a fixed-bandwidth smoothing approach. This approach, therefore, is problematic when the true intensity varies across regions because it over- or under-smoothes some regions. To incorporate the variation in intensity functions, we need to adaptively smooth point processes. 
+The Gaussian mixture model is a fixed-bandwidth smoothing approach. This approach, therefore, can be problematic when the true intensity varies substantively across regions because the fixed-bandwidth approach can over- or under-smooth some regions. To incorporate the variation in intensity functions, we need to smooth point processes adaptively. 
 
-Long stories short, we assume that the bandwidth is inversely proportional to the square root of the target densities. The function <tt>get_smoothed_outcome</tt> follows Abramson (1982) to estimate the target densities. Users can employ this option by setting <tt>method = "abram"</tt>.
+The function <tt>get_smoothed_outcome</tt> follows Abramson (1982) to estimate the target densities. Long stories short, we assume that the bandwidth is inversely proportional to the square root of the target densities. Users can employ the adaptive-bandwidth approach by setting <tt>method = "abramson"</tt>.
+
+Let's try it with IED and compare the output with the one from the Gaussian one. We can notice that with Abramson, the peak of the density is higher than the Gaussian one.
+
+```{r}
+# Abramson smoothing
+smooth_IED_abram <- get_smoothed_outcome(data_interest = dat_hfr$IED,
+                                         method = "abramson")
+
+# Plot
+par(mfrow = c(1,2))
+plot(smooth_IED$`1`, main = "Gaussian", zlim = c(0, 50))
+plot(smooth_IED_abram$`1`, main = "Abramson", zlim = c(0, 50))
+```
 
 
-
-
-
+```{r, include = FALSE}
+#saveRDS(dat_hfr, file = "~/geocausal/Data/dat_hfr_2.rds")
+rm(smooth_IED, smooth_SAF, smooth_other, smooth_allout, smooth_IED_abram)
+```
