@@ -49,6 +49,10 @@ devtools::load_all()
 
 ```{r load data, include = FALSE}
 dat_hfr <- readRDS("~/geocausal/Data/dat_hfr_4.rds")
+try <- readRDS("~/geocausal/Data/dat_hfr_1.rds")
+dat_hfr$time <- try$time[31:499]
+rm(try)
+
 load("~/geocausal/Data/iraq_window.Rda")
 load("~/geocausal/Data/windows.RData")
 load("~/geocausal/Data/counter_d.Rda")
