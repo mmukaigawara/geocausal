@@ -5,12 +5,18 @@
 #' @param scenario_1 A counterfactual scenario (the output of get_estimates function)
 #' @param scenario_2 Another counterfactual scenario
 #' @param grayscale Whether to grayscale
+#' @param dist_map_unit either `"km"` or `"mile"`
 #' @param use_raw If TRUE, the plot displays the raw expectations (if FALSE, max is set to 1)
 #' 
 #' @returns A list of ggplot objects and the data
- 
+#' 
+#' @details `get_causal_cont()` returns a figure with causal contrasts. 
+#' A causal contrast is the difference between expected numbers of outcome events of two counterfactual scenarios. 
+#' The baseline scenario is `scenario_1`.
+
 get_causal_cont <- function(scenario_1, #Contrast = scenario 2 - scenario 1
                             scenario_2,
+                            dist_map_unit = "km",
                             grayscale, 
                             use_raw) {
   
@@ -26,7 +32,7 @@ get_causal_cont <- function(scenario_1, #Contrast = scenario 2 - scenario 1
   
   # Plot for distance-based expectations
   
-  x_label_text <- paste0("Distance from the focus (", distance_map_unit, ")")
+  x_label_text <- paste0("Distance from the focus (", dist_map_unit, ")")
   
   if(grayscale) {
     
