@@ -17,7 +17,7 @@
 #' @returns im objects
 #' 
 #' @details To smooth ppp objects, users can choose either the Gaussian mixture model (`method = "mclust"`) 
-#' or Abramson's adaptive smoothing (`method = "abram"`). 
+#' or Abramson's adaptive smoothing (`method = "abramson"`). 
 #' The Gaussian mixture model is essentially the method that performs model-based clustering of all the observed points. 
 #' In this package, we employ the EII model (equal volume, round shape (spherical covariance)).
 #' This means that we model observed points by several Gaussian densities with the same, round shape.
