@@ -61,9 +61,9 @@ As a final step of data preparation, we obtain histories of treatment and outcom
 
 # History of treatment and outcomes
 
-We consider the history of treatment and outcomes as covariates. To create columns for the treatment and outcome history, we aggregate treatment and outcomes over 1, 7, and 30 days. To do so, we use <tt>get_hist</tt> function by specifying data to convert, the lag, and the window. 
+We use treatment and outcome histories as covariates. To generate these history covariates, we aggregate treatment and outcome events over 1, 7, and 30 days. To do so, we use <tt>get_hist</tt> function by specifying data to convert, the lag, and the window. 
 
-For example, if you want to convert all outcomes (saved as <tt>dat_hfr\$all_outcome</tt>) aggregated over the past 30 days in Iraq, then you set <tt>Xt = dat_hfr\$all_outcome</tt>, <tt>lag = 30</tt>, and <tt>window = iraq_window</tt> (the window is saved as <tt>iraq_window</tt> in our case).
+For example, if you want to aggregate all outcomes (saved as <tt>dat_hfr\$all_outcome</tt>) over the past 30 days in Iraq for each day, then you set <tt>Xt = dat_hfr\$all_outcome</tt>, <tt>lag = 30</tt>, and <tt>window = iraq_window</tt>. Notice that smoothing histories is computationally demanding. In our example, we smooth 30-day histories separately in several chunks by using the fixed-bandwidth, Gaussian method. The use of the adaptive, Abramson method is strongly discouraged, unless you have access to large cloud computing systems.
 
 ```{r, warning = FALSE}
 lags <- c(1, 7, 30)
