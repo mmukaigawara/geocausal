@@ -40,6 +40,7 @@ knitr::opts_chunk$set(
 options(rmarkdown.html_vignette.check_title = FALSE)
 
 library(readr)
+library(dplyr)
 
 load("~/geocausal/Data/airstr.csv")
 load("~/geocausal/Data/activ.csv")
@@ -54,19 +55,14 @@ devtools::load_all()
 #library(geocausal)
 ```
 
-The purpose of this vignette is letting users convert dataframes with spatiotemporal dimensions to hyperframes with point process data. By the end of this vignette, users will be able to convert data to a hyperframe. 
-
-The functions that are introduced in this vignette are as follows:
-
-- <tt>get_hfr</tt>
-- <tt>vis_hfr</tt>
+The first step of spatiotemporal causal inference is to convert dataframes into an object called hyperframe. Essentially, a hyperframe is a dataframe with each cell being any types of objects, including pixel images and point processes. Users can convert dataframes into hyperframes easily with a function called <tt>get_hfr</tt>.
 
 # Loading data
 
-We will use two csv files: <tt>activ.csv</tt> and <tt>airstr.csv</tt>. 
+In this vignette and onwards, we use two csv files: <tt>activ.csv</tt> and <tt>airstr.csv</tt>. 
 
-- <tt>activ.csv</tt>: spatiotemporal information of outcomes (i.e., insurgencies) 
-- <tt>airstr.csv</tt>: spatiotemporal information of treatment (i.e., airstrikes)
+- <tt>activ.csv</tt>: locations and timings of outcomes (i.e., insurgencies) 
+- <tt>airstr.csv</tt>: locations and timings of treatment (i.e., airstrikes)
 
 Let's first check what these datasets look like.
 
@@ -133,15 +129,17 @@ If you set <tt>combined = TRUE</tt>, then this function also returns point proce
 
 ## Converting data to hyperframes
 
-So let's try it out. We first convert treatment data to a hyperframe.
+So let's try it out. We first convert treatment data to a hyperframe. In our dataset, coordinates are already in the decimal format, but the time variable is dates. Before using <tt>get_hfr</tt> function, we need to convert it to integers.
 
 ```{r, warning = FALSE}
 # Treatment
+airstr$time <- as.numeric(airstr$date - min(airstr$date) + 1) #Time variable (numeric)
+
 treatment_hfr <- get_hfr(data = airstr,
                          subtype_column = "Type",
                          window = iraq_window,
-                         time_column = "date",
-                         time_range = c("2007-02-23", "2008-07-05"),
+                         time_column = "time",
+                         time_range = c(1, max(airstr$time)),
                          coordinates = c("longitude", "latitude"),
                          combined = TRUE)
 ```
