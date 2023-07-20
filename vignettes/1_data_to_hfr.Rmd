@@ -144,9 +144,9 @@ treatment_hfr <- get_hfr(data = airstr,
                          combined = TRUE)
 ```
 
-If you have multiple observations at the same time, then you will receive a warning message saying <tt>data contain duplicated points</tt>. This is a generic message that an internal function generates. As long as the data truly contains multiple observations happening at the same time, you can ignore this warning message.
 
 The output of this function is a hyperframe, with each element being a point process, denoted as <tt>(ppp)</tt> in the output. 
+
 ```{r, warning = FALSE}
 head(treatment_hfr)
 ```
@@ -158,8 +158,8 @@ Since we set <tt>combined = TRUE</tt>, we have a new column <tt>all_combined</tt
 How does each ppp look like? One way to visualize this is to treat this hyperframe just like a dataframe and plot each observation. For example, if you are interested in airstrikes on February 24, 2007, then you can plot it as follows.
 
 ```{r, warning = FALSE, out.height=400, out.width=600, fig.dim = c(9, 6)}
-plot(treatment_hfr[which(treatment_hfr$time == "2007-02-24"), "Airstrike"],
-     main = "Airstrike (2007-02-24)")
+plot(treatment_hfr[which(treatment_hfr$time == 1), "Airstrike"],
+     main = "Airstrike (Day 1)")
 ```
 
 In this plot, each circle represents the location of an airstrike, and the boundaries show the borders of Iraq (as defined by the window).
@@ -178,7 +178,7 @@ To use this function, you need to specify the following:
 vis_hfr(hfr = treatment_hfr,
         subtype_column = c("Airstrike", "SOF"),
         time_column = "time",
-        range = c("2007-02-23", "2007-02-28"),
+        range = c(1, 5),
         combined = TRUE) 
 ```
 
@@ -188,7 +188,7 @@ By setting <tt>combined = FALSE</tt>, you can also use this function to generate
 vis_hfr(hfr = treatment_hfr,
         subtype_column = "Airstrike",
         time_column = "time",
-        range = c("2007-02-23", "2007-02-28"),
+        range = c(1, 5),
         combined = FALSE) 
 ```
 
@@ -198,15 +198,17 @@ Now that we understand what hyperframes and point processes look like, we can co
 
 ```{r, warning = FALSE}
 # Outcome
+activ$time <- as.numeric(activ$date - min(activ$date) + 1) #Time variable (numeric)
+
 outcome_hfr <- get_hfr(data = activ,
                        subtype_column = "type_out",
                        window = iraq_window,
-                       time_column = "date",
-                       time_range = c("2007-02-23", "2008-07-05"),
+                       time_column = "time",
+                       time_range = c(1, max(activ$time)),
                        coordinates = c("longitude", "latitude"),
                        combined = TRUE)
 
-# Combine the two
+# Combine the two hyperframes
 dat_hfr <- spatstat.geom::cbind.hyperframe(treatment_hfr, outcome_hfr[, -1])
 names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
 names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
