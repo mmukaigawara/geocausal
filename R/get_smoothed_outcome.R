@@ -25,11 +25,11 @@
 #' yet given that analyzing spatiotemporal data is often computationally demanding, it is often the best place to start (and end). 
 #' Sometimes this process can also take time, which is why an option for `initialization` is included in this function.
 #' 
-#' Another, more precise method for smoothing is adaptive smoothing (`method = "abram"`). 
+#' Another, more precise, method for smoothing outcomes is adaptive smoothing (`method = "abram"`). 
 #' This method allows users to vary bandwidths based on `Abramson (1982)`. 
 #' Essentially, this model assumes that the bandwidth is inversely proportional to the square root of the target densities. 
 #' Since the bandwidth is adaptive, the estimation is usually more precise than the Gaussian mixture model. 
-#' However, the caveat is that this method is often highly computationally demanding.
+#' However, the caveat is that this method is often extremely computationally demanding.
 
 get_smoothed_outcome <- function(data_interest,
                                  method,
