@@ -7,7 +7,7 @@
 #' @param hfr hyperframe
 #' @param subtype_column The name/s of a column of interest. 
 #' To specify multiple columns, users should list column names as a character vector.
-#' @param time_column The name of the column of time variable. By default, `"time"`.
+#' @param time_column The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
 #' @param range vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot. 
 #' This argument applies only to the case when users specify one column with multiple time periods. 
@@ -24,8 +24,8 @@ vis_hfr <- function(hfr,
   # Clean the hyperframe -----
   hfr_temp <- hfr
   
-  if (length(range) == 1) { all_rows <- as.Date(range) } else 
-  { all_rows <- seq(min(as.Date(range)), max(as.Date(range)), by = 1)} #Sequence of all rows
+  if (length(range) == 1) { all_rows <- range } else 
+  { all_rows <- seq(min(range), max(range), by = 1)} #Sequence of all rows
   
   time_id <- which(names(hfr_temp) == time_column)
   names(hfr_temp)[time_id] <- "time" #Rename the time column
@@ -76,7 +76,7 @@ vis_hfr <- function(hfr,
       ggplot2::coord_quickmap() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis, ")")) +
+      ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
       ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
     
     ## If image -> TBD
@@ -108,7 +108,7 @@ vis_hfr <- function(hfr,
       ggplot2::coord_quickmap() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), "\n(", time_vis, ")")) +
+      ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), "\n(Time period ", time_vis, ")")) +
       ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
                      strip.background = element_rect(fill = "white", color = "white"),
                      plot.title = element_text(hjust = 0.5, face = "bold")) +
@@ -139,7 +139,7 @@ vis_hfr <- function(hfr,
         ggplot2::coord_quickmap() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
-        ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
       
     } else {
@@ -165,7 +165,7 @@ vis_hfr <- function(hfr,
         ggplot2::coord_quickmap() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
-        ggplot2::ggtitle(paste0(outcome_name, "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
         ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
                        strip.background = element_rect(fill = "white", color = "white"),
                        plot.title = element_text(hjust = 0.5, face = "bold")) +
@@ -207,7 +207,7 @@ vis_hfr <- function(hfr,
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
       ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), 
-                              "\n(", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+                              "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
       ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
                      strip.background = element_rect(fill = "white", color = "white"),
                      plot.title = element_text(hjust = 0.5, face = "bold")) +
