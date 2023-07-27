@@ -75,10 +75,10 @@ estimates_counter_mosul <- get_estimates(obs_dens = obs_density_surge,
                                          smoothed_outcome = dat_hfr$smooth_allout,
                                          lag = 3,
                                          entire_window = iraq_window,
+                                         dist = c(200, 400, 600),
                                          dist_map = dist_from_focus$distance_im,
                                          dist_map_unit = "km",
-                                         grayscale = FALSE,
-                                         use_raw = TRUE)
+                                         grayscale = FALSE)
 
 estimates_counter_mosul$plot
 ```
@@ -92,10 +92,10 @@ estimates_counter_bagh <- get_estimates(obs_dens = obs_density_surge,
                                         smoothed_outcome = dat_hfr$smooth_allout,
                                         lag = 3,
                                         entire_window = iraq_window,
+                                        dist = c(200, 400, 600),
                                         dist_map = dist_from_focus$distance_im,
                                         dist_map_unit = "km",
-                                        grayscale = FALSE,
-                                        use_raw = TRUE)
+                                        grayscale = FALSE)
 
 estimates_counter_bagh$plot
 
@@ -107,8 +107,7 @@ estimates_counter_bagh$plot
 # Get the causal contrasts (with CI)
 causal_contrast <- get_causal_cont(scenario_1 = estimates_counter_mosul,
                                    scenario_2 = estimates_counter_bagh,
-                                   grayscale = FALSE,
-                                   use_raw = TRUE)
+                                   grayscale = FALSE)
 
 causal_contrast$plot
 ```
