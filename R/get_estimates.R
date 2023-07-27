@@ -9,11 +9,10 @@
 #' @param smoothed_outcome column of a hyperframe that summarizes the smoothed outcome data
 #' @param lag integer that specifies lags to calculate causal estimates
 #' @param entire_window owin object (the entire region of interest)
-#' @param dist_map im object (distance map)
+#' @param dist_map im object (distance map); notice that the unit (either mile or km) is inherited from the distance map
+#' @param dist a vector of distances for which the function calculates the expectations (e.g., `c(50, 100, 150, 200)`)
 #' @param dist_map_unit either `"km"` or `"mile"`
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
-#' @param use_raw logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
-#' By default, `FALSE`.
 #' 
 #' @returns list of the following:
 #' `average_expected_events`: Hajek estimators (counts, the entire window)
@@ -21,7 +20,8 @@
 #' `weights`: weights
 #' `average_weights`: mean of `weights`
 #' `plot`: plot showing distance-based expectations
-#' `distance_quantiles`: quantiles of distances
+#' `distances`: distances
+#' `distances_window`: as window objects
 #' `expectation_plot`: plot of expectations
 #' `window_plot`: plot of windows
 
@@ -32,9 +32,9 @@ get_estimates <- function(obs_dens,
                           lag,
                           entire_window, 
                           dist_map,
+                          dist,
                           dist_map_unit = "km",
-                          grayscale,
-                          use_raw) {
+                          grayscale) {
   
   # 1. Weight
   
@@ -49,7 +49,7 @@ get_estimates <- function(obs_dens,
   # 1-2. Log density ratio (LDR)
   log_density_ratio <- counterfactual_sum_log - observed_sum_log
   
-  # 1-3. Convert LDR to weights
+  # 1-3. Convert LDR to weights (weights for each time period)
   weights <- furrr::future_map_dbl((lag + 1):length(log_density_ratio), function(x) {
     weight <- exp(sum(log_density_ratio[(x - lag + 1): x]))
     return(weight)
@@ -63,17 +63,17 @@ get_estimates <- function(obs_dens,
   pixels <- smoothed[[1]]$dim[1]
   mat_im <- array(mat_im, dim = c(pixels, pixels, length(smoothed)))
   
-  # 2-2. Weigh each time period by the weights
+  # 2-2. Weigh smoothed outcomes for each time period by the weights (smoothed outcome x weight)
   mat_im_weighted <- sweep(mat_im, MARGIN = 3, STATS = weights, FUN = '*') #Weighted smoothed outcomes as matrices
   
   # 2-3. Get average weighted densities
-  # Note: Don't use IPW for output (this funciton does not return IPW)
+  # Note: Don't use IPW for output (this functiton does not return IPW)
   weighted_surface_list <- lapply(1:dim(mat_im_weighted)[3], function(x) {
     spatstat.geom::as.im(mat_im_weighted[, , x], W = entire_window)}) #Weighted surfaces for each time frame (eg, each day)
 
   average_weighted_surface <- spatstat.geom::as.im(apply(mat_im_weighted, c(1, 2), mean), 
-                                                   W = entire_window) #This is IPW
-  average_weighted_surface_haj <- average_weighted_surface / mean(weights) #Hajek
+                                                   W = entire_window) #This is IPW; one pixel image
+  average_weighted_surface_haj <- average_weighted_surface / mean(weights) #Hajek; one pixel image
   
   # 3. Integrate over the window of interest (quantiles from a focus)
   
@@ -81,15 +81,23 @@ get_estimates <- function(obs_dens,
   
   ## Get the range and quantiles of standardized distances 
   distance_range <- range(`dist_map`$v, na.rm = TRUE)
-  distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
+  
+  if (max(distances) > distance_range[2]) {
+    stop("The max distance should be within the range of the entire window.")
+  } #Confirm that max(distances) <= max(distance_range)
+  
+  distances <- c(dist, distance_range[2])
+
+  #Note: another idea is to use quantiles, but this could take time when we obtain variances
+  #distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
   
   ## Convert the distance map to windows
   distance_window <- matrix(`dist_map`$v, nrow = nrow(`dist_map`$v))
-  distance_windows <- lapply(distance_quantiles, function(x) distance_window < x) # A list of binary matrices based on quantiles
+  distance_windows <- lapply(distances, function(x) distance_window < x) # A list of binary matrices based on quantiles
   distance_owin <- lapply(distance_windows, function(x) {
     spatstat.geom::owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
-  }) # Owin objects
-  
+  }) # Owin objects with different distances from the focus
+
   ## Get the expectation depending on distances from focus
   partial_expectations <- lapply(distance_owin, function(x) {
       counter <- average_weighted_surface_haj
@@ -98,42 +106,45 @@ get_estimates <- function(obs_dens,
   })
   
   # 4. Obtain the variance bound
-#  cat("Obtaining the variance bound...\n")
+  cat("Obtaining the variance bound...\n")
   
-  ## Empty matrix to save output (column = 0-100 percent quantile wrt distance; row = timeframe)
-#  matrix_integrated_weighted_smooth_outcome <- matrix(NA, nrow = length(smoothed), ncol = 101)
+  ## Empty matrix to save output (column = the num of distances of interest; row = timeframe)
+  matrix_integrated_weighted_smooth_outcome <- matrix(NA, 
+                                                      nrow = length(smoothed), 
+                                                      ncol = length(distance_owin))
   
-#  pb <- txtProgressBar(min = 0, max = length(distance_owin), style = 3)
+  for (i in 1:length(distance_owin)) {
+    counts_based_on_distance_for_each_timeframe <- 
+      furrr::future_map(weighted_surface_list, function(y) {
+        counter <- y
+        spatstat.geom::Window(counter) <- distance_owin[[i]]
+        return(spatstat.geom::integral(counter))
+      })
+    matrix_integrated_weighted_smooth_outcome[, i] <- unlist(counts_based_on_distance_for_each_timeframe)
+    ## This is the matrix of integrated, weighted, and smoothed outcomes (i.e., counts for each time period)
+    ## Each column represents different windows (different distances from the focus)
+  }
   
-#  for (i in 1:length(distance_owin)) {
-#    counts_based_on_distance_for_each_timeframe <- 
-#      furrr::future_map(weighted_surface_list, function(y) {
-#        counter <- y
-#        spatstat.geom::Window(counter) <- distance_owin[[i]]
-#        return(spatstat.geom::integral(counter))
-#      })
-#    matrix_integrated_weighted_smooth_outcome[, i] <- unlist(counts_based_on_distance_for_each_timeframe)
-    
-    # Update the progress bar
-#    setTxtProgressBar(pb, i)
-#  }
+  ## Get the variance upper bound
   
-#  close(pb)
+  ### IPW (don't use this for the final output)
+  ### Formula: mean(weighted counts ^ 2)/length(time frame)
+  bounds_ipw <- apply(matrix_integrated_weighted_smooth_outcome^2, 2, mean)/
+    nrow(matrix_integrated_weighted_smooth_outcome)
+  
+  ### Hajek
+  bounds_hajek <- bounds_ipw/(mean(weights)^2)  
 
   # 4. Then plot (just one scenario; the remainder basically follows get_distance_based_expectation)
   
   cat("Generating a plot...\n")
   
   ## Convert partial_expectations to a dataframe
-  if (use_raw) {
-    expectation_results <- as.numeric(unlist(partial_expectations))
-  } else {
-    expectation_results <- as.numeric(unlist(partial_expectations))/
-      as.numeric(unlist(partial_expectations))[101] #Row = 0 to 100%, Column = Diff value of priorities
-  }
-  
+  expectation_results <- as.numeric(unlist(partial_expectations))
+
   result_data <- data.frame(expectation = expectation_results,
-                            distance = distance_quantiles)
+                            distance = distances,
+                            var_upper_bound = bounds_hajek)
 
   ## Plot for distance-based expectations
   
@@ -141,61 +152,40 @@ get_estimates <- function(obs_dens,
   
   if(grayscale) {
     
-    if (use_raw) {
-      
-      expectation_plot <- ggplot(result_data) +
-        ggplot2::geom_line(aes(x = distance, y = expectation)) +
-        theme_bw() +
+      expectation_plot <- ggplot(result_data, 
+                                 aes(x = distance, 
+                                     y = expectation,
+                                     ymin = expectation - 1.96*sqrt(var_upper_bound),
+                                     ymax = expectation + 1.96*sqrt(var_upper_bound))) +
+        ggplot2::geom_point() +
+        ggplot2::geom_pointrange() +
+        theme_bw() + xlim(0, ceiling(result_data$distance[nrow(result_data)])) +
         labs(x = x_label_text, 
              y = "The expected outcome events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
         theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
       
-    } else {
-      
-      expectation_plot <- ggplot(result_data) +
-        ggplot2::geom_line(aes(x = distance, y = expectation)) +
-        theme_bw() +
-        labs(x = x_label_text, 
-             y = "The proportion of\nexpected outcome events\ncovered by the area",
-             color = latex2exp::TeX("$\\alpha_{focus}$")) +
-        ggplot2::scale_color_brewer(palette = "Greys") +
-        ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
-      
-    }
-    
   } else {
     
-    if (use_raw) {
-      
-      expectation_plot <- ggplot(result_data) +
-        ggplot2::geom_line(aes(x = distance, y = expectation)) +
-        theme_bw() +
+      expectation_plot <- ggplot(result_data, 
+                                 aes(x = distance, 
+                                     y = expectation,
+                                     ymin = expectation - 1.96*sqrt(bounds_hajek),
+                                     ymax = expectation + 1.96*sqrt(bounds_hajek))) +
+        ggplot2::geom_point() +
+        ggplot2::geom_pointrange() +
+        theme_bw() + xlim(0, ceiling(result_data$distance[nrow(result_data)])) +
         labs(x = x_label_text, 
              y = "The expected outcome events\ncovered by the area",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
         theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
       
-    } else {
-      
-      expectation_plot <- ggplot(result_data) +
-        ggplot2::geom_line(aes(x = distance, y = expectation)) +
-        theme_bw() +
-        labs(x = x_label_text, 
-             y = "The proportion of\nexpected outcome events\ncovered by the area",
-             color = latex2exp::TeX("$\\alpha_{focus}$")) +
-        ggplot2::scale_color_brewer(palette = "Greys") +
-        ylim(0, 1) + theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
-      
-    }
-    
   }
   
   ## Plot for windows
-  window_showcase_list <- list(distance_owin$`80%`, distance_owin$`60%`, 
-                               distance_owin$`40%`, distance_owin$`20%`)
+  window_showcase_list <- list(distance_owin[[1]], distance_owin[[length(distance_owin)]])
   window_showcase <- lapply(window_showcase_list, spatstat.geom::as.polygonal)
   
   if(grayscale) {
@@ -218,19 +208,13 @@ get_estimates <- function(obs_dens,
   }
   
   window_plot_list[[1]] <- window_plot_list[[1]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["80%"]), 1), "km \n(", 80, " percentile)")) + 
+    ggtitle(paste0(round(as.numeric(distances[1]), 1), " ", dist_map_unit)) + 
     theme(plot.title = element_text(hjust = 0.5))
   window_plot_list[[2]] <- window_plot_list[[2]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["60%"]), 1), "km \n(", 60, " percentile)")) + 
+    ggtitle(paste0(round(as.numeric(distances[length(distances)]), 1), " ", dist_map_unit)) + 
     theme(plot.title = element_text(hjust = 0.5))
-  window_plot_list[[3]] <- window_plot_list[[3]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["40%"]), 1), "km \n(", 40, " percentile)")) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  window_plot_list[[4]] <- window_plot_list[[4]] + 
-    ggtitle(paste0(round(as.numeric(distance_quantiles["20%"]), 1), "km \n(", 20, " percentile)")) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  
-  w_plot_list <- list(window_plot_list[[4]], window_plot_list[[3]], window_plot_list[[2]], window_plot_list[[1]])
+
+  w_plot_list <- list(window_plot_list[[1]], window_plot_list[[2]])
   
   # Color and plot
   window_plot <- ggpubr::ggarrange(plotlist = w_plot_list, nrow = 1)
@@ -242,11 +226,12 @@ get_estimates <- function(obs_dens,
   
   return(list(average_weighted_density = average_weighted_surface_haj, #Hajek, average, weighted surface (im)
               average_expected_events = as.numeric(unlist(partial_expectations)[101]), #Hajek, counts, entire window
-              average_expected_events_quantiles = as.numeric(unlist(partial_expectations)), #From 0 to 100% quantiles of areas
+              average_expected_events_quantiles = as.numeric(unlist(partial_expectations)), #Corresponding to each distance
               weights = weights, #Weights
               average_weights = mean(weights), #Average weights (for Hajek)
               plot = entire_plot, #Distance based expectations
-              distance_quantiles = as.numeric(distance_quantiles),
+              distances = as.numeric(distances),
+              distances_window = distance_owin,
               expectation_plot = expectation_plot,
               window_plot = window_plot))
   
