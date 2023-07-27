@@ -2,7 +2,7 @@
 #'
 #' @description A function that returns a figure with causal contrasts
 #'
-#' @param scenario_1 A counterfactual scenario (the output of get_estimates function)
+#' @param scenario_1 A counterfactual scenario (the output of `get_estimates()` function)
 #' @param scenario_2 Another counterfactual scenario
 #' @param grayscale Whether to grayscale
 #' @param dist_map_unit either `"km"` or `"mile"`
