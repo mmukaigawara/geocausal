@@ -12,9 +12,9 @@ get_estimates(
   lag,
   entire_window,
   dist_map,
+  dist,
   dist_map_unit = "km",
-  grayscale,
-  use_raw
+  grayscale
 )
 }
 \arguments{
@@ -30,14 +30,13 @@ get_estimates(
 
 \item{entire_window}{owin object (the entire region of interest)}
 
-\item{dist_map}{im object (distance map)}
+\item{dist_map}{im object (distance map); notice that the unit (either mile or km) is inherited from the distance map}
+
+\item{dist}{a vector of distances for which the function calculates the expectations (e.g., `c(50, 100, 150, 200)`)}
 
 \item{dist_map_unit}{either `"km"` or `"mile"`}
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
-
-\item{use_raw}{logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
-By default, `FALSE`.}
 }
 \value{
 list of the following:
@@ -46,7 +45,8 @@ list of the following:
 `weights`: weights
 `average_weights`: mean of `weights`
 `plot`: plot showing distance-based expectations
-`distance_quantiles`: quantiles of distances
+`distances`: distances
+`distances_window`: as window objects
 `expectation_plot`: plot of expectations
 `window_plot`: plot of windows
 }

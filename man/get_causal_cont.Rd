@@ -4,27 +4,19 @@
 \alias{get_causal_cont}
 \title{Generate a figure with causal contrasts}
 \usage{
-get_causal_cont(
-  scenario_1,
-  scenario_2,
-  dist_map_unit = "km",
-  grayscale,
-  use_raw
-)
+get_causal_cont(scenario_1, scenario_2, dist_map_unit = "km", grayscale)
 }
 \arguments{
-\item{scenario_1}{A counterfactual scenario (the output of get_estimates function)}
+\item{scenario_1}{a counterfactual scenario (the output of `get_estimates()` function)}
 
-\item{scenario_2}{Another counterfactual scenario}
+\item{scenario_2}{another counterfactual scenario}
 
 \item{dist_map_unit}{either `"km"` or `"mile"`}
 
-\item{grayscale}{Whether to grayscale}
-
-\item{use_raw}{If TRUE, the plot displays the raw expectations (if FALSE, max is set to 1)}
+\item{grayscale}{whether to grayscale the figures}
 }
 \value{
-A list of ggplot objects and the data
+a list of ggplot objects and the data
 }
 \description{
 A function that returns a figure with causal contrasts
