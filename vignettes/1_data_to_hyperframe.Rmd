@@ -52,17 +52,17 @@ insurgencies <- geocausal::insurgencies
 iraq_window <- geocausal::iraq_window
 ```
 
-The first step of spatiotemporal causal inference is to convert dataframes into an object called hyperframe. Essentially, a hyperframe is a dataframe with each cell being any types of objects, including pixel images and point processes. Users can convert dataframes into hyperframes easily with a function called <tt>get_hfr</tt>.
+The first step of spatiotemporal causal inference is to convert dataframes into an object called hyperframe. Essentially, a hyperframe is a dataframe with each cell being any types of objects, including pixel images and point processes. Users can convert dataframes into hyperframes easily with a function called `get_hfr()`.
 
 # Data
 
-To illustrate the usage of our package, we use two datasets: \code{airstrikes} and \code{insurgencies}. These two datasets are spatiotemporal data of airstrikes and insurgencies in Iraq from March 2007 to June 2007. It should be noted that location information is saved in the decimal degree format. To use \package{geocausal}, if the original data is not in the decimal degree format, it is recommended that users convert it to the decimal degree format. Additionally, time variable must be numerics.
+To illustrate the usage of our package, we use two datasets: `airstrikes` and `insurgencies`. These two datasets are spatiotemporal data of airstrikes and insurgencies in Iraq from March 2007 to June 2007. It should be noted that location information is saved in the decimal degree format. To use `geocausal`, if the original data is not in the decimal degree format, it is recommended that users convert it to the decimal degree format. Additionally, time variable must be numerics.
 
 # Converting data to hyperframes
 
 Our first task is to convert data to a collection of point processes. Intuitively, we want to generate maps of all the locations of airstrikes and insurgencies for all subtypes and all dates. For dates and subtypes with no observations, we want to generate an empty map.
 
-A key function for this step is \code{get_hfr}. This function does the following:
+A key function for this step is `get_hfr()`. This function does the following:
 
 1. aggregating all observations by dates and subtypes, and converting them to a point process;
 2. identifying dates with zero observations and generating an empty map for those dates; and
@@ -102,7 +102,7 @@ names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
 names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
 ```
 
-The output is a hyperframe, with each element being a point process, denoted as \code{(ppp)} in the output. 
+The output is a hyperframe, with each element being a point process, denoted as (ppp) in the output. 
 
 ```{r, warning = FALSE}
 head(dat_hfr)
@@ -110,7 +110,7 @@ head(dat_hfr)
 
 # Visualization
 
-To visualize hyperframes, users can employ \code{vis_hfr}.
+To visualize hyperframes, users can employ `vis_hfr()`.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 vis_hfr(hfr = dat_hfr,
