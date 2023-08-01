@@ -82,7 +82,7 @@ get_estimates <- function(obs_dens,
   ## Get the range and quantiles of standardized distances 
   distance_range <- range(`dist_map`$v, na.rm = TRUE)
   
-  if (max(distances) > distance_range[2]) {
+  if (max(dist) > distance_range[2]) {
     stop("The max distance should be within the range of the entire window.")
   } #Confirm that max(distances) <= max(distance_range)
   
