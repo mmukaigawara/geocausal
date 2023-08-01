@@ -117,5 +117,5 @@ vis_hfr(hfr = dat_hfr,
         subtype_column = c("Airstrike", "SOF"),
         time_column = "time",
         range = c(1, 5),
-        combined = TRUE) 
+        combined = TRUE)
 ```
