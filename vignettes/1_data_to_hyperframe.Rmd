@@ -102,7 +102,7 @@ names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
 names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
 ```
 
-The output is a hyperframe, with each element being a point process, denoted as <tt>(ppp)</tt> in the output. 
+The output is a hyperframe, with each element being a point process, denoted as \code{(ppp)} in the output. 
 
 ```{r, warning = FALSE}
 head(dat_hfr)
@@ -110,7 +110,7 @@ head(dat_hfr)
 
 # Visualization
 
-To visualize hyperframes, users can employ\code{vis_hfr}.
+To visualize hyperframes, users can employ \code{vis_hfr}.
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 vis_hfr(hfr = dat_hfr,
