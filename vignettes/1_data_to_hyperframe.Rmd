@@ -52,11 +52,7 @@ insurgencies <- geocausal::insurgencies
 iraq_window <- geocausal::iraq_window
 ```
 
-\newcommand\code{\bgroup\@makeother\_\@makeother\~\@makeother\$\@codex}
-\def\@codex#1{{\normalfont\ttfamily\hyphenchar\font=-1 #1}\egroup}
-%%\let\code=\texttt
-\let\proglang=\textsf
-\newcommand{\pkg}[1]{{\fontseries{m}\fontseries{b}\selectfont #1}}
+\newcommand\code{\texttt}
 
 The first step of spatiotemporal causal inference is to convert dataframes into an object called hyperframe. Essentially, a hyperframe is a dataframe with each cell being any types of objects, including pixel images and point processes. Users can convert dataframes into hyperframes easily with a function called \code{get_hfr}.
 
