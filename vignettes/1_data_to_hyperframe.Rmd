@@ -119,13 +119,3 @@ vis_hfr(hfr = dat_hfr,
         range = c(1, 5),
         combined = TRUE) 
 ```
-
-By setting \code{combined = FALSE}, you can also use this function to generate separate plots for each date.
-
-```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
-vis_hfr(hfr = dat_hfr,
-        subtype_column = "Airstrike",
-        time_column = "time",
-        range = c(1, 5),
-        combined = FALSE) 
-```
