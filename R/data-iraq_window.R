@@ -2,7 +2,7 @@
 #'
 #' An owin object of Iraq
 #'
-#' @format A polygonal object (list)
+#' @format A polygonal object (list):
 #' \describe{
 #' \item{type}{"polygonal"}
 #' \item{xrange}{Range (longitude)}
