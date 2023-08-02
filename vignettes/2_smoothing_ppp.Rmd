@@ -118,10 +118,10 @@ dat_hfr$smooth_SAF <- smooth_SAF
 dat_hfr$smooth_allout <- smooth_allout
 ```
 
-It takes some time to complete this process, so it is highly recommended that users save the output and avoid running the process multiple times. The output is a list of pixel images, each representing smoothed outcomes of each time frame.
+Since the process is computationally demanding, it is highly recommended that users save the output and avoid running the process multiple times. The output is a list of pixel images, each representing smoothed outcomes of each time frame.
 
 ## Method 2: Abramson's adaptive smoothing (`method = abram`)
 
-The Gaussian mixture model is a fixed-bandwidth smoothing approach. This approach, therefore, can be problematic when the true intensity varies substantively across regions because the fixed-bandwidth approach can over- or under-smooth some regions. To incorporate the variation in intensity functions, we need to smooth point processes adaptively. 
+The Gaussian mixture model is a fixed-bandwidth smoothing approach. This approach, therefore, can be problematic when the true intensity varies substantively across regions because the fixed-bandwidth approach can over- or under-smooth point process data of some regions. To incorporate the variation in intensity functions, we need to employ adaptive smoothing techniques. 
 
 The function `get_smoothed_outcome()` follows Abramson (1982) to estimate the target densities. `geocausal` package assumes that the bandwidth is inversely proportional to the square root of the target densities. Users can employ the adaptive-bandwidth approach by setting `method = "abram"`.
