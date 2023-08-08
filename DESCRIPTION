@@ -29,7 +29,12 @@ URL: https://www.github.com/mmukaigawara/geocausal
 Encoding: UTF-8
 LazyData: true
 Suggests: 
+    elevatr,
+    geosphere,
+    gridExtra,
+    ggthemes,
     knitr,
+    readr,
     rmarkdown
 VignetteBuilder: knitr
 Imports:
@@ -51,12 +56,6 @@ Imports:
     spatstat.model,
     tidyr,
     tidyselect
-Suggests:
-    elevatr,
-    geosphere,
-    gridExtra,
-    ggthemes,
-    readr
 RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
