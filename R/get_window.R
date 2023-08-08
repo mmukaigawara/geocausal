@@ -13,7 +13,7 @@ get_window <- function(load_path) {
   temp <- sf::st_read(file.path(load_path))
   
   # Converting the data
-  temp <- sf::st_union(st_as_sf(temp))
+  temp <- sf::st_union(sf::st_as_sf(temp))
   temp_matrix <- sf::st_coordinates(temp)
   
   # Checking whether data is clockwise
