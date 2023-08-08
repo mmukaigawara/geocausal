@@ -24,6 +24,7 @@ Description: Spatio-temporal causal inference based on point process data.
     You provide the raw data of locations and timings of treatment and 
     outcome events, specify counterfactual scenarios, and the package 
     estimates causal effects over specified spatial and temporal windows.
+    See Papadogeorgou, et  al. (2022) <doi:10.1111/rssb.12548>.
 License: MIT + file LICENSE
 URL: https://www.github.com/mmukaigawara/geocausal
 Encoding: UTF-8
