@@ -24,14 +24,14 @@ get_dist_based_exp(
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
-\item{use_raw}{logical. `use_raw` specifies whether to use the raw value of expectations or percentiles. 
+\item{use_raw}{logical. `use_raw` specifies whether to use the raw value of expectations or percentiles.
 By default, `FALSE`.}
 }
 \value{
 ggplot object that summarizes how expectations change over distances from a focus
 }
 \description{
-`get_dist_based_exp()` takes counterfactual densities and 
-and returns the expected number of treatment events based on distances 
+`get_dist_based_exp()` takes counterfactual densities and
+and returns the expected number of treatment events based on distances
 from a user-specified focus.
 }
