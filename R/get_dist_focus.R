@@ -25,7 +25,7 @@
 #' By default, `get_dist_focus()` returns distances in kilometers unless users set `mile =  TRUE`.
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
-                           grayscale, mile = FALSE, preprocess = FALSE, ...){
+                           grayscale, mile = FALSE, preprocess = FALSE){
 
   # Convert owin into sp objects  
   window_sp <- conv_owin_into_sf(window)
