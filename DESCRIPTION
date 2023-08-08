@@ -34,7 +34,6 @@ Suggests:
 VignetteBuilder: knitr
 Imports:
     data.table,
-    devtools,
     dplyr,
     elevatr,
     furrr,
@@ -42,13 +41,11 @@ Imports:
     ggplot2,
     ggpubr,
     ggthemes,
-    gridExtra,
     latex2exp,
     mclust,
     progressr,
     purrr,
     raster,
-    readr,
     sf,
     sp,
     spatstat.explore,

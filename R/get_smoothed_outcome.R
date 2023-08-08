@@ -93,7 +93,7 @@ get_smoothed_outcome <- function(data_interest,
     use_h0 <- as.numeric(scott_bw)
     pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
 
-    him_points <- bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens)
+    him_points <- spatstat.core::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens)
     num_points <- as.numeric(purrr::map(as.list(data_interest), 2, .default = NA) %>% unlist())
     bw_pt <- split(him_points, rep(1 : length(data_interest), num_points))
 

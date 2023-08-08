@@ -57,7 +57,7 @@ get_elevation <- function(load_path, ...) {
   gg <- ggplot() +
     ggplot2::geom_raster(data = elevation_data_df, aes(x = x, y = y, fill = z)) +
     ggplot2::geom_sf(data = temp_combined, color = "white", fill = NA) +
-    coord_sf() + scale_fill_viridis_c(option = "plasma") + ggthemes::theme_map() +
+    ggplot2::coord_sf() + ggplot2::scale_fill_viridis_c(option = "plasma") + ggthemes::theme_map() +
     labs(title = "Elevation", x = "Longitude", y = "Latitude", fill = "Elevation (meters)") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   

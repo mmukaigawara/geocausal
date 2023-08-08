@@ -192,8 +192,8 @@ get_estimates <- function(obs_dens,
     
     window_plot_list <- lapply(window_showcase, function(x) {
       gg <- ggplot() + 
-        ggplot2::geom_polygon(data = fortify(as.data.frame(x)), aes(x = x, y = y), fill = "gray") +
-        ggplot2::geom_path(data = fortify(as.data.frame(entire_window)), aes(x = x, y = y)) +
+        ggplot2::geom_polygon(data = precrec::fortify(as.data.frame(x)), aes(x = x, y = y), fill = "gray") +
+        ggplot2::geom_path(data = precrec::fortify(as.data.frame(entire_window)), aes(x = x, y = y)) +
         ggthemes::theme_map()
       return(gg)})
     
