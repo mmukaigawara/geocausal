@@ -35,12 +35,9 @@ VignetteBuilder: knitr
 Imports:
     data.table,
     dplyr,
-    elevatr,
     furrr,
-    geosphere,
     ggplot2,
     ggpubr,
-    ggthemes,
     latex2exp,
     mclust,
     progressr,
@@ -54,6 +51,12 @@ Imports:
     spatstat.model,
     tidyr,
     tidyselect
+Suggests:
+    elevatr,
+    geosphere,
+    gridExtra,
+    ggthemes,
+    readr
 RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)

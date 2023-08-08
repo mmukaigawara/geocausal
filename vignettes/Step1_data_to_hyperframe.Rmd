@@ -38,9 +38,6 @@ knitr::opts_chunk$set(
 )
 
 options(rmarkdown.html_vignette.check_title = FALSE)
-
-library(readr)
-library(dplyr)
 ```
 
 ```{r setup, include = FALSE}
