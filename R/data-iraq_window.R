@@ -12,4 +12,4 @@
 #' }
 #' @examples
 #' iraq_window
-#'
+"iraq_window"
