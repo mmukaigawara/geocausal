@@ -11,8 +11,7 @@ get_dist_focus(
   resolution,
   grayscale,
   mile = FALSE,
-  preprocess = FALSE,
-  ...
+  preprocess = FALSE
 )
 }
 \arguments{
