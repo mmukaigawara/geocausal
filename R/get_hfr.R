@@ -21,7 +21,7 @@
 #' By default, `TRUE`, which means that a column of ppp objects with all subtypes combined is generated in the output.
 #'
 #' @importFrom data.table .BY .SD
-#' @importFrom dplyr .
+#' @importFrom data.table .()
 #'
 #' @returns A hyperframe is generated with rows representing time and columns representing the following:
 #'     * The first column: time variable
