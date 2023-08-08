@@ -35,19 +35,23 @@ VignetteBuilder: knitr
 Imports:
     data.table,
     dplyr,
+    elevatr,
     furrr,
     geosphere,
     ggplot2,
     ggpubr,
     ggthemes,
     latex2exp,
-    lubridate,
     mclust,
+    progressr,
     purrr,
     raster,
-    RColorBrewer,
-    spatstat,
-    stars
+    sf,
+    sp,
+    spatstat.explore,
+    spatstat.geom,
+    spatstat.model,
+    tidyr
 RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
