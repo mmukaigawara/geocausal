@@ -2,11 +2,14 @@
 #'
 #' An owin object of Iraq
 #'
-#' @format A polygonal object (list):
+#' @format A polygonal object:
 #' \describe{
-#' \item{type}{"polygonal"}
+#' \item{type}{Polygonal}
 #' \item{xrange}{Range (longitude)}
 #' \item{yrange}{Range (latitude)}
 #' \item{bdry}{Boundaries}
 #' \item{units}{Units}
 #' }
+#' @examples
+#' iraq_window
+#'
