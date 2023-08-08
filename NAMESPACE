@@ -8,3 +8,5 @@ importFrom(ggplot2, "vars")
 importFrom(data.table, ".SD")
 importFrom(data.table, "data.table")
 importFrom(mclust, "mclustBIC")
+importFrom("stats", "as.formula", "complete.cases", "density",
+           "quantile", "time")
