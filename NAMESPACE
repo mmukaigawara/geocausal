@@ -1,5 +1,6 @@
 exportPattern("^[[:alpha:]]+")
 importFrom(dplyr, "%>%")
+importFrom(data.table, ".SD")
 importFrom(ggplot2, "aes")
 importFrom(ggplot2, "ggplot")
 importFrom(ggplot2, "labs")
