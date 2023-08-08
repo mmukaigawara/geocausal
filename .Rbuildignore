@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^cran-comments\.md$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
