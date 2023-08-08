@@ -43,7 +43,6 @@ Imports:
     ggthemes,
     latex2exp,
     mclust,
-    precrec,
     progressr,
     purrr,
     raster,
