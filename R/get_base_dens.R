@@ -19,7 +19,7 @@ get_base_dens <- function(data,
                           grayscale = FALSE){
   
   # Convert data to ppp
-  coordinates_data <- airstr_base[, coordinates]
+  coordinates_data <- data[, coordinates]
   baseline_ppp <- spatstat.geom::as.ppp(coordinates_data, W = window)
   
   # Apply Scott's rule of thumb

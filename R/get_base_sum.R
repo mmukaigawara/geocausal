@@ -14,7 +14,7 @@
 get_base_sum <- function(data, time_column) {
 
   # Generate a plot of counts over the entire time period
-  dat_count <- airstr_base %>%
+  dat_count <- data %>%
     dplyr::group_by(.data[[time_column]]) %>% #time_column should be quoted. Otherwise {{time_column}}
     dplyr::summarize(count = dplyr::n())
   
