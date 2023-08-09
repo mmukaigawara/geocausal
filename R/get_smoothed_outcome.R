@@ -1,34 +1,34 @@
 #' Smooth outcome events
 #'
-#' @description 
+#' @description
 #' `get_smoothed_outcome()` takes a column of hyperframes (ppp objects) and smoothes them.
 #'
-#' @param data_interest the name of a hyperframe and column of interest. 
+#' @param data_interest the name of a hyperframe and column of interest.
 #' `data_interest` should be in the form of `"hyperframe$column"`.
-#' @param method methods for smoothing ppp objects. 
+#' @param method methods for smoothing ppp objects.
 #' Either `"mclust"` or `"abramson"`. See details.
-#' @param initialization logical. 
-#' `initialization` specifies whether to use a smaller number of samples to initialize 
+#' @param initialization logical.
+#' `initialization` specifies whether to use a smaller number of samples to initialize
 #' fitting the Gaussian mixture model. By default = TRUE
-#' @param sampling numeric between 0 and 1. `sampling` determines the proportion of data 
-#' to use for initialization (see `initialization`). 
+#' @param sampling numeric between 0 and 1. `sampling` determines the proportion of data
+#' to use for initialization (see `initialization`).
 #' By default, `0.05`, which means that `get_smoothed_outcome()` uses 5\% of samples for initialization.
-#' 
+#'
 #' @returns im objects
-#' 
-#' @details To smooth ppp objects, users can choose either the Gaussian mixture model (`method = "mclust"`) 
-#' or Abramson's adaptive smoothing (`method = "abramson"`). 
-#' The Gaussian mixture model is essentially the method that performs model-based clustering of all the observed points. 
+#'
+#' @details To smooth ppp objects, users can choose either the Gaussian mixture model (`method = "mclust"`)
+#' or Abramson's adaptive smoothing (`method = "abramson"`).
+#' The Gaussian mixture model is essentially the method that performs model-based clustering of all the observed points.
 #' In this package, we employ the EII model (equal volume, round shape (spherical covariance)).
 #' This means that we model observed points by several Gaussian densities with the same, round shape.
-#' This is why this model is called fixed-bandwidth smoothing. This is a simple model to smooth observed points, 
-#' yet given that analyzing spatiotemporal data is often computationally demanding, it is often the best place to start (and end). 
+#' This is why this model is called fixed-bandwidth smoothing. This is a simple model to smooth observed points,
+#' yet given that analyzing spatiotemporal data is often computationally demanding, it is often the best place to start (and end).
 #' Sometimes this process can also take time, which is why an option for `initialization` is included in this function.
-#' 
-#' Another, more precise, method for smoothing outcomes is adaptive smoothing (`method = "abram"`). 
-#' This method allows users to vary bandwidths based on `Abramson (1982)`. 
-#' Essentially, this model assumes that the bandwidth is inversely proportional to the square root of the target densities. 
-#' Since the bandwidth is adaptive, the estimation is usually more precise than the Gaussian mixture model. 
+#'
+#' Another, more precise, method for smoothing outcomes is adaptive smoothing (`method = "abram"`).
+#' This method allows users to vary bandwidths based on `Abramson (1982)`.
+#' Essentially, this model assumes that the bandwidth is inversely proportional to the square root of the target densities.
+#' Since the bandwidth is adaptive, the estimation is usually more precise than the Gaussian mixture model.
 #' However, the caveat is that this method is often extremely computationally demanding.
 
 get_smoothed_outcome <- function(data_interest,
@@ -93,7 +93,7 @@ get_smoothed_outcome <- function(data_interest,
     use_h0 <- as.numeric(scott_bw)
     pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
 
-    him_points <- spatstat.core::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens)
+    him_points <- spatstat.explore::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens)
     num_points <- as.numeric(purrr::map(as.list(data_interest), 2, .default = NA) %>% unlist())
     bw_pt <- split(him_points, rep(1 : length(data_interest), num_points))
 
