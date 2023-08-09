@@ -26,7 +26,7 @@ Description: Spatio-temporal causal inference based on point process data.
     estimates causal effects over specified spatial and temporal windows.
     See Papadogeorgou, et  al. (2022) <doi:10.1111/rssb.12548>.
 License: MIT + file LICENSE
-URL: https://www.github.com/mmukaigawara/geocausal
+URL: https://github.com/mmukaigawara/geocausal
 Encoding: UTF-8
 LazyData: true
 Suggests: 
@@ -51,7 +51,6 @@ Imports:
     raster,
     sf,
     sp,
-    spatstat.core,
     spatstat.explore,
     spatstat.geom,
     spatstat.model,
