@@ -30,6 +30,22 @@
 #' Essentially, this model assumes that the bandwidth is inversely proportional to the square root of the target densities.
 #' Since the bandwidth is adaptive, the estimation is usually more precise than the Gaussian mixture model.
 #' However, the caveat is that this method is often extremely computationally demanding.
+#'
+#' @examples
+#' # Hyperframe
+#' dat_hfr <- get_hfr(data = airstrikes[1:50, ],
+#'                    subtype_column = "type",
+#'                    window = iraq_window,
+#'                    time_column = "time",
+#'                    time_range = c(1, max(airstrikes[1:50, ]$time)),
+#'                    coordinates = c("longitude", "latitude"),
+#'                    combined = FALSE)
+#'
+#' # Smoothing outcome
+#' get_smoothed_outcome(data_interest = dat_hfr$Airstrike,
+#'                      method = "mclust",
+#'                      initialization = TRUE,
+#'                      sampling = 0.05)
 
 get_smoothed_outcome <- function(data_interest,
                                  method,

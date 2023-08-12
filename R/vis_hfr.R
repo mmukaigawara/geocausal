@@ -21,6 +21,7 @@
 #'                   longitude = c(43.9, 44.5, 44.1, 44.0),
 #'                   latitude = c(33.6, 32.7, 33.6, 33.5),
 #'                   type = rep(c("treat", "out"), 2))
+#'
 #' # Hyperframe
 #' dat_hfr <- get_hfr(data = dat,
 #'                    subtype_column = "type",
@@ -29,6 +30,7 @@
 #'                    time_range = c(1, 2),
 #'                    coordinates = c("longitude", "latitude"),
 #'                    combined = FALSE)
+#'
 #' # Visualization
 #' vis_hfr(hfr = dat_hfr,
 #'         subtype_column = c("treat"),
