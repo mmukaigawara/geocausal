@@ -9,21 +9,42 @@ vis_hfr(hfr, subtype_column, time_column = "time", range, combined = TRUE)
 \arguments{
 \item{hfr}{hyperframe}
 
-\item{subtype_column}{The name/s of a column of interest. 
+\item{subtype_column}{The name/s of a column of interest.
 To specify multiple columns, users should list column names as a character vector.}
 
 \item{time_column}{The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.}
 
 \item{range}{vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)}
 
-\item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot. 
-This argument applies only to the case when users specify one column with multiple time periods. 
+\item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot.
+This argument applies only to the case when users specify one column with multiple time periods.
 By default = TRUE}
 }
 \value{
 ggplot object that displays ppp objects of interest
 }
 \description{
-`vis_hfr()` takes a hyperframe and visualizes columns that users specify. 
+`vis_hfr()` takes a hyperframe and visualizes columns that users specify.
 `vis_hfr()` is used mainly for the visualization of the output of [get_hfr()] function.
+}
+\examples{
+# Data
+dat <- data.frame(time = c(1, 1, 2, 2),
+                  longitude = c(43.9, 44.5, 44.1, 44.0),
+                  latitude = c(33.6, 32.7, 33.6, 33.5),
+                  type = rep(c("treat", "out"), 2))
+# Hyperframe
+dat_hfr <- get_hfr(data = dat,
+                   subtype_column = "type",
+                   window = iraq_window,
+                   time_column = "time",
+                   time_range = c(1, 2),
+                   coordinates = c("longitude", "latitude"),
+                   combined = FALSE)
+# Visualization
+vis_hfr(hfr = dat_hfr,
+        subtype_column = c("treat"),
+        time_column = "time",
+        range = c(1:2),
+        combined = TRUE)
 }

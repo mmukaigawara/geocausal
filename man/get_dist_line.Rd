@@ -27,7 +27,7 @@ get_dist_line(
 
 \item{resolution}{resolution of raster objects}
 
-\item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point. 
+\item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point.
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
 }
 \value{

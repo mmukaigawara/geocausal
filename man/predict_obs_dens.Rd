@@ -29,7 +29,7 @@ list of the following:
      * `training_row_max`: the max row ID of the training set
 }
 \description{
-`predict_obs_dens()` performs out-of-sample prediction 
+`predict_obs_dens()` performs out-of-sample prediction
 (separating data into training and test sets).
 It assumes that training and test sets have the same window.
 }

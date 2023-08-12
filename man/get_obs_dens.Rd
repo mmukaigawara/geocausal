@@ -10,12 +10,12 @@ get_obs_dens(hfr, dep_var, indep_var, ngrid = 100, window)
 \item{hfr}{hyperframe}
 
 \item{dep_var}{The name of the dependent variable.
-Since we need to obtain the observed density of treatment events, 
+Since we need to obtain the observed density of treatment events,
 `dep_var` should be the name of the treatment variable.}
 
 \item{indep_var}{vector of names of independent variables (covariates)}
 
-\item{ngrid}{the number of grid cells that is used to generate observed densities. 
+\item{ngrid}{the number of grid cells that is used to generate observed densities.
 By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.}
 
 \item{window}{owin object}
@@ -33,8 +33,8 @@ list of the following:
 The output is used as propensity scores.
 }
 \details{
-`get_obs_dens()` assumes the poisson point process model and 
-calculates observed densities for each time period. It depends on `spatstat.model::mppm()`. 
-Users should note that the coefficients in the output are not directly interpretable, 
+`get_obs_dens()` assumes the poisson point process model and
+calculates observed densities for each time period. It depends on `spatstat.model::mppm()`.
+Users should note that the coefficients in the output are not directly interpretable,
 since they are the coefficients inside the exponential of the poisson model.
 }
