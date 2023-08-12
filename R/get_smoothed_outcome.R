@@ -45,7 +45,7 @@ get_smoothed_outcome <- function(data_interest,
   if (method == "mclust") {
 
     ## Identify the number of components (EII model)
-    cat("Fitting the Gaussian mixture model\n")
+    message("Fitting the Gaussian mixture model\n")
 
     if (initialization == TRUE) {
 
@@ -71,7 +71,7 @@ get_smoothed_outcome <- function(data_interest,
     spat_sigma <- sqrt(spat_sigma$sigmasq)
 
     ## Obtain smoothed outcomes
-    cat("Smoothing ppps\n")
+    message("Smoothing ppps\n")
 
     smoothed_outcome <- furrr::future_map(data_interest, spatstat.explore::density.ppp,
                                           diggle = TRUE, kernel = "gaussian", adjust = 1,
@@ -98,7 +98,7 @@ get_smoothed_outcome <- function(data_interest,
     bw_pt <- split(him_points, rep(1 : length(data_interest), num_points))
 
     ## Obtain smoothed outcomes
-    cat("Smoothing ppps\n")
+    message("Smoothing ppps\n")
 
     smoothed_outcome <- furrr::future_map2(data_interest, bw_pt, spatstat.explore::densityAdaptiveKernel,
                                            diggle = TRUE, kernel = "gaussian", edge = TRUE)

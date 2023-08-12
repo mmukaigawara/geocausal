@@ -50,7 +50,7 @@ get_hfr <- function(data, subtype_column,
   }
 
   # Converting data to ppp ----------
-  cat("Converting the data to ppp objects...\n")
+  message("Converting the data to ppp objects...\n")
 
   ## Creating empty point process for imputation
   empty <- data.table::data.table(latitude = double(), longitude = double())
@@ -63,7 +63,7 @@ get_hfr <- function(data, subtype_column,
          by = list(time, type)]
   ) -> x_ppp
 
-  cat("Converting the data to a hyperframe...\n")
+  message("Converting the data to a hyperframe...\n")
 
   ## Identifying missing dates
   all_time_type <- expand.grid(time = all_time,
@@ -94,7 +94,7 @@ get_hfr <- function(data, subtype_column,
   }
 
   # Finalizing the hyperframe ----------
-  cat("Generating a hyperframe of point processes...\n")
+  message("Generating a hyperframe of point processes...\n")
 
   return(x_hyperframe)
 

@@ -38,7 +38,7 @@ get_estimates <- function(obs_dens,
 
   # 1. Weight
 
-  cat("Calculating weights...\n")
+  message("Calculating weights...\n")
 
   # 1-1. Log density
   counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens,
@@ -77,7 +77,7 @@ get_estimates <- function(obs_dens,
 
   # 3. Integrate over the window of interest (quantiles from a focus)
 
-  cat("Calculating expectations...\n")
+  message("Calculating expectations...\n")
 
   ## Get the range and quantiles of standardized distances
   distance_range <- range(`dist_map`$v, na.rm = TRUE)
@@ -106,7 +106,7 @@ get_estimates <- function(obs_dens,
   })
 
   # 4. Obtain the variance bound
-  cat("Obtaining the variance bound...\n")
+  message("Obtaining the variance bound...\n")
 
   ## Empty matrix to save output (column = the num of distances of interest; row = timeframe)
   matrix_integrated_weighted_smooth_outcome <- matrix(NA,
@@ -137,7 +137,7 @@ get_estimates <- function(obs_dens,
 
   # 4. Then plot (just one scenario; the remainder basically follows get_distance_based_expectation)
 
-  cat("Generating a plot...\n")
+  message("Generating a plot...\n")
 
   ## Convert partial_expectations to a dataframe
   expectation_results <- as.numeric(unlist(partial_expectations))
