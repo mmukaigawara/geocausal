@@ -26,6 +26,20 @@
 #'     * The first column: time variable
 #'     * The middle columns: ppp objects (see `spatstat.geom::ppp()`) generated for each subtype of events of interest
 #'     * The last column (if `combined = TRUE`): ppp objects with all subtypes combined. This column is named as `all_combined`.
+#' @examples
+#' # Data
+#' dat <- data.frame(time = c(1, 1, 2, 2),
+#'                   longitude = c(43.9, 44.5, 44.1, 44.0),
+#'                   latitude = c(33.6, 32.7, 33.6, 33.5),
+#'                   type = rep(c("treat", "out"), 2))
+#' # Hyperframe
+#' get_hfr(data = dat,
+#'         subtype_column = "type",
+#'         window = iraq_window,
+#'         time_column = "time",
+#'         time_range = c(1, 2),
+#'         coordinates = c("longitude", "latitude"),
+#'         combined = FALSE)
 
 get_hfr <- function(data, subtype_column,
                     window,
