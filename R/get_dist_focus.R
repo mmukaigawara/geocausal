@@ -23,6 +23,15 @@
 #' This process is more efficient than computing distances from all the points 
 #' with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances. 
 #' By default, `get_dist_focus()` returns distances in kilometers unless users set `mile =  TRUE`.
+#' 
+#' @examples
+#' get_dist_focus(window = iraq_window,
+#'                longitude = c(44.366), #Baghdad
+#'                latitude = c(33.315),
+#'                resolution = 0.02,
+#'                grayscale = FALSE,
+#'                mile = FALSE,
+#'                preprocess = FALSE)
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
                            grayscale, mile = FALSE, preprocess = FALSE){
