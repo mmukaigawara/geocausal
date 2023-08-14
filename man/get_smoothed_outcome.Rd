@@ -50,11 +50,11 @@ However, the caveat is that this method is often extremely computationally deman
 }
 \examples{
 # Hyperframe
-dat_hfr <- get_hfr(data = airstrikes[1:50, ],
+dat_hfr <- get_hfr(data = airstrikes,
                    subtype_column = "type",
                    window = iraq_window,
                    time_column = "time",
-                   time_range = c(1, max(airstrikes[1:50, ]$time)),
+                   time_range = c(1, max(airstrikes$time)),
                    coordinates = c("longitude", "latitude"),
                    combined = FALSE)
 
