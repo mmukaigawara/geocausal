@@ -117,3 +117,36 @@ dist_baghdad <- get_dist_focus(window = iraq_window,
 
 dat_hfr$dist_bagh <- dist_baghdad$distance_im
 ```
+
+# Treatment and outcome histories as covariates
+
+In this example, we also employ histories of treatment and outcome events as covariates. To obtain histories of treatment and outcome events, `get_hist()` and `get_smoothed_outcome()` are used. To illustrate this process, sample code to obtain two-day histories of treatment and outcome events is shown below.
+
+```{r}
+time_interval <- 1:nrow(dat_hfr)
+
+# Treatment history
+hist_allout_2 <- lapply(time_interval, get_hist,
+                        Xt = dat_hfr$all_outcome,
+                        lag = 2, window = iraq_window)
+
+dat_hfr$hist_allout_2 <- purrr::map(hist_allout_2, 1)
+
+# Treatment history
+hist_alltre_2 <- lapply(time_interval, get_hist,
+                        Xt = dat_hfr$all_treatment,
+                        lag = 2, window = iraq_window)
+
+dat_hfr$hist_alltre_2 <- purrr::map(hist_alltre_2, 1)
+
+## Smoothing
+dat_hfr$hist_allout_2 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_2,
+                                              method = "mclust", initialization = TRUE,
+                                              sampling = 0.05)
+
+dat_hfr$hist_alltre_2 <- get_smoothed_outcome(data_interest = dat_hfr$hist_alltre_2,
+                                              method = "mclust", initialization = TRUE,
+                                              sampling = 0.05)
+
+```
+
