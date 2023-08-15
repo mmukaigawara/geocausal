@@ -12,6 +12,24 @@
 #' @param x_only logical. `x_only` specifies whether to generate only treatment history (no outcome history). By default, `FALSE`.
 #' 
 #' @returns list of treatment and outcome histories
+#' 
+#' @examples
+#' dat_out <- insurgencies[1:100, ]
+#' dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
+#' 
+#' # Hyperframe
+#' dat_hfr <- get_hfr(data = dat_out,
+#'                    subtype_column = "type",
+#'                    window = iraq_window,
+#'                    time_column = "time",
+#'                    time_range = c(1, max(dat_out$time)),
+#'                    coordinates = c("longitude", "latitude"),
+#'                    combined = TRUE)
+#' 
+#' # Histories
+#' lapply(1:nrow(dat_hfr), get_hist,
+#'        Xt = dat_hfr$all_outcome,
+#'        lag = 1, window = iraq_window)
 
 get_hist <- function(tt, Xt, Yt = NA, lag, window, x_only = TRUE) {
 
