@@ -26,3 +26,21 @@ list of treatment and outcome histories
 \description{
 `get_hist()` takes a hyperframe and time and columns of interest, and generates histories of events of interest.
 }
+\examples{
+dat_out <- insurgencies[1:100, ]
+dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
+
+# Hyperframe
+dat_hfr <- get_hfr(data = dat_out,
+                   subtype_column = "type",
+                   window = iraq_window,
+                   time_column = "time",
+                   time_range = c(1, max(dat_out$time)),
+                   coordinates = c("longitude", "latitude"),
+                   combined = TRUE)
+
+# Histories
+lapply(1:nrow(dat_hfr), get_hist,
+       Xt = dat_hfr$all_outcome,
+       lag = 1, window = iraq_window)
+}
