@@ -21,3 +21,7 @@ list of the following:
 \description{
 `get_base_sum()` takes dataframe and summarizes it.
 }
+\examples{
+get_base_sum(data = airstrikes_base, 
+             time_column = "date")
+}

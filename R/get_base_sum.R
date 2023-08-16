@@ -10,6 +10,10 @@
 #'     * `quantile`: quantiles of counts 
 #'     * `mean`: the mean
 #'     * `variance`: the variance
+#'     
+#' @examples
+#' get_base_sum(data = airstrikes_base, 
+#'              time_column = "date")
 
 get_base_sum <- function(data, time_column) {
 

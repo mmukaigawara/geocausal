@@ -30,3 +30,9 @@ list of the following:
 `get_base_dens()` takes a dataframe and 
 returns the baseline densities using Scott's rule of thumb.
 }
+\examples{
+get_base_dens(data = airstrikes_base, 
+              coordinates = c("longitude", "latitude"),
+              window = iraq_window,
+              grayscale = FALSE)
+}

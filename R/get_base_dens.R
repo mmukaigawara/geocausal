@@ -12,6 +12,12 @@
 #'     * `density`: im object of baseline density
 #'     * `density_plot`: ggplot object of baseline density
 #'     * `point_plot`: ggplot object of raw data
+#'
+#' @examples
+#' get_base_dens(data = airstrikes_base, 
+#'               coordinates = c("longitude", "latitude"),
+#'               window = iraq_window,
+#'               grayscale = FALSE)
 
 get_base_dens <- function(data, 
                           coordinates = c("longitude", "latitude"),
