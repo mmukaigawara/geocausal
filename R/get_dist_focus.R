@@ -28,7 +28,7 @@
 #' get_dist_focus(window = iraq_window,
 #'                longitude = c(44.366), #Baghdad
 #'                latitude = c(33.315),
-#'                resolution = 0.02,
+#'                resolution = 0.1,
 #'                grayscale = FALSE,
 #'                mile = FALSE,
 #'                preprocess = FALSE)
