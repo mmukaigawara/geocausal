@@ -42,7 +42,7 @@ dist_from_baghd <- get_dist_focus(window = iraq_window,
                                   preprocess = FALSE)
                                   
 # Power density
-get_power_dens(target_dens = list(dist_mosul[[1]], dist_baghd[[1]]),
+get_power_dens(target_dens = list(dist_from_mosul[[1]], dist_from_baghd[[1]]),
                priorities = c(3, 2), 
                window = iraq_window,
                grayscale = FALSE)
