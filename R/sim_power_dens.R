@@ -32,8 +32,8 @@
 #'                                   preprocess = FALSE)
 #'                                   
 #' # Simulation
-#' sim_power_dens(target_dens = list(dist_from_baghd), #This must be a list
-#'                dens_manip = dist_from_mosul,
+#' sim_power_dens(target_dens = list(dist_from_baghd$distance_im),
+#'                dens_manip = dist_from_mosul$distance_im,
 #'                priorities = 1,
 #'                priorities_manip = c(1, 2, 5, 10, 15, 50),
 #'                window = iraq_window,

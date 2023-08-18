@@ -61,8 +61,8 @@ dist_from_baghd <- get_dist_focus(window = iraq_window,
                                   preprocess = FALSE)
                                   
 # Simulation of power density
-sim_power_mosul <- sim_power_dens(target_dens = list(dist_from_baghd),
-                                  dens_manip = dist_from_mosul,
+sim_power_mosul <- sim_power_dens(target_dens = list(dist_from_baghd$distance_im),
+                                  dens_manip = dist_from_mosul$distance_im,
                                   priorities = 1,
                                   priorities_manip = c(1, 2, 5, 10, 15, 50),
                                   window = iraq_window,
