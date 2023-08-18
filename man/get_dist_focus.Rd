@@ -50,7 +50,7 @@ By default, `get_dist_focus()` returns distances in kilometers unless users set 
 get_dist_focus(window = iraq_window,
                longitude = c(44.366), #Baghdad
                latitude = c(33.315),
-               resolution = 0.1,
+               resolution = 0.5,
                grayscale = FALSE,
                mile = FALSE,
                preprocess = FALSE)
