@@ -29,6 +29,7 @@
 #'                                   grayscale = FALSE,
 #'                                   mile = FALSE,
 #'                                   preprocess = FALSE)
+#'                                   
 #' # Power density
 #' get_power_dens(target_dens = list(dist_mosul[[1]], dist_baghd[[1]]),
 #'                priorities = c(3, 2), 

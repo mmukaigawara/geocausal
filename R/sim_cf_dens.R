@@ -11,6 +11,46 @@
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' 
 #' @returns list of counterfactual densities, a ggplot, and priorities
+#' 
+#' @examples
+#' # Baseline density
+#' baseline <- get_base_dens(data = airstrikes_base, 
+#'                           coordinates = c("longitude", "latitude"),
+#'                           window = iraq_window,
+#'                           grayscale = FALSE)
+#'                           
+#' # Density 1: Distance from Mosul
+#' dist_from_mosul <- get_dist_focus(window = iraq_window,
+#'                                   longitude = c(43.158),
+#'                                   latitude = c(36.349),
+#'                                   resolution = 0.5,
+#'                                   grayscale = FALSE,
+#'                                   mile = FALSE,
+#'                                   preprocess = FALSE)
+#' 
+#' # Density 2: Distance from Baghdad
+#' dist_from_baghd <- get_dist_focus(window = iraq_window,
+#'                                   longitude = c(44.366),
+#'                                   latitude = c(33.315),
+#'                                   resolution = 0.5,
+#'                                   grayscale = FALSE,
+#'                                   mile = FALSE,
+#'                                   preprocess = FALSE)
+#'                                   
+#' # Simulation of power density
+#' sim_power_mosul <- sim_power_dens(target_dens = list(dist_from_baghd),
+#'                                   dens_manip = dist_from_mosul,
+#'                                   priorities = 1,
+#'                                   priorities_manip = c(1, 2, 5, 10, 15, 50),
+#'                                   window = iraq_window,
+#'                                   grayscale = FALSE)
+#' 
+#' # Simulation of counterfactual density
+#' sim_cf_dens(expected_number = 3,
+#'             base_dens = baseline$density,
+#'             power_sim_results = sim_power_mosul,
+#'             window = iraq_window,
+#'             grayscale = FALSE)
 
 sim_cf_dens <- function(expected_number,
                         base_dens,

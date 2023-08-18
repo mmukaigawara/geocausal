@@ -11,6 +11,33 @@
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' 
 #' @returns list of densities, plot, and priorities
+#' 
+#' @examples
+#' # Density 1: Distance from Mosul
+#' dist_from_mosul <- get_dist_focus(window = iraq_window,
+#'                                   longitude = c(43.158),
+#'                                   latitude = c(36.349),
+#'                                   resolution = 0.5,
+#'                                   grayscale = FALSE,
+#'                                   mile = FALSE,
+#'                                   preprocess = FALSE)
+#' 
+#' # Density 2: Distance from Baghdad
+#' dist_from_baghd <- get_dist_focus(window = iraq_window,
+#'                                   longitude = c(44.366),
+#'                                   latitude = c(33.315),
+#'                                   resolution = 0.5,
+#'                                   grayscale = FALSE,
+#'                                   mile = FALSE,
+#'                                   preprocess = FALSE)
+#'                                   
+#' # Simulation
+#' sim_power_dens(target_dens = list(dist_from_baghd), #This must be a list
+#'                dens_manip = dist_from_mosul,
+#'                priorities = 1,
+#'                priorities_manip = c(1, 2, 5, 10, 15, 50),
+#'                window = iraq_window,
+#'                grayscale = FALSE)
 
 sim_power_dens <- function(target_dens, #This must be a list element
                            dens_manip,
