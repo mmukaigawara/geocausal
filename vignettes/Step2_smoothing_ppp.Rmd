@@ -96,21 +96,11 @@ To make this method even faster, users can specify `initialization = TRUE`. By d
 
 ```{r}
 # Smoothing
-smooth_IED <- get_smoothed_outcome(data_interest = dat_hfr$IED,
-                                   method = "mclust", initialization = TRUE,
-                                   sampling = 0.05)
-
-smooth_SAF <- get_smoothed_outcome(data_interest = dat_hfr$SAF,
-                                   method = "mclust", initialization = TRUE,
-                                   sampling = 0.05)
-
 smooth_allout <- get_smoothed_outcome(data_interest = dat_hfr$all_outcome,
                                       method = "mclust", initialization = TRUE,
                                       sampling = 0.05)
 
 # Save the output
-dat_hfr$smooth_IED <- smooth_IED
-dat_hfr$smooth_SAF <- smooth_SAF
 dat_hfr$smooth_allout <- smooth_allout
 ```
 
