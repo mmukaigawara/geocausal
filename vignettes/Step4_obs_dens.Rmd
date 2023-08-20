@@ -118,25 +118,25 @@ dat_hfr$dist_bagh <- dist_baghdad$distance_im
 time_interval <- 1:nrow(dat_hfr)
 
 # Outcome history
-hist_allout_2 <- lapply(time_interval, get_hist,
+hist_allout_1 <- lapply(time_interval, get_hist,
                         Xt = dat_hfr$all_outcome,
-                        lag = 2, window = iraq_window)
+                        lag = 1, window = iraq_window)
 
-dat_hfr$hist_allout_2 <- purrr::map(hist_allout_2, 1)
+dat_hfr$hist_allout_1 <- purrr::map(hist_allout_2, 1)
 
 # Treatment history
-hist_alltre_2 <- lapply(time_interval, get_hist,
+hist_alltre_1 <- lapply(time_interval, get_hist,
                         Xt = dat_hfr$all_treatment,
-                        lag = 2, window = iraq_window)
+                        lag = 1, window = iraq_window)
 
-dat_hfr$hist_alltre_2 <- purrr::map(hist_alltre_2, 1)
+dat_hfr$hist_alltre_1 <- purrr::map(hist_alltre_1, 1)
 
 # Smoothing
-dat_hfr$hist_allout_2 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_2,
+dat_hfr$hist_allout_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_allout_1,
                                               method = "mclust", initialization = TRUE,
                                               sampling = 0.05)
 
-dat_hfr$hist_alltre_2 <- get_smoothed_outcome(data_interest = dat_hfr$hist_alltre_2,
+dat_hfr$hist_alltre_1 <- get_smoothed_outcome(data_interest = dat_hfr$hist_alltre_1,
                                               method = "mclust", initialization = TRUE,
                                               sampling = 0.05)
 
@@ -146,7 +146,7 @@ The observed densities of treatment events (in our example, airstrikes) will be 
 
 ```{r, out.height=400, out.width=600, fig.dim = c(9, 6)}
 # List of RHS variables
-rhs_var <- c("dist_bagh", "hist_alltre_2", "hist_allout_2")
+rhs_var <- c("dist_bagh", "hist_alltre_1", "hist_allout_1")
 
 # Get observed density over the entire window, for the entire period
 obs_density <- get_obs_dens(dat_hfr, "Airstrike", rhs_var, 
