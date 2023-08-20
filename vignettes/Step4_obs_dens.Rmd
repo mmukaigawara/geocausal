@@ -112,7 +112,7 @@ hist_allout_1 <- lapply(time_interval, get_hist,
                         Xt = dat_hfr$all_outcome,
                         lag = 1, window = iraq_window)
 
-dat_hfr$hist_allout_1 <- purrr::map(hist_allout_2, 1)
+dat_hfr$hist_allout_1 <- purrr::map(hist_allout_1, 1)
 
 # Treatment history
 hist_alltre_1 <- lapply(time_interval, get_hist,
