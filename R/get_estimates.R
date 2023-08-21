@@ -44,7 +44,7 @@ get_estimates <- function(obs_dens,
   counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens,
                                                   treatment_data = treatment_data)
 
-  observed_sum_log <- obs_dens$sum_log_intensity
+  observed_sum_log <- obs_dens$sum_log_intens
 
   # 1-2. Log density ratio (LDR)
   log_density_ratio <- counterfactual_sum_log - observed_sum_log
