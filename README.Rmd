@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of `geocausal` is to implement causal inference analytic methods based on spatio-temporal data. Users provide the raw data of locations and timings of treatment and outcome events, specify counterfactual scenarios, and the package estimates causal effects over specified spatial and temporal windows.
+The goal of the package [geocausal](https://github.com/mmukaigawara/geocausal) is to implement causal inference analytic methods based on spatio-temporal data. Users provide the raw data of locations and timings of treatment and outcome events, specify counterfactual scenarios, and the package estimates causal effects over specified spatial and temporal windows.
 
 For methodological details, please refer to the following article.
 
@@ -33,12 +33,14 @@ Please cite this package as follows:
 
 ## Installation
 
-You can install the package [geocausal](https://github.com/mmukaigawara/geocausal) from [GitHub](https://github.com/) and [CRAN](https://cran.r-project.org/web/packages/geocausal/index.html) with:
+You can install the package [geocausal](https://github.com/mmukaigawara/geocausal) from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("mmukaigawara/geocausal")
 ```
+
+and [CRAN](https://cran.r-project.org/web/packages/geocausal/index.html) with:
 
 ```r
 install.packages("geocausal")
