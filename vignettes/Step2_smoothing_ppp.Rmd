@@ -82,17 +82,17 @@ names(dat_hfr)[names(dat_hfr) == "all_combined"] <- "all_treatment"
 names(dat_hfr)[names(dat_hfr) == "all_combined.1"] <- "all_outcome"
 ```
 
-The second step of spatiotemporal causal inference is smoothing outcomes. We employ `get_smoothed_outcome()` function to work on this step. 
+The second step in spatiotemporal causal inference involves smoothing outcomes. For this step, we use the `get_smoothed_outcome()` function.
 
-# Smoothing outcomes
+# Smoothing Outcomes
 
-`get_smoothed_outcome()` function has two key arguments. The first is `data_interest`, which is a column of the hyperframe that we generated in the first step. The second is `method`, which specifies the method of smoothing (either `mclust` or `abram`).
+The `get_smoothed_outcome()` function has two primary arguments. The first is `data_interest`, which refers to a column of the hyperframe that was generated in the first step. The second is `method`, which determines the smoothing method, either `mclust` or `abram`.
 
-## Method 1: Gaussian mixture model (`method = mclust`)
+## Method 1: Gaussian Mixture Model (`method = mclust`)
 
-The Gaussian mixture model is the simplest and fastest method for smoothing point processes. This method performs model-based clustering of points by obtaining the common variance and using it as the variance of the isotropic smoothing kernel. The key advantage of choosing the Gaussian mixture model is its computational speed. Since our function employs the EII model (equal volume, round shape), the Gaussian mixture model is much faster than adaptive smoothing (`method = abram`).
+The Gaussian mixture model offers a simple and swift approach to smoothing point processes. It performs model-based clustering of points by determining the common variance and then using this variance for the isotropic smoothing kernel. The primary advantage of opting for the Gaussian mixture model is its computational efficiency. Since our function utilizes the EII model (equal volume, round shape), the Gaussian mixture model is faster than adaptive smoothing (specified by `method = abram`).
 
-To make this method even faster, users can specify `initialization = TRUE`. By doing so, the function uses a small portion of data to obtain the common variance. For example, in order to use 5% of data for initialization, then users can run the following code.
+To further accelerate this method, users can set `initialization = TRUE`. By doing this, the function will use only a fraction of the data to ascertain the common variance. For instance, to utilize 5% of the data for initialization, users can execute the provided code.
 
 ```{r}
 # Smoothing
@@ -104,10 +104,10 @@ smooth_allout <- get_smoothed_outcome(data_interest = dat_hfr$all_outcome,
 dat_hfr$smooth_allout <- smooth_allout
 ```
 
-Since the process is computationally demanding, it is highly recommended that users save the output and avoid running the process multiple times. The output is a list of pixel images, each representing smoothed outcomes of each time frame.
+Since the process is computationally demanding, users are highly recommended to save the output to avoid running the process multiple times. The output consists of a list of pixel images, each representing the smoothed outcomes for each time frame.
 
-## Method 2: Abramson's adaptive smoothing (`method = abram`)
+## Method 2: Abramson's Adaptive Smoothing (`method = abram`)
 
-The Gaussian mixture model is a fixed-bandwidth smoothing approach. This approach, therefore, can be problematic when the true intensity varies substantively across regions because the fixed-bandwidth approach can over- or under-smooth point process data of some regions. To incorporate the variation in intensity functions, we need to employ adaptive smoothing techniques. 
+The Gaussian mixture model employs a fixed-bandwidth smoothing approach. This method can pose problems when the true intensity varies substantially across regions. The fixed-bandwidth approach may over-smooth or under-smooth the point process data in some areas. To account for the variation in intensity functions, it's preferable to use adaptive smoothing techniques.
 
-The function `get_smoothed_outcome()` follows Abramson (1982) to estimate the target densities. `geocausal` package assumes that the bandwidth is inversely proportional to the square root of the target densities. Users can employ the adaptive-bandwidth approach by setting `method = "abram"`.
+The function `get_smoothed_outcome()` adopts Abramson (1982) to estimate target densities. The `geocausal` package assumes that the bandwidth is inversely proportional to the square root of the target densities. Users can apply the adaptive-bandwidth approach by setting `method = "abram"`.
