@@ -13,9 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# geocausal
+# geocausal: Causal Inference with Spatio-Temporal Data
 
 <!-- badges: start -->
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+[![](http://cranlogs.r-pkg.org/badges/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+[![](http://cranlogs.r-pkg.org/badges/last-week/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
 <!-- badges: end -->
 
 The goal of the package [geocausal](https://github.com/mmukaigawara/geocausal) is to implement causal inference analytic methods based on spatio-temporal data. Users provide the raw data of locations and timings of treatment and outcome events, specify counterfactual scenarios, and the package estimates causal effects over specified spatial and temporal windows.

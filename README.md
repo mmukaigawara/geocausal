@@ -1,9 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# geocausal
+# geocausal: Causal Inference with Spatio-Temporal Data
 
 <!-- badges: start -->
+
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+[![](http://cranlogs.r-pkg.org/badges/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+[![](http://cranlogs.r-pkg.org/badges/last-week/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
 <!-- badges: end -->
 
 The goal of the package
