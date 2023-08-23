@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# geocausal: Causal Inference with Spatio-Temporal Data
+# geocausal <a href="https://github.com/mmukaigawara/geocausal"><img src="inst/figure/logo.png" align="right" height="138" /></a>
 
 <!-- badges: start -->
 

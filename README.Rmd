@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# geocausal: Causal Inference with Spatio-Temporal Data
+# geocausal <a href="https://github.com/mmukaigawara/geocausal"><img src="inst/figure/logo.png" align="right" height="138" /></a>
 
 <!-- badges: start -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
