@@ -48,11 +48,13 @@ insurgencies <- geocausal::insurgencies
 iraq_window <- geocausal::iraq_window
 ```
 
+To demonstrate the use of our package, we employ two datasets: `airstrikes` and `insurgencies`. These datasets represent spatiotemporal data of airstrikes and insurgencies in Iraq from March 2007 to June 2007. Using this data, we aim to investigate the impact of airstrikes on the number of insurgencies in Iraq.
+
 The first step of spatiotemporal causal inference is to convert dataframes into an object called hyperframe. Essentially, a hyperframe is a dataframe in which each cell can contain various types of objects, including pixel images and point processes. Users can convert dataframes into hyperframes using the function `get_hfr()`.
 
 # Data
 
-To demonstrate the use of our package, we employ two datasets: `airstrikes` and `insurgencies`. These datasets represent spatiotemporal data of airstrikes and insurgencies in Iraq from March 2007 to June 2007. It is important to note that location information should be stored in decimal degree format. When using `geocausal`, if the original data is not in the decimal degree format, users are advised to convert it to this format. Furthermore, the time variable must be in numeric form.
+It is important to note that location information should be stored in decimal degree format. When using `geocausal`, if the original data is not in the decimal degree format, users are advised to convert it to this format. Furthermore, the time variable must be in numeric form.
 
 # Converting Data into Hyperframes
 
@@ -113,5 +115,5 @@ vis_hfr(hfr = dat_hfr,
         subtype_column = c("Airstrike", "SOF"),
         time_column = "time",
         range = c(1, 5),
-        combined = TRUE)
+        combined = TRUE) 
 ```
