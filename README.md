@@ -31,20 +31,20 @@ Please cite this package as follows:
 
 > Mukaigawara M, Papadogeorgou G, Lyall J, Imai K (2023). geocausal:
 > Causal Inference with Spatio-Temporal Data. R package version 0.1.0,
-> <https://www.github.com/mmukaigawara/geocausal>
+> <https://github.com/mmukaigawara/geocausal>
 
 ## Installation
 
 You can install the package
 [geocausal](https://github.com/mmukaigawara/geocausal) from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/mmukaigawara/geocausal) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("mmukaigawara/geocausal")
 ```
 
-and [CRAN](https://cran.r-project.org/web/packages/geocausal/index.html)
+and [CRAN](https://cran.r-project.org/package=geocausal)
 with:
 
 ``` r
