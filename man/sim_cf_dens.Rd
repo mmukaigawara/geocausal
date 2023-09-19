@@ -32,10 +32,12 @@ and returns simulated counterfactual densities.
 }
 \examples{
 # Baseline density
-baseline <- get_base_dens(data = airstrikes_base, 
-                          coordinates = c("longitude", "latitude"),
+baseline <- get_base_dens(option = "out",
+                          out_data = airstrikes_base, 
+                          out_coordinates = c("longitude", "latitude"),
                           window = iraq_window,
-                          grayscale = FALSE)
+                          grayscale = FALSE,
+                          ndim = 64)
                           
 # Density 1: Distance from Mosul
 dist_from_mosul <- get_dist_focus(window = iraq_window,
