@@ -61,8 +61,8 @@ get_base_dens <- function(window,
     
     message("Using in-sample data to obtain the baseline density")
     
-    num_obs <- round(ratio*nrow(dat_hfr_nga), digits = 0) #The number of obs to use
-    ids <- sample(c(rep(1, num_obs), rep(0, nrow(dat_hfr_nga) - num_obs)))
+    num_obs <- round(ratio*nrow(hfr), digits = 0) #The number of obs to use
+    ids <- sample(c(rep(1, num_obs), rep(0, nrow(hfr) - num_obs)))
     hfr <- hfr[which(ids == 1), ]
     
     text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
