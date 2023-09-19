@@ -5,34 +5,55 @@
 \title{Get baseline densities}
 \usage{
 get_base_dens(
-  data,
-  coordinates = c("longitude", "latitude"),
   window,
-  grayscale = FALSE
+  option,
+  grayscale = FALSE,
+  ndim = 256,
+  out_data,
+  out_coordinates = c("longitude", "latitude"),
+  hfr,
+  dep_var,
+  indep_var,
+  ratio
 )
 }
 \arguments{
-\item{data}{dataframe}
-
-\item{coordinates}{vector of column names of longitudes and latitudes (in this order)}
-
 \item{window}{owin object}
 
+\item{option}{"in" (using in-sample data) or "out" (using out-of-sample data)}
+
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
+
+\item{ndim}{the number of dimensions of grid cells (ndim^2). By default, ndim = 256.}
+
+\item{out_data}{dataframe (if using out-of-sample data)}
+
+\item{out_coordinates}{vector of column names of longitudes and latitudes (in this order) (if using in-sample data)}
+
+\item{hfr}{hyperframe (if using in-sample data)}
+
+\item{dep_var}{the name of the dependent variable (if using in-sample data)}
+
+\item{indep_var}{the names of time-invariant independent varaibles (if using in-sample data)}
+
+\item{ratio}{for random sampling of data (if using in-sample data)}
 }
 \value{
 list of the following:
     * `density`: im object of baseline density
     * `density_plot`: ggplot object of baseline density
-    * `point_plot`: ggplot object of raw data
 }
 \description{
 `get_base_dens()` takes a dataframe and 
-returns the baseline densities using Scott's rule of thumb.
+returns the baseline densities using Scott's rule of thumb (out-of-sample data)
+or fitting an inhomogeneous Poisson model (in-sample data) by regressing
+the in-sample data on time-invariant covariates.
 }
 \examples{
-get_base_dens(data = airstrikes_base, 
-              coordinates = c("longitude", "latitude"),
+get_base_dens(option = "out",
+              out_data = airstrikes_base, 
+              out_coordinates = c("longitude", "latitude"),
               window = iraq_window,
-              grayscale = FALSE)
+              grayscale = FALSE,
+              ndim = 256)
 }
