@@ -2,8 +2,8 @@
 ^\.Rproj\.user$
 ^cran-comments\.md$
 ^README\.Rmd$
-^_pkgdown\.yml$
 ^docs$
 ^CRAN-SUBMISSION$
 ^inst$
 ..Rcheck
+^vignettes$
