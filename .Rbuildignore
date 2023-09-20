@@ -10,3 +10,4 @@
 .gitignore
 R/.DS_Store
 .git
+^vignettes$
