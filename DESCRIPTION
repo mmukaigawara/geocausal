@@ -58,4 +58,4 @@ Imports:
     tidyselect
 RoxygenNote: 7.2.3
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
