@@ -6,4 +6,7 @@
 ^CRAN-SUBMISSION$
 ^inst$
 ..Rcheck
-^vignettes$
+.DS_Store
+.gitignore
+R/.DS_Store
+.git
