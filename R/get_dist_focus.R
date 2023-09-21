@@ -35,7 +35,7 @@
 
 get_dist_focus <- function(window, longitude, latitude, resolution,
                            grayscale, mile = FALSE, preprocess = FALSE){
-
+  
   # Convert owin into sp objects  
   window_sp <- conv_owin_into_sf(window)
   polygon <- window_sp[[1]]
@@ -50,21 +50,23 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   point_sf <- sf::st_as_sf(point_df, coords = c("longitude", "latitude"))
   
   # Create a raster based on the polygon's extent
-  r <- raster::raster(res = 0.1)
-  raster::extent(r) <- raster::extent(polygon_sf)
+  r <- terra::rast(res = 0.1)
+  v <- terra::vect(polygon_sf)  # Vect object in terra
+  terra::ext(r) <- terra::ext(v)  # Set the extent of r to match the extent of v
   
   # Define the extent of the raster
-  r <- raster::raster(raster::extent(polygon_spdf), resolution = resolution)
-
+  v <- terra::vect(polygon_spdf)
+  r <- terra::rast(terra::ext(v), res = resolution)
+  
   # Rasterize the polygon
-  r <- raster::rasterize(polygon_spdf, r, field = 1)
+  r <- terra::rasterize(v, r, field = 1)
   
   # Mask the raster with the polygon
-  r <- raster::mask(r, polygon_spdf)
+  r <- terra::mask(r, v)
   
   # Convert raster to SpatialPixels
-  rast_points <- raster::rasterToPoints(r)
-  rast_points <- rast_points[, c(1:2)]
+  rast_points <- terra::as.points(r)
+  rast_points <- terra::crds(rast_points)
   
   # Calculate distance for each pixel
   
@@ -135,7 +137,7 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
     
     # Calculate distance for each pixel and take the minimum
     # Do the same for all the points of interest
-
+    
     progressr::with_progress({
       
       p <- progressr::progressor(steps = length(num_points))
