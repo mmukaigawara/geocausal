@@ -37,7 +37,6 @@ Suggests:
     knitr,
     readr,
     rmarkdown
-VignetteBuilder: knitr
 Imports:
     data.table,
     dplyr,
