@@ -53,6 +53,7 @@ Imports:
     spatstat.explore,
     spatstat.geom,
     spatstat.model,
+    terra,
     tidyr,
     tidyselect
 RoxygenNote: 7.2.3
