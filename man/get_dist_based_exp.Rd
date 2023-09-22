@@ -28,8 +28,8 @@ get_dist_based_exp(
 By default, `FALSE`.}
 }
 \value{
-ggplot objects that summarizes how expectations change over distances from a focus (expectation_plot)
-and summarizes distances and areas (window_plot). Note that the second object can not necessarily be well drawn
+A list of ggplot objects that summarizes how expectations change over distances from a focus (`expectation_plot`)
+and summarizes distances and areas (`window_plot`). Note that the second object can not necessarily be well drawn
 depending on how windows are defined.
 }
 \description{

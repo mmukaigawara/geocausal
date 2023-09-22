@@ -19,11 +19,9 @@
 #' `average_expected_events_quantiles`: percentiles of Hajek estimators
 #' `weights`: weights
 #' `average_weights`: mean of `weights`
-#' `plot`: plot showing distance-based expectations
 #' `distances`: distances
 #' `distances_window`: as window objects
 #' `expectation_plot`: plot of expectations
-#' `window_plot`: plot of windows
 
 get_estimates <- function(obs_dens,
                           cf_dens,
@@ -162,9 +160,11 @@ get_estimates <- function(obs_dens,
         theme_bw() + xlim(0, ceiling(result_data$distance[nrow(result_data)])) +
         labs(x = x_label_text,
              y = "The expected outcome events\ncovered by the area",
+             title = "The Expected Number of Outcome Events and\nDistance from the Focus under a Counterfactual Scenario",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
+        theme(plot.title = element_text(hjust = 0.5))
+      #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
 
   } else {
 
@@ -178,61 +178,22 @@ get_estimates <- function(obs_dens,
         theme_bw() + xlim(0, ceiling(result_data$distance[nrow(result_data)])) +
         labs(x = x_label_text,
              y = "The expected outcome events\ncovered by the area",
+             title = "The Expected Number of Outcome Events and\nDistance from the Focus under a Counterfactual Scenario",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
+        theme(plot.title = element_text(hjust = 0.5))
+      #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
 
   }
-
-  ## Plot for windows
-  window_showcase_list <- list(distance_owin[[1]], distance_owin[[length(distance_owin)]])
-  window_showcase <- lapply(window_showcase_list, spatstat.geom::as.polygonal)
-
-  if(grayscale) {
-
-    window_plot_list <- lapply(window_showcase, function(x) {
-      gg <- ggplot() +
-        ggplot2::geom_polygon(data = ggplot2::fortify(as.data.frame(x)), aes(x = x, y = y), fill = "gray") +
-        ggplot2::geom_path(data = ggplot2::fortify(as.data.frame(entire_window)), aes(x = x, y = y)) +
-        ggthemes::theme_map()
-      return(gg)})
-
-  } else {
-
-    window_plot_list <- lapply(window_showcase, function(x) {
-      gg <- ggplot() +
-        ggplot2::geom_polygon(data = ggplot2::fortify(as.data.frame(x)), aes(x = x, y = y), fill = "#F1B6DA") +
-        ggplot2::geom_path(data = ggplot2::fortify(as.data.frame(entire_window)), aes(x = x, y = y)) +
-        ggthemes::theme_map()
-      return(gg)})
-  }
-
-  window_plot_list[[1]] <- window_plot_list[[1]] +
-    ggtitle(paste0(round(as.numeric(distances[1]), 1), " ", dist_map_unit)) +
-    theme(plot.title = element_text(hjust = 0.5))
-  window_plot_list[[2]] <- window_plot_list[[2]] +
-    ggtitle(paste0(round(as.numeric(distances[length(distances)]), 1), " ", dist_map_unit)) +
-    theme(plot.title = element_text(hjust = 0.5))
-
-  w_plot_list <- list(window_plot_list[[1]], window_plot_list[[2]])
-
-  # Color and plot
-  window_plot <- ggpubr::ggarrange(plotlist = w_plot_list, nrow = 1)
-  window_plot <- ggpubr::annotate_figure(window_plot, bottom = ggpubr::text_grob("Areas covered by quantiles"))
-
-  entire_plot <- ggpubr::ggarrange(expectation_plot, window_plot, nrow = 2, heights = c(0.7, 0.3))
-  titletext <- "The Expected Number of Outcome Events and\nDistance from the Focus under a Counterfactual Scenario"
-  entire_plot <- ggpubr::annotate_figure(entire_plot, top = ggpubr::text_grob(titletext, face = "bold"))
 
   return(list(average_weighted_density = average_weighted_surface_haj, #Hajek, average, weighted surface (im)
               average_expected_events = as.numeric(unlist(partial_expectations)[101]), #Hajek, counts, entire window
               average_expected_events_quantiles = as.numeric(unlist(partial_expectations)), #Corresponding to each distance
               weights = weights, #Weights
               average_weights = mean(weights), #Average weights (for Hajek)
-              plot = entire_plot, #Distance based expectations
               distances = as.numeric(distances),
               distances_window = distance_owin,
-              expectation_plot = expectation_plot,
-              window_plot = window_plot))
+              expectation_plot = expectation_plot
+              ))
 
 }

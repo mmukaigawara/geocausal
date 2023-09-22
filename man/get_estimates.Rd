@@ -44,11 +44,9 @@ list of the following:
 `average_expected_events_quantiles`: percentiles of Hajek estimators
 `weights`: weights
 `average_weights`: mean of `weights`
-`plot`: plot showing distance-based expectations
 `distances`: distances
 `distances_window`: as window objects
 `expectation_plot`: plot of expectations
-`window_plot`: plot of windows
 }
 \description{
 `get_estimates()` generates causal estimates comparing two counterfactual scenarios.

@@ -13,8 +13,8 @@
 #' @param use_raw logical. `use_raw` specifies whether to use the raw value of expectations or percentiles.
 #' By default, `FALSE`.
 #'
-#' @returns ggplot objects that summarizes how expectations change over distances from a focus (expectation_plot)
-#' and summarizes distances and areas (window_plot). Note that the second object can not necessarily be well drawn
+#' @returns A list of ggplot objects that summarizes how expectations change over distances from a focus (`expectation_plot`)
+#' and summarizes distances and areas (`window_plot`). Note that the second object can not necessarily be well drawn
 #' depending on how windows are defined.
 
 get_dist_based_exp <- function(cf_sim_results,
@@ -171,6 +171,6 @@ get_dist_based_exp <- function(cf_sim_results,
   #titletext <- "The Expected Number of Treatment Events and Distance from the Focus"
   #entire_plot <- ggpubr::annotate_figure(entire_plot, top = ggpubr::text_grob(titletext, face = "bold"))
   
-  return(expectation_plot = expectation_plot, window_plot = window_plot)
+  return(list(expectation_plot = expectation_plot, window_plot = window_plot))
   
 }

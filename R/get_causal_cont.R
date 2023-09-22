@@ -7,7 +7,7 @@
 #' @param grayscale whether to grayscale the figures
 #' @param dist_map_unit either `"km"` or `"mile"`
 #' 
-#' @returns a list of ggplot objects and the data
+#' @returns a list of a ggplot object and the data
 #' 
 #' @details `get_causal_cont()` returns a figure with causal contrasts. 
 #' A causal contrast is the difference between expected numbers of outcome events of two counterfactual scenarios. 
@@ -49,9 +49,10 @@ get_causal_cont <- function(scenario_1, #Contrast = scenario 2 - scenario 1
         ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
         labs(x = x_label_text, 
              y = "The expected outcome events\ncovered by the area",
+             title = "Causal Effects Per Time Period:\nThe Expected Number of Outcome Events\nComparing Two Counterfactual Scenarios",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+        theme(plot.title = element_text(hjust = 0.5))
 
   } else {
     
@@ -66,21 +67,14 @@ get_causal_cont <- function(scenario_1, #Contrast = scenario 2 - scenario 1
         ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
         labs(x = x_label_text, 
              y = "The expected outcome events\ncovered by the area",
+             title = "Causal Effects Per Time Period:\nThe Expected Number of Outcome Events\nComparing Two Counterfactual Scenarios",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm")) 
+        theme(plot.title = element_text(hjust = 0.5))
       
   }
   
-  # Color and plot
-  window_plot <- scenario_1$window_plot
-  
-  entire_plot <- ggpubr::ggarrange(expectation_plot, window_plot, nrow = 2, heights = c(0.7, 0.3))
-  titletext <- "Causal Effects Per Time Period:\nThe Expected Number of Outcome Events\nComparing Two Counterfactual Scenarios"
-  entire_plot <- ggpubr::annotate_figure(entire_plot, top = ggpubr::text_grob(titletext, face = "bold"))
-  
-  return(list(plot = entire_plot,
-              expectation_plot = expectation_plot,
+  return(list(expectation_plot = expectation_plot,
               df = result_data)
          )
   

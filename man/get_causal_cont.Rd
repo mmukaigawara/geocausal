@@ -16,7 +16,7 @@ get_causal_cont(scenario_1, scenario_2, dist_map_unit = "km", grayscale)
 \item{grayscale}{whether to grayscale the figures}
 }
 \value{
-a list of ggplot objects and the data
+a list of a ggplot object and the data
 }
 \description{
 A function that returns a figure with causal contrasts
