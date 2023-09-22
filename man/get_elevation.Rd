@@ -9,7 +9,7 @@ get_elevation(load_path, ...)
 \arguments{
 \item{load_path}{path to the shp file (note: a folder)}
 
-\item{...}{other parameters passed to `elevatr::get_elev_raster()`}
+\item{...}{other parameters passed to `elevatr::get_elev_raster()`. The resolution argument z must be specified.}
 }
 \value{
 list of a raster layer, an im object, and a ggplot object of altitudes (in meters).

@@ -4,41 +4,11 @@
 #' `get_elevation()` takes a directory that hosts shapefile and returns an owin object of altitudes.
 #'
 #' @param load_path path to the shp file (note: a folder)
-#' @param ... other parameters passed to `elevatr::get_elev_raster()`
+#' @param ... other parameters passed to `elevatr::get_elev_raster()`. The resolution argument z must be specified.
 #' 
 #' @returns list of a raster layer, an im object, and a ggplot object of altitudes (in meters).
 
 get_elevation <- function(load_path, ...) {
-  
-  # maptools function
-  maptools_as.im.RasterLayer <- function(from, factor.col.name = NULL) {
-    
-    rs <- raster::res(from)
-    orig <- sp::bbox(from)[, 1] + 0.5 * rs
-    dm <- dim(from)[2:1]
-    xx <- unname(orig[1] + cumsum(c(0, rep(rs[1], dm[1]-1))))
-    yy <- unname(orig[2] + cumsum(c(0, rep(rs[2], dm[2]-1))))
-    val <- raster::values(from)
-    if(is.factor(from)){
-      lev <- levels(from)[[1]]
-      if(!is.null(factor.col.name)){
-        if(factor.col.name %in% colnames(lev)){
-          factor.col <- which(colnames(lev) == factor.col.name)
-        } else {
-          stop("'factor.col.name' is not a column name of the raster 'from'")
-        }
-      }else{
-        factor.col <- length(lev)
-      }
-      val <- factor(val, levels = lev$ID, labels = lev[[factor.col]])
-    }
-    ## Assign dimensions to `val` as a matrix in raster layout:
-    dim(val) <- dm
-    ## Transform to spatstat format
-    val <- spatstat.geom::transmat(val, from = list(x="-i", y="j"), to = "spatstat")
-    im <- spatstat.geom::im(val, xcol=xx, yrow=yy)
-    return(im)
-  }
   
   # Prepare data
   temp <- sf::st_read(file.path(load_path)) #Download the file from geoBoundaries as needed
@@ -47,12 +17,25 @@ get_elevation <- function(load_path, ...) {
   # Get elevation data using elevatr (z indicates resolutions)
   elevation_data <- elevatr::get_elev_raster(locations = temp, clip = "locations", ...)
   # Convert it to a dataframe
-  elevation_data_df <- raster::as.data.frame(elevation_data, xy = TRUE)
+  elevation_data_df <- terra::as.data.frame(elevation_data, xy = TRUE)
   colnames(elevation_data_df)[3] <- "z"
   elevation_data_df <- elevation_data_df[complete.cases(elevation_data_df), ]
-  # Convert it to an image object
-  elevation_im <- maptools_as.im.RasterLayer(elevation_data)
-
+  # Convert it to an image object (based on maptools' as.im.RasterLayer function with modificaitons)
+  rs <- terra::res(elevation_data) #resolution
+  orig <- sp::bbox(elevation_data)[, 1] + 0.5 * rs
+  dm <- dim(elevation_data)[2:1]
+  xx <- unname(orig[1] + cumsum(c(0, rep(rs[1], dm[1]-1))))
+  yy <- unname(orig[2] + cumsum(c(0, rep(rs[2], dm[2]-1))))
+  val <- terra::values(elevation_data)
+  if(is.factor(elevation_data)){
+    lev <- levels(elevation_data)[[1]]
+    factor.col <- length(lev)
+    val <- factor(val, levels = lev$ID, labels = lev[[factor.col]])
+  }
+  dim(val) <- dm #Assign dimensions
+  val <- spatstat.geom::transmat(val, from = list(x="-i", y="j"), to = "spatstat")
+  elevation_im <- spatstat.geom::im(val, xcol=xx, yrow=yy)
+  
   # ggplot
   gg <- ggplot() +
     ggplot2::geom_raster(data = elevation_data_df, aes(x = x, y = y, fill = z)) +
