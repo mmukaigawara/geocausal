@@ -171,6 +171,7 @@ get_dist_based_exp <- function(cf_sim_results,
   #titletext <- "The Expected Number of Treatment Events and Distance from the Focus"
   #entire_plot <- ggpubr::annotate_figure(entire_plot, top = ggpubr::text_grob(titletext, face = "bold"))
   
-  return(list(expectation_plot = expectation_plot, window_plot = window_plot))
+  return(list(expectation_plot = expectation_plot, 
+              window_plot = window_plot))
   
 }
