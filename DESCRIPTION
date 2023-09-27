@@ -47,7 +47,6 @@ Imports:
     progressr,
     purrr,
     sf,
-    sp,
     spatstat.explore,
     spatstat.geom,
     spatstat.model,
