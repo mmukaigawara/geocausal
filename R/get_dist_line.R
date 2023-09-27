@@ -112,13 +112,13 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
     # Create a dataframe
     if (mile) {
 
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = dists[, 2] * 0.621371/1000) #miles
     } else {
 
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = dists[, 2]/1000) #km
 
     }
@@ -156,13 +156,13 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
     # Create a dataframe
     if (mile) {
 
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = line_dists * 0.621371/1000) #miles
     } else {
 
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = line_dists/1000) #km
 
     }

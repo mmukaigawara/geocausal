@@ -122,13 +122,13 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
     
     if (mile) {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = dists[, 2] * 0.621371/1000) #miles
     } else {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = dists[, 2]/1000) #km
       
     }
@@ -159,13 +159,13 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
     
     if (mile) {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = point_dists * 0.621371/1000) #miles
     } else {
       
-      dist_df <- data.frame(longitude = sp::coordinates(rast_points)[, 1],
-                            latitude = sp::coordinates(rast_points)[, 2],
+      dist_df <- data.frame(longitude = rast_points[, 1],
+                            latitude = rast_points[, 2],
                             distance = point_dists/1000) #km
       
     }
