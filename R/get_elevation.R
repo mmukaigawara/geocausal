@@ -22,7 +22,7 @@ get_elevation <- function(load_path, ...) {
   elevation_data_df <- elevation_data_df[complete.cases(elevation_data_df), ]
   # Convert it to an image object (based on maptools' as.im.RasterLayer function with modificaitons)
   rs <- terra::res(elevation_data) #resolution
-  orig <- elevation_data$file3e34525ab14f6f@extent[c(1, 3)] + 0.5 * rs
+  orig <- elevation_data@extent[c(1, 3)] + 0.5 * rs
   dm <- dim(elevation_data)[2:1]
   xx <- unname(orig[1] + cumsum(c(0, rep(rs[1], dm[1]-1))))
   yy <- unname(orig[2] + cumsum(c(0, rep(rs[2], dm[2]-1))))
