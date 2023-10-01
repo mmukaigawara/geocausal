@@ -51,7 +51,7 @@ get_estimates <- function(obs_dens,
   observed_sum_log <- obs_dens$sum_log_intens
 
   # 1-2. Log density ratio (LDR)
-  if (mediator) {
+  if (mediation) {
     # For causal mediation analysis
     log_density_ratio <- counterfactual_sum_log + cf_med_log_sum_dens -
       observed_sum_log - obs_med_log_sum_dens # Added conditionals
