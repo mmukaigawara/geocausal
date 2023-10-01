@@ -1,3 +1,7 @@
+# geocausal 0.3.0
+
+* Included the `med_sum_log_intens()` function.
+
 # geocausal 0.2.1
 
 * Modified the output of `get_dist_based_exp()` and `get_causal_cont()` by removing the plots of windows.
