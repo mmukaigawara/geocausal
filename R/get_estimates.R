@@ -5,6 +5,9 @@
 #'
 #' @param obs_dens observed density
 #' @param cf_dens counterfactual density
+#' @param mediation whether to perform causal mediation analysis. By default, FALSE.
+#' @param obs_med_log_sum_dens sum of log densities of mediators for the observed (if `mediation = TRUE`)
+#' @param cf_med_log_sum_dens sum of log densities of mediators for counterfactual (if `mediation = TRUE`)
 #' @param treatment_data column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.
 #' @param smoothed_outcome column of a hyperframe that summarizes the smoothed outcome data
 #' @param lag integer that specifies lags to calculate causal estimates
@@ -25,6 +28,9 @@
 
 get_estimates <- function(obs_dens,
                           cf_dens,
+                          mediation = FALSE,
+                          obs_med_log_sum_dens,
+                          cf_med_log_sum_dens,
                           treatment_data,
                           smoothed_outcome,
                           lag,
@@ -45,7 +51,14 @@ get_estimates <- function(obs_dens,
   observed_sum_log <- obs_dens$sum_log_intens
 
   # 1-2. Log density ratio (LDR)
-  log_density_ratio <- counterfactual_sum_log - observed_sum_log
+  if (mediator) {
+    # For causal mediation analysis
+    log_density_ratio <- counterfactual_sum_log + cf_med_log_sum_dens -
+      observed_sum_log - obs_med_log_sum_dens # Added conditionals
+  } else {
+    # For causal inference without mediation
+    log_density_ratio <- counterfactual_sum_log - observed_sum_log
+  }
 
   # 1-3. Convert LDR to weights (weights for each time period)
   weights <- furrr::future_map_dbl((lag + 1):length(log_density_ratio), function(x) {

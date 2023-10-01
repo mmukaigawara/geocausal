@@ -7,6 +7,9 @@
 get_estimates(
   obs_dens,
   cf_dens,
+  mediation = FALSE,
+  obs_med_log_sum_dens,
+  cf_med_log_sum_dens,
   treatment_data,
   smoothed_outcome,
   lag,
@@ -21,6 +24,12 @@ get_estimates(
 \item{obs_dens}{observed density}
 
 \item{cf_dens}{counterfactual density}
+
+\item{mediation}{whether to perform causal mediation analysis. By default, FALSE.}
+
+\item{obs_med_log_sum_dens}{sum of log densities of mediators for the observed (if `mediation = TRUE`)}
+
+\item{cf_med_log_sum_dens}{sum of log densities of mediators for counterfactual (if `mediation = TRUE`)}
 
 \item{treatment_data}{column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.}
 
