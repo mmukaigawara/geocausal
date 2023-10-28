@@ -47,7 +47,7 @@ get_estimates <- function(obs_dens,
   # 1-1. Log density
   if(class(cf_dens[[1]]) == "im") {
     # If typical cf density (ie, images), then get sum log intens
-    counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens,
+    counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens$density,
                                                     treatment_data = treatment_data)
   } else {
     # Otherwise use the calculated one as it is
@@ -56,7 +56,7 @@ get_estimates <- function(obs_dens,
   
   if(class(obs_dens[[1]]) == "im") {
     # If typical cf density (ie, images), then get sum log intens
-    observed_sum_log <- get_cf_sum_log_intens(cf_dens = obs_dens,
+    observed_sum_log <- get_cf_sum_log_intens(cf_dens = obs_dens$density,
                                               treatment_data = treatment_data)
   } else {
     # Otherwise use the calculated one as it is
