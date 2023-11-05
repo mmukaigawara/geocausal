@@ -21,7 +21,7 @@ This argument applies only to the case when users specify one column with multip
 By default = TRUE}
 }
 \value{
-ggplot object that displays ppp objects of interest
+ggplot object that displays ppp and im objects of interest
 }
 \description{
 `vis_hfr()` takes a hyperframe and visualizes columns that users specify.

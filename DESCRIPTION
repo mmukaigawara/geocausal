@@ -52,7 +52,8 @@ Imports:
     spatstat.model,
     terra,
     tidyr,
-    tidyselect
+    tidyselect,
+    tidyterra
 RoxygenNote: 7.2.3
 Depends: 
     R (>= 3.5.0)
