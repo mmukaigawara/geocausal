@@ -120,8 +120,7 @@ vis_hfr <- function(hfr,
     
     # Case 2: One time period x Multiple outcome columns: PPP only
     
-    message("Make sure to pick point pattern objects only. 
-            This function does not plot multiple image columns with multiple time periods.")
+    message("Make sure to pick point pattern objects only. This function does not plot multiple image columns with multiple time periods.")
     
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
     time_vis <- hfr_cleaned$time[1]$time #Time period to visualize
