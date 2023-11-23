@@ -1,7 +1,7 @@
 #' Smooth outcome events
 #'
 #' @description
-#' `get_smoothed_outcome()` takes a column of hyperframes (ppp objects) and smoothes them.
+#' `smooth_ppp()` takes a column of hyperframes (ppp objects) and smoothes them.
 #'
 #' @param data_interest the name of a hyperframe and column of interest.
 #' `data_interest` should be in the form of `"hyperframe$column"`.
@@ -46,15 +46,15 @@
 #'                    combined = TRUE)
 #'
 #' # Smoothing outcome
-#' get_smoothed_outcome(data_interest = dat_hfr$all_combined,
+#' smooth_ppp(data_interest = dat_hfr$all_combined,
 #'                      method = "mclust",
 #'                      initialization = TRUE,
 #'                      sampling = 0.05)
 
-get_smoothed_outcome <- function(data_interest,
-                                 method,
-                                 initialization = TRUE,
-                                 sampling = 0.05) {
+smooth_ppp <- function(data_interest,
+                       method,
+                       initialization = TRUE,
+                       sampling = 0.05) {
 
   # Obtain coordinates of interest -----
 
