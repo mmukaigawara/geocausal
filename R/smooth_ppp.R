@@ -112,14 +112,21 @@ smooth_ppp <- function(data_interest,
     scott_bw <- spatstat.explore::bw.scott(X = all_points, isotropic = FALSE) # Two h0 for each coordinate
     use_h0 <- as.numeric(scott_bw)
     pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
-
-    him_points <- spatstat.explore::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens)
-    num_points <- as.numeric(purrr::map(as.list(data_interest), 2, .default = NA) %>% unlist())
+    
+    him_points <- spatstat.explore::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
+    num_points <- as.numeric(purrr::map(as.list(data_interest), 2, .default = NA) %>% unlist()) # Num of points for each time frame
     bw_pt <- split(him_points, rep(1 : length(data_interest), num_points))
-
+    
+    no_point_id <- which(num_points == 0) # Num of points = 0
+    empty_elements <- vector("list", length(no_point_id))
+    names(empty_elements) <- as.character(no_point_id)
+    
+    bw_pt <- c(bw_pt[seq_along(bw_pt) < min(no_point_id)], empty_elements, 
+               bw_pt[seq_along(bw_pt) >= min(no_point_id)])  # Insert the empty elements at the desired positions
+    
     ## Obtain smoothed outcomes
     message("Smoothing ppps\n")
-
+    
     smoothed_outcome <- furrr::future_map2(data_interest, bw_pt, spatstat.explore::densityAdaptiveKernel,
                                            diggle = TRUE, kernel = "gaussian", edge = TRUE)
 
