@@ -121,8 +121,10 @@ smooth_ppp <- function(data_interest,
     empty_elements <- vector("list", length(no_point_id))
     names(empty_elements) <- as.character(no_point_id)
     
-    bw_pt <- c(bw_pt[seq_along(bw_pt) < min(no_point_id)], empty_elements, 
-               bw_pt[seq_along(bw_pt) >= min(no_point_id)])  # Insert the empty elements at the desired positions
+    for (i in 1:length(no_point_id)) {
+      bw_pt <- c(bw_pt[seq_along(bw_pt) < no_point_id[i]], empty_elements[i], 
+                 bw_pt[seq_along(bw_pt) >= no_point_id[i]])  # Insert the empty elements at the desired positions
+    }
     
     ## Obtain smoothed outcomes
     message("Smoothing ppps\n")
