@@ -45,7 +45,7 @@ get_estimates <- function(obs_dens,
   message("Calculating weights...\n")
 
   # 1-1. Log density
-  if(class(cf_dens[[1]]) == "im") {
+  if(class(cf_dens[[1]])[1] == "im") {
     # If typical cf density (ie, images), then get sum log intens
     counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens$density,
                                                     treatment_data = treatment_data)
@@ -54,7 +54,7 @@ get_estimates <- function(obs_dens,
     counterfactual_sum_log <- cf_dens$sum_log_intens
   }
   
-  if(class(obs_dens[[1]]) == "im") {
+  if(class(obs_dens[[1]])[1] == "im") {
     # If typical cf density (ie, images), then get sum log intens
     observed_sum_log <- get_cf_sum_log_intens(cf_dens = obs_dens$density,
                                               treatment_data = treatment_data)
