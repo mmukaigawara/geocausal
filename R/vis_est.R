@@ -26,9 +26,9 @@ vis_est <- function(estimates) {
     ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), 
                           fill = NA, color = "black", size = 0.2) +
     ggplot2::scale_fill_gradientn(
-      colors = grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdBu")))(255),
-      values = c(1.0, (0 - min(df_surf$value)) / 
-                   (max(df_surf$value) - min(df_surf$value)), 0)) +
+      colors = c("steelblue1", "white", "violetred"),
+      limits = c(-max(abs(df_surf$value)), max(abs(df_surf$value)))
+    ) +
     ggthemes::theme_map() +
     ggplot2::ggtitle("Differences in average weighted surfaces") + labs(fill = "Density") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
