@@ -6,56 +6,62 @@
 \usage{
 get_estimates(
   obs_dens,
-  cf_dens,
-  mediation = FALSE,
-  obs_med_log_sum_dens,
-  cf_med_log_sum_dens,
+  cf1_dens,
+  cf2_dens,
   treatment_data,
   smoothed_outcome,
+  mediation = FALSE,
+  obs_med_log_sum_dens = NA,
+  cf1_med_log_sum_dens = NA,
+  cf2_med_log_sum_dens = NA,
   lag,
   entire_window,
+  use_dist,
+  windows,
   dist_map,
-  dist,
-  dist_map_unit = "km",
-  grayscale
+  dist
 )
 }
 \arguments{
 \item{obs_dens}{observed density}
 
-\item{cf_dens}{counterfactual density}
+\item{cf1_dens}{counterfactual density 1}
 
-\item{mediation}{whether to perform causal mediation analysis. By default, FALSE.}
-
-\item{obs_med_log_sum_dens}{sum of log densities of mediators for the observed (if `mediation = TRUE`)}
-
-\item{cf_med_log_sum_dens}{sum of log densities of mediators for counterfactual (if `mediation = TRUE`)}
+\item{cf2_dens}{counterfactual density 2}
 
 \item{treatment_data}{column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.}
 
 \item{smoothed_outcome}{column of a hyperframe that summarizes the smoothed outcome data}
 
+\item{mediation}{whether to perform causal mediation analysis. By default, FALSE.}
+
+\item{obs_med_log_sum_dens}{sum of log densities of mediators for the observed (if `mediation = TRUE`)}
+
+\item{cf1_med_log_sum_dens}{sum of log densities of mediators for counterfactual 1 (if `mediation = TRUE`)}
+
+\item{cf2_med_log_sum_dens}{sum of log densities of mediators for counterfactual 2 (if `mediation = TRUE`)}
+
 \item{lag}{integer that specifies lags to calculate causal estimates}
 
 \item{entire_window}{owin object (the entire region of interest)}
 
-\item{dist_map}{im object (distance map); notice that the unit (either mile or km) is inherited from the distance map}
+\item{use_dist}{whether to use distance-based maps. By default, TRUE}
 
-\item{dist}{a vector of distances for which the function calculates the expectations (e.g., `c(50, 100, 150, 200)`)}
+\item{windows}{a list of owin objects (if `use_dist = FALSE`)}
 
-\item{dist_map_unit}{either `"km"` or `"mile"`}
+\item{dist_map}{distance map (an im object, if `use_dist = TRUE`)}
 
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
+\item{dist}{distances (a numeric vector within the max distance of `dist_map`)}
 }
 \value{
 list of the following:
-`average_expected_events`: Hajek estimators (counts, the entire window)
-`average_expected_events_quantiles`: percentiles of Hajek estimators
-`weights`: weights
-`average_weights`: mean of `weights`
-`distances`: distances
-`distances_window`: as window objects
-`expectation_plot`: plot of expectations
+`cf1_ave_surf`: average weighted surface for scenario 1
+`cf2_ave_surf`: average weighted surface for scenario 2
+`est_cf`: estimated effects of each scenario
+`est_causal`: estimated causal contrasts
+`var_cf`: variance upper bounds for each scenario
+`var_causal`: variance upper bounds for causal contrasts
+`windows`: list of owin objects
 }
 \description{
 `get_estimates()` generates causal estimates comparing two counterfactual scenarios.
