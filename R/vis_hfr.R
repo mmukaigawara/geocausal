@@ -91,7 +91,7 @@ vis_hfr <- function(hfr,
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
     time_vis <- hfr_cleaned$time[1]$time #Time period to visualize
     
-    if (class(hfr_cleaned[1, 2][[1]]) != "im") { # If ppp
+    if (!inherits(hfr_cleaned[1, 2][[1]], "im")) { # If ppp
       
       dat <- hfr_cleaned[1, 2][[1]] #Convert points to df
       df <- data.frame(longitude = dat$x, latitude = dat$y)
@@ -104,7 +104,7 @@ vis_hfr <- function(hfr,
         ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
       
-    } else if (class(hfr_cleaned[1, 2][[1]]) == "im") { # If im
+    } else { # If im
       
       gg <- ggplot2::ggplot() + #Plot smoothed outcome
         tidyterra::geom_spatraster(data = terra::rast(hfr_cleaned[1, 2][[1]])) +
