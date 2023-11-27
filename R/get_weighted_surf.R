@@ -11,6 +11,7 @@
 #' @param smoothed_outcome column of a hyperframe that summarizes the smoothed outcome data
 #' @param lag integer that specifies lags to calculate causal estimates
 #' @param entire_window owin object (the entire region of interest)
+#' @param truncation_level The level at which the weights are truncated (see `get_estimates()`)
 #'
 #' @returns list of an average weighted surface (`avarage_surf`, an `im` object),
 #' a Hajek average weighted surface (`average_weighted_surf_haj`, an `im` object),
@@ -24,7 +25,8 @@ get_weighted_surf <- function(obs_dens, cf_dens,
                               treatment_data,
                               smoothed_outcome,
                               lag,
-                              entire_window) {
+                              entire_window,
+                              truncation_level = truncation_level) {
 
   # 1. Weight
 
@@ -64,6 +66,11 @@ get_weighted_surf <- function(obs_dens, cf_dens,
     weight <- exp(sum(log_density_ratio[(x - lag + 1): x]))
     return(weight)
   })
+  
+  if (!is.null(truncation_level)) { #Truncation of weights
+    truncate_at <- quantile(weights, probs = truncation_level)
+    weights <- sapply(weights, function(x) min(x, truncate_at))
+  }
 
   # 2. Weighted smoothed outcome
   smoothed <- smoothed_outcome[(lag + 1):length(smoothed_outcome)] #Just smoothed outcomes

@@ -18,7 +18,8 @@
 #' @param windows a list of owin objects (if `use_dist = FALSE`)
 #' @param dist_map distance map (an im object, if `use_dist = TRUE`)
 #' @param dist distances (a numeric vector within the max distance of `dist_map`)
-#'
+#' @param truncation_level the level of truncation for the weights (0-1)
+#' 
 #' @returns list of the following:
 #' `cf1_ave_surf`: average weighted surface for scenario 1
 #' `cf2_ave_surf`: average weighted surface for scenario 2
@@ -27,6 +28,9 @@
 #' `var_cf`: variance upper bounds for each scenario
 #' `var_causal`: variance upper bounds for causal contrasts
 #' `windows`: list of owin objects
+#' 
+#' @details The level of truncation indicates the quantile of weights at which weights are truncated. 
+#' That is, if `truncation_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
 
 get_estimates <- function(obs_dens,
                           cf1_dens,
@@ -42,7 +46,8 @@ get_estimates <- function(obs_dens,
                           use_dist,
                           windows,
                           dist_map,
-                          dist) {
+                          dist, 
+                          truncation_level = NA) {
   
   #1. Get average weighted surfaces for two counterfactuals -----
   
@@ -56,7 +61,8 @@ get_estimates <- function(obs_dens,
                                    mediation,
                                    obs_med_log_sum_dens = obs_med_log_sum_dens, 
                                    cf_med_log_sum_dens = cf1_med_log_sum_dens,
-                                   lag = lag, entire_window = entire_window)
+                                   lag = lag, entire_window = entire_window,
+                                   truncation_level = truncation_level)
   
   ## CF2
   estimates_2 <- get_weighted_surf(obs_dens = obs_density,
@@ -66,7 +72,8 @@ get_estimates <- function(obs_dens,
                                    mediation,
                                    obs_med_log_sum_dens = obs_med_log_sum_dens, 
                                    cf_med_log_sum_dens = cf2_med_log_sum_dens,
-                                   lag = lag, entire_window = entire_window)
+                                   lag = lag, entire_window = entire_window,
+                                   truncation_level = truncation_level)
   
   #2. Get estimates (contrast) -----
   message("Obtaining the causal contrast...\n")

@@ -19,7 +19,8 @@ get_estimates(
   use_dist,
   windows,
   dist_map,
-  dist
+  dist,
+  truncation_level = NA
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ get_estimates(
 \item{dist_map}{distance map (an im object, if `use_dist = TRUE`)}
 
 \item{dist}{distances (a numeric vector within the max distance of `dist_map`)}
+
+\item{truncation_level}{the level of truncation for the weights (0-1)}
 }
 \value{
 list of the following:
@@ -65,4 +68,8 @@ list of the following:
 }
 \description{
 `get_estimates()` generates causal estimates comparing two counterfactual scenarios.
+}
+\details{
+The level of truncation indicates the quantile of weights at which weights are truncated. 
+That is, if `truncation_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
 }

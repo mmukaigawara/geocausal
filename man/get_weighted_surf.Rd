@@ -13,7 +13,8 @@ get_weighted_surf(
   treatment_data,
   smoothed_outcome,
   lag,
-  entire_window
+  entire_window,
+  truncation_level = truncation_level
 )
 }
 \arguments{
@@ -34,9 +35,11 @@ get_weighted_surf(
 \item{lag}{integer that specifies lags to calculate causal estimates}
 
 \item{entire_window}{owin object (the entire region of interest)}
+
+\item{truncation_level}{The level at which the weights are truncated (see `get_estimates()`)}
 }
 \value{
-list of an average weighted surface (`avarage_surf`, an `im` object), 
+list of an average weighted surface (`avarage_surf`, an `im` object),
 a Hajek average weighted surface (`average_weighted_surf_haj`, an `im` object),
 weights, and smoothed outcomes
 }

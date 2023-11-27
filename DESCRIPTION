@@ -53,8 +53,7 @@ Imports:
     terra,
     tidyr,
     tidyselect,
-    tidyterra,
-    RColorBrewer
+    tidyterra
 RoxygenNote: 7.2.3
 Depends: 
     R (>= 3.5.0)
