@@ -25,6 +25,9 @@ For methodological details, please refer to the following article.
 > insurgent violence in Iraq. *J R Stat Soc Series B.*
 > <https://doi.org/10.1111/rssb.12548>.
 
+Additionally, **an article describing the usage of this package is
+coming soon.**
+
 ## Citation
 
 Please cite this package as follows:
@@ -44,8 +47,7 @@ You can install the package
 devtools::install_github("mmukaigawara/geocausal")
 ```
 
-and [CRAN](https://cran.r-project.org/package=geocausal)
-with:
+and [CRAN](https://cran.r-project.org/package=geocausal) with:
 
 ``` r
 install.packages("geocausal")
