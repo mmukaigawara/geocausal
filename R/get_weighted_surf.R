@@ -63,7 +63,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
   }
 
   # 1-3. Convert LDR to weights (weights for each time period)
-  weights <- furrr::future_map_dbl((lag + 1):length(log_density_ratio), function(x) {
+  weights <- furrr::future_map_dbl(lag : length(log_density_ratio), function(x) {
     weight <- exp(sum(log_density_ratio[(x - lag + 1): x]))
     return(weight)
   })
