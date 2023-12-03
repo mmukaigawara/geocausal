@@ -58,7 +58,8 @@ get_weighted_surf <- function(obs_dens, cf_dens,
       observed_sum_log - obs_med_log_sum_dens # Added conditionals
   } else {
     # For causal inference without mediation
-    log_density_ratio <- counterfactual_sum_log - observed_sum_log
+    log_density_ratio <- obs_dens$estimated_counts - cf_dens$estimated_counts + # Expected counts
+      counterfactual_sum_log - observed_sum_log # Sum log intens
   }
 
   # 1-3. Convert LDR to weights (weights for each time period)
@@ -66,7 +67,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
     weight <- exp(sum(log_density_ratio[(x - lag + 1): x]))
     return(weight)
   })
-  
+
   if (!is.null(truncation_level)) { #Truncation of weights
     truncate_at <- quantile(weights, probs = truncation_level)
     weights <- sapply(weights, function(x) min(x, truncate_at))
