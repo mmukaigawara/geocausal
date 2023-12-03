@@ -9,7 +9,7 @@
 #' @param window owin object
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #'
-#' @returns A list of counterfactual density (im object) and a ggplot object
+#' @returns A list of counterfactual density (im object), a ggplot object, and an estimated count per time period
 #'
 #' @details There are two ways of generating counterfactual densities.
 #' First, users can keep the locations of observations as they are and change the expected number of observations.
@@ -71,6 +71,8 @@ get_cf_dens <- function(expected_number,
 
     }
 
-  return(list(density = counterfactual_density, plot = counterfactual_dens))
+  return(list(density = counterfactual_density,
+              estimated_counts = expected_number,
+              plot = counterfactual_dens))
 
 }
