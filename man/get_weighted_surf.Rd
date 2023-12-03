@@ -14,6 +14,7 @@ get_weighted_surf(
   smoothed_outcome,
   lag,
   entire_window,
+  time_after,
   truncation_level = truncation_level
 )
 }
@@ -36,7 +37,9 @@ get_weighted_surf(
 
 \item{entire_window}{owin object (the entire region of interest)}
 
-\item{truncation_level}{The level at which the weights are truncated (see `get_estimates()`)}
+\item{time_after}{whether to include one unit time difference between treatment and outcome}
+
+\item{truncation_level}{the level at which the weights are truncated (see `get_estimates()`)}
 }
 \value{
 list of an average weighted surface (`avarage_surf`, an `im` object),
@@ -47,5 +50,7 @@ weights, and smoothed outcomes
 A function that returns averaged weighted surfaces (both IPW and Hajek) along with weights
 }
 \details{
-`get_weighted_surf()` is an internal function to `get_estimates()` function
+`get_weighted_surf()` is an internal function to `get_estimates()` function.
+If `time_after` is TRUE, then this function uses treatment data and weights from lag to nrow(data)-1, and
+outcome data from lag+1 to nrow(data).
 }

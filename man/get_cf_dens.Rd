@@ -24,7 +24,7 @@ get_cf_dens(
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
-A list of counterfactual density (im object) and a ggplot object
+A list of counterfactual density (im object), a ggplot object, and an estimated count per time period
 }
 \description{
 `get_cf_dens` takes the target (expected) number, baseline density,

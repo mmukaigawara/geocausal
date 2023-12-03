@@ -15,6 +15,7 @@ get_estimates(
   cf1_med_log_sum_dens = NA,
   cf2_med_log_sum_dens = NA,
   lag,
+  time_after = TRUE,
   entire_window,
   use_dist,
   windows,
@@ -44,6 +45,8 @@ get_estimates(
 
 \item{lag}{integer that specifies lags to calculate causal estimates}
 
+\item{time_after}{whether to include one unit time difference between treatment and outcome. By default = TRUE}
+
 \item{entire_window}{owin object (the entire region of interest)}
 
 \item{use_dist}{whether to use distance-based maps. By default, TRUE}
@@ -70,6 +73,6 @@ list of the following:
 `get_estimates()` generates causal estimates comparing two counterfactual scenarios.
 }
 \details{
-The level of truncation indicates the quantile of weights at which weights are truncated. 
+The level of truncation indicates the quantile of weights at which weights are truncated.
 That is, if `truncation_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
 }
