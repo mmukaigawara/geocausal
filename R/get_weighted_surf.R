@@ -12,7 +12,7 @@
 #' @param lag integer that specifies lags to calculate causal estimates
 #' @param entire_window owin object (the entire region of interest)
 #' @param truncation_level the level at which the weights are truncated (see `get_estimates()`)
-#' @param time_after whether to include one unit time difference between treatment and outcome. By default, TRUE.
+#' @param time_after whether to include one unit time difference between treatment and outcome
 #'
 #' @returns list of an average weighted surface (`avarage_surf`, an `im` object),
 #' a Hajek average weighted surface (`average_weighted_surf_haj`, an `im` object),
@@ -29,7 +29,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
                               smoothed_outcome,
                               lag,
                               entire_window,
-                              time_after = TRUE,
+                              time_after,
                               truncation_level = truncation_level) {
 
   # 1. Weight

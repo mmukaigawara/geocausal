@@ -13,13 +13,14 @@
 #' @param treatment_data column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.
 #' @param smoothed_outcome column of a hyperframe that summarizes the smoothed outcome data
 #' @param lag integer that specifies lags to calculate causal estimates
+#' @param time_after whether to include one unit time difference between treatment and outcome. By default = TRUE
 #' @param entire_window owin object (the entire region of interest)
 #' @param use_dist whether to use distance-based maps. By default, TRUE
 #' @param windows a list of owin objects (if `use_dist = FALSE`)
 #' @param dist_map distance map (an im object, if `use_dist = TRUE`)
 #' @param dist distances (a numeric vector within the max distance of `dist_map`)
 #' @param truncation_level the level of truncation for the weights (0-1)
-#' 
+#'
 #' @returns list of the following:
 #' `cf1_ave_surf`: average weighted surface for scenario 1
 #' `cf2_ave_surf`: average weighted surface for scenario 2
@@ -28,8 +29,8 @@
 #' `var_cf`: variance upper bounds for each scenario
 #' `var_causal`: variance upper bounds for causal contrasts
 #' `windows`: list of owin objects
-#' 
-#' @details The level of truncation indicates the quantile of weights at which weights are truncated. 
+#'
+#' @details The level of truncation indicates the quantile of weights at which weights are truncated.
 #' That is, if `truncation_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
 
 get_estimates <- function(obs_dens,
@@ -42,42 +43,45 @@ get_estimates <- function(obs_dens,
                           cf1_med_log_sum_dens = NA,
                           cf2_med_log_sum_dens = NA,
                           lag,
+                          time_after = TRUE,
                           entire_window,
                           use_dist,
                           windows,
                           dist_map,
-                          dist, 
+                          dist,
                           truncation_level = NA) {
-  
+
   #1. Get average weighted surfaces for two counterfactuals -----
-  
+
   message("Calculating the average weighted surfaces for two scenarios...\n")
-  
+
   ## CF1
   estimates_1 <- get_weighted_surf(obs_dens = obs_density,
                                    cf_dens = cf1_dens,
                                    treatment_data = treatment_data,
                                    smoothed_outcome = smoothed_outcome,
                                    mediation,
-                                   obs_med_log_sum_dens = obs_med_log_sum_dens, 
+                                   obs_med_log_sum_dens = obs_med_log_sum_dens,
                                    cf_med_log_sum_dens = cf1_med_log_sum_dens,
                                    lag = lag, entire_window = entire_window,
+                                   time_after,
                                    truncation_level = truncation_level)
-  
+
   ## CF2
   estimates_2 <- get_weighted_surf(obs_dens = obs_density,
                                    cf_dens = cf2_dens,
                                    treatment_data = treatment_data,
                                    smoothed_outcome = smoothed_outcome,
                                    mediation,
-                                   obs_med_log_sum_dens = obs_med_log_sum_dens, 
+                                   obs_med_log_sum_dens = obs_med_log_sum_dens,
                                    cf_med_log_sum_dens = cf2_med_log_sum_dens,
                                    lag = lag, entire_window = entire_window,
+                                   time_after,
                                    truncation_level = truncation_level)
-  
+
   #2. Get estimates (contrast) -----
   message("Obtaining the causal contrast...\n")
-  
+
   estimates <- get_est(weighted_surf_1 = estimates_1,
                        weighted_surf_2 = estimates_2,
                        use_dist = use_dist,
@@ -85,12 +89,12 @@ get_estimates <- function(obs_dens,
                        dist_map = dist_map,
                        dist = dist,
                        entire_window = entire_window)
-  
+
   #3. Get variance upper bounds -----
   message("Obtaining the variance upper bounds...\n")
-  
+
   var_bound <- get_var_bound(estimates)
-  
+
   #4. Return output -----
   return(list(cf1_ave_surf = estimates_1$average_surf_haj,
               cf2_ave_surf = estimates_2$average_surf_haj,
@@ -99,5 +103,5 @@ get_estimates <- function(obs_dens,
               var_cf = var_bound$bound_haj,
               var_causal = var_bound$bound_tau_haj,
               windows = estimates$windows))
-  
+
 }
