@@ -11,13 +11,16 @@
 #' @param smoothed_outcome column of a hyperframe that summarizes the smoothed outcome data
 #' @param lag integer that specifies lags to calculate causal estimates
 #' @param entire_window owin object (the entire region of interest)
-#' @param truncation_level The level at which the weights are truncated (see `get_estimates()`)
+#' @param truncation_level the level at which the weights are truncated (see `get_estimates()`)
+#' @param time_after whether to include one unit time difference between treatment and outcome. By default, TRUE.
 #'
 #' @returns list of an average weighted surface (`avarage_surf`, an `im` object),
 #' a Hajek average weighted surface (`average_weighted_surf_haj`, an `im` object),
 #' weights, and smoothed outcomes
 #'
-#' @details `get_weighted_surf()` is an internal function to `get_estimates()` function
+#' @details `get_weighted_surf()` is an internal function to `get_estimates()` function.
+#' If `time_after` is TRUE, then this function uses treatment data and weights from lag to nrow(data)-1, and
+#' outcome data from lag+1 to nrow(data).
 
 get_weighted_surf <- function(obs_dens, cf_dens,
                               mediation = FALSE,
@@ -26,6 +29,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
                               smoothed_outcome,
                               lag,
                               entire_window,
+                              time_after = TRUE,
                               truncation_level = truncation_level) {
 
   # 1. Weight
@@ -73,8 +77,10 @@ get_weighted_surf <- function(obs_dens, cf_dens,
     weights <- sapply(weights, function(x) min(x, truncate_at))
   }
 
+  weights <- weights[1 : (length(weights) - time_after)] #If time_after = TRUE, then lag : nrow(data)-1
+
   # 2. Weighted smoothed outcome
-  smoothed <- smoothed_outcome[(lag + 1):length(smoothed_outcome)] #Just smoothed outcomes
+  smoothed <- smoothed_outcome[(lag + time_after) : length(smoothed_outcome)] #Just smoothed outcomes, lag + 1 (if time_after) : nrow(data)
 
   # 2-1. Convert smoothed outcomes to arrays (pixels, for each time period)
   mat_im <- sapply(smoothed, function(x) spatstat.geom::as.matrix.im(x))
@@ -92,5 +98,5 @@ get_weighted_surf <- function(obs_dens, cf_dens,
   return(list(average_surf = average_weighted_surface,
               average_surf_haj = average_weighted_surface_haj,
               weights = weights,
-              smoothed_outcome = smoothed)) #Note that first #lag obs are omitted from the smoothed outcome
+              smoothed_outcome = smoothed)) #Note that first lag-1 obs are omitted from the smoothed outcome
 }
