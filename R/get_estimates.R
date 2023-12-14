@@ -56,7 +56,7 @@ get_estimates <- function(obs_dens,
   message("Calculating the average weighted surfaces for two scenarios...\n")
 
   ## CF1
-  estimates_1 <- get_weighted_surf(obs_dens = obs_density,
+  estimates_1 <- get_weighted_surf(obs_dens = obs_dens,
                                    cf_dens = cf1_dens,
                                    treatment_data = treatment_data,
                                    smoothed_outcome = smoothed_outcome,
@@ -68,7 +68,7 @@ get_estimates <- function(obs_dens,
                                    truncation_level = truncation_level)
 
   ## CF2
-  estimates_2 <- get_weighted_surf(obs_dens = obs_density,
+  estimates_2 <- get_weighted_surf(obs_dens = obs_dens,
                                    cf_dens = cf2_dens,
                                    treatment_data = treatment_data,
                                    smoothed_outcome = smoothed_outcome,
