@@ -1,4 +1,4 @@
-#' Get baseline densities
+#' Get the baseline density
 #'
 #' @description `get_base_dens()` takes a dataframe and 
 #' returns the baseline densities using Scott's rule of thumb (out-of-sample data)
@@ -7,7 +7,6 @@
 #'
 #' @param window owin object
 #' @param option "in" (using in-sample data) or "out" (using out-of-sample data)
-#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' @param ndim the number of dimensions of grid cells (ndim^2). By default, ndim = 256.
 #' @param out_data dataframe (if using out-of-sample data)
 #' @param out_coordinates vector of column names of longitudes and latitudes (in this order) (if using in-sample data)
@@ -17,21 +16,17 @@
 #' @param ratio for random sampling of data (if using in-sample data)
 
 #'
-#' @returns list of the following:
-#'     * `density`: im object of baseline density
-#'     * `density_plot`: ggplot object of baseline density
+#' @returns an im object of baseline density
 #'
 #' @examples
 #' get_base_dens(option = "out",
 #'               out_data = airstrikes_base, 
 #'               out_coordinates = c("longitude", "latitude"),
 #'               window = iraq_window,
-#'               grayscale = FALSE,
 #'               ndim = 256)
 
 get_base_dens <- function(window,
                           option,
-                          grayscale = FALSE,
                           ndim = 256,
                           out_data,
                           out_coordinates = c("longitude", "latitude"),
@@ -57,7 +52,9 @@ get_base_dens <- function(window,
     baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = ndim) #Kernel density estimation
     baseline_density <- baseline_density / spatstat.geom::integral(baseline_density) #Divide by integral of the density
     
-  } else if (option == "in") { # Option 2. Using in-sample data
+  } else if (option == "in") { 
+    
+  # Option 2. Using in-sample data
     
     message("Using in-sample data to obtain the baseline density")
     
@@ -73,43 +70,9 @@ get_base_dens <- function(window,
     
   }
   
-  # ggplot figure - density
+  #output <- list(density = baseline_density)
+  #class(output) <- "basedens" 
   
-  ## Convert power density to a data frame
-  pd_df <- as.data.frame(baseline_density)
-  
-  ## Pivot the data frame to a long format
-  pd_df_long <- tidyr::pivot_longer(pd_df, cols = starts_with("V"), names_to = "variable", values_to = "value")
-  
-  ## Plot the image using ggplot2
-  if(grayscale) {
-    
-    baseline_dens <- ggplot() +
-      ggplot2::geom_tile(data = pd_df_long, aes(x = x, y = y, fill = value)) +
-      ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") +
-      ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
-      ggthemes::theme_map() +
-      ggplot2::ggtitle("Baseline Density",
-                       subtitle = paste0("The expected number of treatment events\nover the entire region per time period = ", 1)) +
-      labs(fill = "Density") +
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
-            plot.subtitle = element_text(hjust = 0.5))
-    
-  } else {
-    
-    baseline_dens <- ggplot() +
-      ggplot2::geom_tile(data = pd_df_long, aes(x = x, y = y, fill = value)) +
-      ggplot2::scale_fill_viridis_c(option = "plasma") + 
-      ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
-      ggthemes::theme_map() +
-      ggplot2::ggtitle("Baseline Density",
-                       subtitle = paste0("The expected number of treatment events\nover the entire region per time period = ", 1)) +
-      labs(fill = "Density") +
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
-            plot.subtitle = element_text(hjust = 0.5))
-    
-  }
-  
-  return(list(density = baseline_density, density_plot = baseline_dens))
+  return(baseline_density)
   
 }

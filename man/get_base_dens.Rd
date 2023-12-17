@@ -2,12 +2,11 @@
 % Please edit documentation in R/get_base_dens.R
 \name{get_base_dens}
 \alias{get_base_dens}
-\title{Get baseline densities}
+\title{Get the baseline density}
 \usage{
 get_base_dens(
   window,
   option,
-  grayscale = FALSE,
   ndim = 256,
   out_data,
   out_coordinates = c("longitude", "latitude"),
@@ -21,8 +20,6 @@ get_base_dens(
 \item{window}{owin object}
 
 \item{option}{"in" (using in-sample data) or "out" (using out-of-sample data)}
-
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 
 \item{ndim}{the number of dimensions of grid cells (ndim^2). By default, ndim = 256.}
 
@@ -39,9 +36,7 @@ get_base_dens(
 \item{ratio}{for random sampling of data (if using in-sample data)}
 }
 \value{
-list of the following:
-    * `density`: im object of baseline density
-    * `density_plot`: ggplot object of baseline density
+an im object of baseline density
 }
 \description{
 `get_base_dens()` takes a dataframe and 
@@ -54,6 +49,5 @@ get_base_dens(option = "out",
               out_data = airstrikes_base, 
               out_coordinates = c("longitude", "latitude"),
               window = iraq_window,
-              grayscale = FALSE,
               ndim = 256)
 }
