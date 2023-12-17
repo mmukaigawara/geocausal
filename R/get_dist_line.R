@@ -6,16 +6,15 @@
 #' @param path_to_shapefile path to shapefile
 #' @param line_data sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)
 #' @param window owin object
-#' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' @param resolution resolution of raster objects
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point.
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
 #'
-#' @returns A list of im and ggplot object
+#' @returns an im object
 
 get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
-                          grayscale, mile = FALSE, resolution, preprocess = TRUE){
+                          mile = FALSE, resolution, preprocess = TRUE){
 
   # Convert owin into sp objects -----
   window_sp <- conv_owin_into_sf(window)
@@ -164,65 +163,6 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
       dist_df <- data.frame(longitude = rast_points[, 1],
                             latitude = rast_points[, 2],
                             distance = line_dists/1000) #km
-
-    }
-
-  }
-
-  # Generate a plot -----
-
-  message("Generating a plot...\n")
-
-  if (mile) { #miles
-
-    if (grayscale) {
-
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") +
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from Lines") + labs(fill = "Distance (mile)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-
-    } else {
-
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_viridis_c(option = "plasma") +
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from Lines") + labs(fill = "Distance (mile)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-
-    }
-
-  } else { #kilometers
-
-    if (grayscale) {
-
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") +
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from Lines") + labs(fill = "Distance (km)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-
-    } else {
-
-      gg <- ggplot(data = dist_df, aes(x = longitude, y = latitude, fill = distance)) +
-        ggplot2::geom_tile() +
-        ggplot2::coord_quickmap() +
-        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "white") +
-        ggplot2::scale_fill_viridis_c(option = "plasma") +
-        ggthemes::theme_map() +
-        ggplot2::ggtitle("Distance from Lines") + labs(fill = "Distance (km)") +
-        theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-
     }
 
   }
@@ -230,8 +170,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
   # Generate an image object -----
   distance_im <- spatstat.geom::as.im(dist_df, W = window)
 
-  # Return a list of output -----
-  return(list(distance_im = distance_im, plot = gg))
+  return(distance_im)
 
 }
 

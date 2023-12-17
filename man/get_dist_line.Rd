@@ -8,7 +8,6 @@ get_dist_line(
   window,
   path_to_shapefile,
   line_data = NULL,
-  grayscale,
   mile = FALSE,
   resolution,
   preprocess = TRUE
@@ -21,8 +20,6 @@ get_dist_line(
 
 \item{line_data}{sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)}
 
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
-
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).}
 
 \item{resolution}{resolution of raster objects}
@@ -31,7 +28,7 @@ get_dist_line(
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
 }
 \value{
-A list of im and ggplot object
+an im object
 }
 \description{
 `get_dist_line()` generates a distance map from lines and polygons.

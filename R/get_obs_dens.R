@@ -44,11 +44,10 @@
 #'                                longitude = c(44.366), #Baghdad
 #'                                latitude = c(33.315),
 #'                                resolution = 0.1,
-#'                                grayscale = FALSE,
 #'                                mile = FALSE,
 #'                                preprocess = FALSE)
 #' 
-#' dat_hfr$dist_bagh <- dist_baghdad$distance_im
+#' dat_hfr$dist_bagh <- dist_baghdad
 #' 
 #' # Observed density
 #' get_obs_dens(dat_hfr,

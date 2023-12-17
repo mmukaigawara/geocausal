@@ -26,7 +26,6 @@ dist_from_mosul <- get_dist_focus(window = iraq_window,
                                   longitude = c(43.158),
                                   latitude = c(36.349),
                                   resolution = 0.5,
-                                  grayscale = FALSE,
                                   mile = FALSE,
                                   preprocess = FALSE)
 
@@ -35,12 +34,11 @@ dist_from_baghd <- get_dist_focus(window = iraq_window,
                                   longitude = c(44.366),
                                   latitude = c(33.315),
                                   resolution = 0.5,
-                                  grayscale = FALSE,
                                   mile = FALSE,
                                   preprocess = FALSE)
                                   
 # Power density
-get_power_dens(target_dens = list(dist_from_mosul[[1]], dist_from_baghd[[1]]),
+get_power_dens(target_dens = list(dist_from_mosul, dist_from_baghd),
                priorities = c(3, 2), 
                window = iraq_window)
 }
