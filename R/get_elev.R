@@ -8,7 +8,7 @@
 #' 
 #' @returns an im object (unit: meters)
 
-get_elevation <- function(load_path, ...) {
+get_elev <- function(load_path, ...) {
   
   # Prepare data
   temp <- sf::st_read(file.path(load_path)) #Download the file from geoBoundaries as needed
