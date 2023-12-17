@@ -4,13 +4,7 @@
 \alias{get_cf_dens}
 \title{Get counterfactual densities}
 \usage{
-get_cf_dens(
-  expected_number,
-  base_dens,
-  power_dens = NA,
-  window,
-  grayscale = FALSE
-)
+get_cf_dens(expected_number, base_dens, power_dens = NA, window)
 }
 \arguments{
 \item{expected_number}{the expected number of observations.}
@@ -20,11 +14,9 @@ get_cf_dens(
 \item{power_dens}{power density (im object)}
 
 \item{window}{owin object}
-
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
-A list of counterfactual density (im object), a ggplot object, and an estimated count per time period
+an im object of a counterfactual density
 }
 \description{
 `get_cf_dens` takes the target (expected) number, baseline density,

@@ -36,7 +36,6 @@ baseline <- get_base_dens(option = "out",
                           out_data = airstrikes_base, 
                           out_coordinates = c("longitude", "latitude"),
                           window = iraq_window,
-                          grayscale = FALSE,
                           ndim = 64)
                           
 # Density 1: Distance from Mosul
@@ -67,7 +66,7 @@ sim_power_mosul <- sim_power_dens(target_dens = list(dist_from_baghd$distance_im
 
 # Simulation of counterfactual density
 sim_cf_dens(expected_number = 3,
-            base_dens = baseline$density,
+            base_dens = baseline,
             power_sim_results = sim_power_mosul,
             window = iraq_window,
             grayscale = FALSE)
