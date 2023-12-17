@@ -6,7 +6,7 @@
 #' @param load_path path to the shp file (note: a folder)
 #' @param ... other parameters passed to `elevatr::get_elev_raster()`. The resolution argument z must be specified.
 #' 
-#' @returns list of a raster layer, an im object, and a ggplot object of altitudes (in meters).
+#' @returns an im object (unit: meters)
 
 get_elevation <- function(load_path, ...) {
   
@@ -20,7 +20,7 @@ get_elevation <- function(load_path, ...) {
   elevation_data_df <- terra::as.data.frame(elevation_data, xy = TRUE)
   colnames(elevation_data_df)[3] <- "z"
   elevation_data_df <- elevation_data_df[complete.cases(elevation_data_df), ]
-  # Convert it to an image object (based on maptools' as.im.RasterLayer function with modificaitons)
+  # Convert it to an image object (based on maptools' as.im.RasterLayer function with modifications)
   rs <- terra::res(elevation_data) #resolution
   orig <- elevation_data@extent[c(1, 3)] + 0.5 * rs
   dm <- dim(elevation_data)[2:1]
@@ -37,17 +37,18 @@ get_elevation <- function(load_path, ...) {
   elevation_im <- spatstat.geom::im(val, xcol=xx, yrow=yy)
   
   # ggplot
-  gg <- ggplot() +
-    ggplot2::geom_raster(data = elevation_data_df, aes(x = x, y = y, fill = z)) +
-    ggplot2::geom_sf(data = temp_combined, color = "white", fill = NA) +
-    ggplot2::coord_sf() + ggplot2::scale_fill_viridis_c(option = "plasma") + ggthemes::theme_map() +
-    labs(title = "Elevation", x = "Longitude", y = "Latitude", fill = "Elevation (meters)") +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  #gg <- ggplot() +
+  #  ggplot2::geom_raster(data = elevation_data_df, aes(x = x, y = y, fill = z)) +
+  #  ggplot2::geom_sf(data = temp_combined, color = "white", fill = NA) +
+  #  ggplot2::coord_sf() + ggplot2::scale_fill_viridis_c(option = "plasma") + ggthemes::theme_map() +
+  #  labs(title = "Elevation", x = "Longitude", y = "Latitude", fill = "Elevation (meters)") +
+  #  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
   
   # Return a list of RasterLayer, im object, and a ggplot object
-  return(list(rasterlayer = elevation_data,
-              im = elevation_im,
-              #df = elevation_data_df,
-              plot = gg))
+  #return(list(rasterlayer = elevation_data,
+  #            im = elevation_im,
+  #            #df = elevation_data_df,
+  #            plot = gg))
+  return(elevation_im)
   
 }
