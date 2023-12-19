@@ -37,21 +37,18 @@ get_weighted_surf <- function(obs_dens, cf_dens,
   message("Calculating weights...\n")
 
   # 1-1. Log density
-  if(class(cf_dens[[1]])[1] == "im") {
-    # If typical cf density (ie, images), then get sum log intens
-    counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens$density,
+  if (class(cf_dens)[1] == "im") {
+    counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens, 
                                                     treatment_data = treatment_data)
-  } else {
-    # Otherwise use the calculated one as it is
+  }
+  else {
     counterfactual_sum_log <- cf_dens$sum_log_intens
   }
-
-  if(class(obs_dens[[1]])[1] == "im") {
-    # If typical cf density (ie, images), then get sum log intens
-    observed_sum_log <- get_cf_sum_log_intens(cf_dens = obs_dens$density,
+  if (class(obs_dens)[1] == "im") {
+    observed_sum_log <- get_cf_sum_log_intens(cf_dens = obs_dens$density, 
                                               treatment_data = treatment_data)
-  } else {
-    # Otherwise use the calculated one as it is
+  }
+  else {
     observed_sum_log <- obs_dens$sum_log_intens
   }
 
