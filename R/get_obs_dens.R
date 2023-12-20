@@ -76,10 +76,13 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
     return(r)
   })
 
-  return(list(indep_var = indep_var, #List of independent variables
+  out <- list(indep_var = indep_var, #List of independent variables
               coef = coefficients, #Coefficients
               intens_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Counts
-              sum_log_intens = sum_log_intensity)) #Sum of log(intensity) for each time period
+              sum_log_intens = sum_log_intensity) #Sum of log(intensity) for each time period
+  
+  class(out) <- c("list", "obs")
+  return(out)
 
 }
