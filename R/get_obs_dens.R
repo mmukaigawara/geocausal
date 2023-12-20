@@ -62,7 +62,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
   message("Fitting the model...\n")
   mod <- spatstat.model::mppm(as.formula(text_form), data = hfr) #Fit mppm
-  coefficients <- as.numeric(summary(mod)$coef) #Coefficients
+  coefficients <- as.numeric(spatstat.model::summary.mppm(mod)$coef) #Coefficients
 
   # Obtain fitted values of the propensity score -----
   message("Calculating the intensity...\n")
