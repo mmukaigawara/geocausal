@@ -96,12 +96,15 @@ get_estimates <- function(obs_dens,
   var_bound <- get_var_bound(estimates)
 
   #4. Return output -----
-  return(list(cf1_ave_surf = estimates_1$average_surf_haj,
+  out <- list(cf1_ave_surf = estimates_1$average_surf_haj,
               cf2_ave_surf = estimates_2$average_surf_haj,
               est_cf = estimates$est_haj,
               est_causal = estimates$est_tau_haj_cf2_vs_cf1,
               var_cf = var_bound$bound_haj,
               var_causal = var_bound$bound_tau_haj,
-              windows = estimates$windows))
+              windows = estimates$windows)
+  
+  class(out) <- c("list", "est")
+  return(out)
 
 }
