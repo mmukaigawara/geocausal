@@ -52,14 +52,16 @@ plot.obs <- function (x, dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit =
       ggplot2::geom_line(aes(x = time, y = actual_counts), color = color_actual, linewidth = 0.6) + 
       ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1, linewidth = 0.6) + theme_bw() + 
       labs(title = "Actual vs. Predicted Counts", x = time_unit, y = "Count") + 
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
     
     plot_residual <- plot_data %>% 
       ggplot2::ggplot() + 
       ggplot2::geom_hline(yintercept = 0, linetype = "dashed") + 
       ggplot2::geom_line(aes(x = time, y = predicted_counts - actual_counts), color = color_dens_1, linewidth = 0.6) + theme_bw() + 
       labs(title = "Residual Plot", x = time_unit, y = "Predicted - Actual Counts") + 
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
     
     return(list(plot_data = plot_data, 
                 plot_compare = plot_compare, 
@@ -80,14 +82,16 @@ plot.obs <- function (x, dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit =
       ggplot2::geom_line(aes(x = time, y = predicted_counts), color = color_dens_1, linewidth = 0.6) + 
       ggplot2::geom_line(aes(x = time, y = predicted_counts_2), color = color_dens_2, linewidth = 0.6) + 
       theme_bw() + labs(title = "Actual vs. Predicted Counts", x = time_unit, y = "Count") + 
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
     
     plot_residual <- plot_data %>% 
       ggplot2::ggplot() + ggplot2::geom_hline(yintercept = 0, linetype = "dashed") + 
       ggplot2::geom_line(aes(x = time, y = predicted_counts - actual_counts), color = color_dens_1, linewidth = 0.6) + 
       ggplot2::geom_line(aes(x = time, y = predicted_counts_2 - actual_counts), color = color_dens_2, linewidth = 0.6) + 
       theme_bw() + labs(title = "Residual Plot", x = time_unit, y = "Predicted - Actual Counts") + 
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
     
     return(list(plot_data = plot_data, 
                 plot_compare = plot_compare, 
@@ -111,7 +115,8 @@ plot.obs <- function (x, dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit =
       ggplot2::geom_line(aes(x = time, y = predicted_counts_2), color = color_dens_2, linewidth = 0.6) + 
       ggplot2::geom_line(aes(x = time, y = predicted_counts_3), color = color_dens_3, linewidth = 0.6) + 
       theme_bw() + labs(title = "Actual vs. Predicted Counts", x = time_unit, y = "Count") + 
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
     
     plot_residual <- plot_data %>% 
       ggplot2::ggplot() + 
@@ -120,7 +125,8 @@ plot.obs <- function (x, dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit =
       ggplot2::geom_line(aes(x = time, y = predicted_counts_2 - actual_counts), color = color_dens_2, linewidth = 0.6) + 
       ggplot2::geom_line(aes(x = time, y = predicted_counts_3 - actual_counts), color = color_dens_3, linewidth = 0.6) + 
       theme_bw() + labs(title = "Residual Plot", x = time_unit, y = "Predicted - Actual Counts") + 
-      theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
     
     return(list(plot_data = plot_data, 
                 plot_compare = plot_compare, 
@@ -186,7 +192,8 @@ plot.est <- function(x, ...) {
          title = "Causal Effects Per Time Period",
          subtitle = "The Expected Number of Outcome Events") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"),
-          plot.subtitle = element_text(hjust = 0.5))
+          plot.subtitle = element_text(hjust = 0.5),
+          panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   
   return(list(surface = surf_plot, expectation = expectation_plot))
   
