@@ -25,7 +25,7 @@ summary <- summary
 #' @export 
 summary.obs <- function(x) {
   obs_density <- x
-  data.frame(Variabe = c("Constant", obs_density$indep_var),
+  data.frame(Variable = c("Constant", obs_density$indep_var),
              Coefficient = obs_density$coef)
 }
 
