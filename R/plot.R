@@ -14,15 +14,17 @@
 #' @export
 plot <- function (x, ...) UseMethod("plot")
 
-#' @importFrom spatstat plot
-#' @export plot
+#' @rdname plot
+#' @method plot im
+#' @export 
 
-plot <- plot
+plot.im <- function (x, ...) spatstat.geom::plot.im(x, ...)
 
-#' @importFrom spatstat.model plot
-#' @export summary
+#' @rdname plot
+#' @method plot ppp
+#' @export 
 
-plot <- plot
+plot.ppp <- function (x, ...) spatstat.geom::plot.ppp(x, ...)
 
 
 #' @rdname plot

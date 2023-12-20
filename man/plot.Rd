@@ -2,11 +2,17 @@
 % Please edit documentation in R/plot.R
 \name{plot}
 \alias{plot}
+\alias{plot.im}
+\alias{plot.ppp}
 \alias{plot.obs}
 \alias{plot.est}
 \title{Plot results}
 \usage{
 plot(x, ...)
+
+\method{plot}{im}(x, ...)
+
+\method{plot}{ppp}(x, ...)
 
 \method{plot}{obs}(x, dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit = NA, ...)
 
