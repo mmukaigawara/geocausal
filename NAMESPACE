@@ -28,5 +28,8 @@ export(summary.est)
 export(summary.obs)
 S3method("plot", "est")
 S3method("plot", "obs")
+S3method("plot", "dens")
 export(plot.est)
 export(plot.obs)
+export(plot.dens)
+
