@@ -9,23 +9,12 @@
 #' @param dens_3 density 3 (if any). By default, `NA`.
 #' @param time_unit x-axis label of the output
 #' 
+#' @importFrom spatstat.geom  plot
+#' 
 #' @details Currently, observed densities (class: obs) and estimates (class: est) are supported by this function.
 
 #' @export
 plot <- function (x, ...) UseMethod("plot")
-
-#' @rdname plot
-#' @method plot im
-#' @export 
-
-plot.im <- function (x, ...) spatstat.geom::plot.im(x, ...)
-
-#' @rdname plot
-#' @method plot ppp
-#' @export 
-
-plot.ppp <- function (x, ...) spatstat.geom::plot.ppp(x, ...)
-
 
 #' @rdname plot
 #' @method plot obs
