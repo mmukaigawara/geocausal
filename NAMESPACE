@@ -24,6 +24,8 @@ importFrom("stats", "as.formula", "complete.cases", "density",
            "quantile", "time")
 S3method("summary", "est")
 S3method("summary", "obs")
+export(summary.est)
+export(summary.obs)
 S3method("plot", "est")
 S3method("plot", "obs")
 export(plot.est)

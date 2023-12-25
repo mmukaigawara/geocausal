@@ -1,40 +1,16 @@
-#' Summarize results
+#' Summarize results 
 #' 
 #' @description `summary` functions take the output and summarize it.
 #' 
-#' @param x an output object
-#' @inheritParams rlang::args_dots_empty
+#' @param object an output object
+#' @param ... arguments passed on to the function
 #' 
 #' @details Currently, observed densities (class: obs) and estimates (class: est) are supported by this function.
-
+#'
 #' @export
-summary <- function (x) UseMethod("summary", x)
-
-#' @importFrom stats summary
-#' @export summary
-
-summary <- summary
-
-#' @importFrom spatstat.model summary
-#' @export summary
-
-summary <- summary
-
-#' @rdname summary
-#' @method summary obs
-#' @export 
-summary.obs <- function(x) {
-  obs_density <- x
-  data.frame(Variable = c("Constant", obs_density$indep_var),
-             Coefficient = obs_density$coef)
-}
-
-#' @rdname summary
-#' @method summary est
-#' @export
-summary.est <- function(x) {
+summary.est <- function(object, ...) {
   
-  estimates <- x
+  estimates <- object
   
   #1. Summary 1: Causal effects with 95% and 90% CIs
   result <- data.frame(
