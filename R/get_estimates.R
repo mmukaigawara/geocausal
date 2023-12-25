@@ -104,7 +104,7 @@ get_estimates <- function(obs_dens,
               var_causal = var_bound$bound_tau_haj,
               windows = estimates$windows)
   
-  class(out) <- c("list", "est")
+  class(out) <- c("est", "list")
   return(out)
 
 }
