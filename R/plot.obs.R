@@ -1,18 +1,21 @@
 #' Plot observed densities
 #' 
 #' @param actual_data actual data in the form of `hyperframe$column`.
-#' @param dens_1 density 1
+#' @param x input
+#' @param ... arguments passed on to the function
 #' @param dens_2 density 2 (if any). By default, `NA`.
 #' @param dens_3 density 3 (if any). By default, `NA`.
 #' @param time_unit x-axis label of the output
 #' 
 #' @export 
-geocausal.plot.obs <- function (dens_1, dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit = NA) {
+plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit = NA) {
   
   color_actual = "darkgrey" 
   color_dens_1 = "#f68f46ff"
   color_dens_2 = "#593d9cff"
   color_dens_3 = "#efe350ff"
+  
+  dens_1 <- x
 
   actual_counts <- unlist(purrr::map(actual_data, function(x) x$n))
   

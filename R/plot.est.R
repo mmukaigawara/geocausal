@@ -1,9 +1,12 @@
 #' Plot estimates
 #' 
-#' @param estimates estimates obtained by `get_estimates` function
+#' @param x input
+#' @param ... arguments passed on to the function
 #' 
 #' @export
-geocausal.plot.est <- function(estimates) {
+plot.est <- function(x, ...) {
+  
+  estimates <- x
   
   #1. Visualization 1: Plot the difference in weighted surfaces -----
   
