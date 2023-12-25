@@ -70,8 +70,7 @@ get_base_dens <- function(window,
     
   }
   
-  #output <- list(density = baseline_density)
-  #class(output) <- "basedens" 
+  class(baseline_density) <- c("dens", "im") 
   
   return(baseline_density)
   

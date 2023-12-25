@@ -51,6 +51,8 @@ get_power_dens <- function(target_dens,
 
   power_density <- power_density/spatstat.geom::integral(power_density, domain = window)
   
+  class(power_density) <- c("dens", "im") 
+  
   return(power_density)
 
 }
