@@ -15,7 +15,7 @@ plot.dens <- function(x, ...,  main = "Density", grayscale = "FALSE") {
   pd_df_long <- tidyr::pivot_longer(pd_df, cols = starts_with("V"), names_to = "variable", values_to = "value")
   
   ## Extract owin
-  window <- spatstat.geom::Window(data[[1]])
+  window <- spatstat.geom::Window(x)
   
   ## Plot the image using ggplot2
   if(grayscale) {
