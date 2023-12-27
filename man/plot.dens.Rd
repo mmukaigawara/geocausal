@@ -4,7 +4,7 @@
 \alias{plot.dens}
 \title{Plot densities}
 \usage{
-\method{plot}{dens}(x, ..., main = "Density", grayscale = "FALSE")
+\method{plot}{dens}(x, ..., main = "Density", window, grayscale = "FALSE")
 }
 \arguments{
 \item{x}{input}
@@ -13,9 +13,9 @@
 
 \item{main}{title}
 
-\item{grayscale}{whether to use grayscale. By default, FALSE.}
-
 \item{window}{an owin object}
+
+\item{grayscale}{whether to use grayscale. By default, FALSE.}
 }
 \description{
 Plot densities
