@@ -73,7 +73,8 @@ get_dist_based_exp <- function(cf_sim_results,
              title = "The Expected Number of Treatment Events and Distance from the Focus",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        theme(plot.title = element_text(hjust = 0.5))
+        theme(plot.title = element_text(hjust = 0.5),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
     } else {
@@ -87,7 +88,8 @@ get_dist_based_exp <- function(cf_sim_results,
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
         ylim(0, 1) +        
-        theme(plot.title = element_text(hjust = 0.5))
+        theme(plot.title = element_text(hjust = 0.5),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
     }
@@ -104,7 +106,8 @@ get_dist_based_exp <- function(cf_sim_results,
              title = "The Expected Number of Treatment Events and Distance from the Focus",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
-        theme(plot.title = element_text(hjust = 0.5))
+        theme(plot.title = element_text(hjust = 0.5),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
     } else {
@@ -118,7 +121,8 @@ get_dist_based_exp <- function(cf_sim_results,
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
         ylim(0, 1) +         
-        theme(plot.title = element_text(hjust = 0.5))
+        theme(plot.title = element_text(hjust = 0.5),
+              panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
     }
