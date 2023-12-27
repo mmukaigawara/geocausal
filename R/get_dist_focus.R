@@ -172,6 +172,7 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   
   # Generate an image object
   distance_im <- spatstat.geom::as.im(dist_df, W = window)
+  class(distance_im) <- c("dist", "im") 
   
   # Return an image object
   return(distance_im)
