@@ -37,7 +37,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
   message("Calculating weights...\n")
 
   # 1-1. Log density
-  if (class(cf_dens)[1] == "im") {
+  if (class(cf_dens)[2] == "im") { #get_cf_dens returns class c("dens", "im")
     counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens, 
                                                     treatment_data = treatment_data)
   }
