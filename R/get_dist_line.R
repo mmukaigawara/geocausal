@@ -169,8 +169,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
 
   # Generate an image object -----
   distance_im <- spatstat.geom::as.im(dist_df, W = window)
-  class(distance_im) <- c("dist", "im") 
-  
+
   return(distance_im)
 
 }
