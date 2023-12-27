@@ -14,6 +14,8 @@
 \item{main}{title}
 
 \item{grayscale}{whether to use grayscale. By default, FALSE.}
+
+\item{window}{an owin object}
 }
 \description{
 Plot densities
