@@ -7,11 +7,12 @@
 #' @param time_column The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
 #' @param range vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot.
+#' @param scalename the name of the scale (for images only)
 #' This argument applies only to the case when users specify one column with multiple time periods.
 #' By default = TRUE
 #' 
 #' @export
-plot.hyperframe <- function(x, ..., subtype_column, time_column = "time", range, combined = TRUE) {
+plot.hyperframe <- function(x, ..., subtype_column, time_column = "time", range, scalename = NA, combined = TRUE) {
   
   # Clean the hyperframe -----
   hfr_temp <- x
@@ -77,7 +78,7 @@ plot.hyperframe <- function(x, ..., subtype_column, time_column = "time", range,
       
       gg <- ggplot2::ggplot() + #Plot smoothed outcome
         tidyterra::geom_spatraster(data = terra::rast(hfr_cleaned[1, 2][[1]])) +
-        ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, name = "Density") +
+        ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, name = scalename) +
         ggthemes::theme_map() +
         ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"),

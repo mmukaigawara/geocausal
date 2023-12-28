@@ -4,7 +4,15 @@
 \alias{plot.hyperframe}
 \title{Plot estimates}
 \usage{
-\method{plot}{hyperframe}(x, ..., subtype_column, time_column = "time", range, combined = TRUE)
+\method{plot}{hyperframe}(
+  x,
+  ...,
+  subtype_column,
+  time_column = "time",
+  range,
+  scalename = NA,
+  combined = TRUE
+)
 }
 \arguments{
 \item{x}{input}
@@ -18,9 +26,11 @@ To specify multiple columns, users should list column names as a character vecto
 
 \item{range}{vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)}
 
-\item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot.
+\item{scalename}{the name of the scale (for images only)
 This argument applies only to the case when users specify one column with multiple time periods.
 By default = TRUE}
+
+\item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot.}
 }
 \description{
 Plot estimates

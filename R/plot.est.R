@@ -54,8 +54,7 @@ plot.est <- function(x, ...) {
     theme_bw() +
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
     labs(y = "The expected outcome events\ncovered by the area",
-         title = "Causal Effects Per Time Period",
-         subtitle = "The Expected Number of Outcome Events") +
+         title = "Causal effects per time period") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"),
           plot.subtitle = element_text(hjust = 0.5),
           panel.grid.major = element_blank(), panel.grid.minor = element_blank())
