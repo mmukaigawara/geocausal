@@ -7,9 +7,9 @@
 #' @param time_col The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
 #' @param range vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot.
-#' @param scalename the name of the scale (for images only)
 #' This argument applies only to the case when users specify one column with multiple time periods.
 #' By default = TRUE
+#' @param scalename the name of the scale (for images only)
 #' 
 #' @export
 plot.hyperframe <- function(x, ..., col, time_col = "time", range, scalename = NA, combined = TRUE) {
