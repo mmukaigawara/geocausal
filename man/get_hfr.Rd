@@ -6,9 +6,9 @@
 \usage{
 get_hfr(
   data,
-  subtype_column,
+  col,
   window,
-  time_column,
+  time_col,
   time_range,
   coordinates = c("longitude", "latitude"),
   combined = TRUE
@@ -18,12 +18,12 @@ get_hfr(
 \item{data}{dataframe. The dataframe must have time and location variables.
 Location variables should be standard coordinates (i.e., longitudes and latitudes).}
 
-\item{subtype_column}{the name of the column for subtypes of events of interest}
+\item{col}{the name of the column for subtypes of events of interest}
 
 \item{window}{owin object (for more information, refer to `spatstat.geom::owin()`).
 Basically, an owin object specifies the geographical boundaries of areas of interest.}
 
-\item{time_column}{the name of the column for time variable. Note that the time variable must be integers.}
+\item{time_col}{the name of the column for time variable. Note that the time variable must be integers.}
 
 \item{time_range}{numeric vector. `time_range` specifies the range of the time variable
 (i.e., min and max of the time variable).
@@ -56,9 +56,9 @@ dat <- data.frame(time = c(1, 1, 2, 2),
 
 # Hyperframe
 get_hfr(data = dat,
-        subtype_column = "type",
+        col = "type",
         window = iraq_window,
-        time_column = "time",
+        time_col = "time",
         time_range = c(1, 2),
         coordinates = c("longitude", "latitude"),
         combined = FALSE)

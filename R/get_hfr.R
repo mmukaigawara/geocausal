@@ -8,10 +8,10 @@
 #'
 #' @param data dataframe. The dataframe must have time and location variables.
 #' Location variables should be standard coordinates (i.e., longitudes and latitudes).
-#' @param subtype_column the name of the column for subtypes of events of interest
+#' @param col the name of the column for subtypes of events of interest
 #' @param window owin object (for more information, refer to `spatstat.geom::owin()`).
 #' Basically, an owin object specifies the geographical boundaries of areas of interest.
-#' @param time_column the name of the column for time variable. Note that the time variable must be integers.
+#' @param time_col the name of the column for time variable. Note that the time variable must be integers.
 #' @param time_range numeric vector. `time_range` specifies the range of the time variable
 #' (i.e., min and max of the time variable).
 #' The current version assumes that the unit of this time variable is dates.
@@ -35,16 +35,16 @@
 #'
 #' # Hyperframe
 #' get_hfr(data = dat,
-#'         subtype_column = "type",
+#'         col = "type",
 #'         window = iraq_window,
-#'         time_column = "time",
+#'         time_col = "time",
 #'         time_range = c(1, 2),
 #'         coordinates = c("longitude", "latitude"),
 #'         combined = FALSE)
 
-get_hfr <- function(data, subtype_column,
+get_hfr <- function(data, col,
                     window,
-                    time_column,
+                    time_col,
                     time_range,
                     coordinates = c("longitude", "latitude"),
                     combined = TRUE) {
@@ -54,7 +54,7 @@ get_hfr <- function(data, subtype_column,
 
   # Cleaning the data ----------
   data <- data %>%
-    dplyr::select(time_column, subtype_column, coordinates[1], coordinates[2])
+    dplyr::select(time_col, col, coordinates[1], coordinates[2])
   colnames(data) <- c("time", "type", "longitude", "latitude")
   data.table::setDT(data)
 
