@@ -5,7 +5,7 @@
 \alias{airstrikes}
 \title{airstrikes}
 \format{
-A tibble with 936 rows and 4 variables:
+A tibble with 3938 rows and 4 variables:
 \describe{
 \item{date}{Date (YYYY-MM-DD)}
 \item{longitude}{Longitudes (decimal)}

@@ -5,7 +5,7 @@
 \alias{airstrikes_base}
 \title{airstrikes_base}
 \format{
-A tibble with 148 rows and 3 variables:
+A tibble with 808 rows and 3 variables:
 \describe{
 \item{date}{Date}
 \item{longitude}{Longitudes (decimal)}
@@ -16,7 +16,7 @@ A tibble with 148 rows and 3 variables:
 airstrikes_base
 }
 \description{
-A subset of airstrikes data in Iraq (a subset of airstrikes in January 2006) that can be used to construct baseline densities
+A subset of airstrikes data in Iraq (a subset of airstrikes in 2006) that can be used to construct baseline densities
 }
 \examples{
 airstrikes_base
