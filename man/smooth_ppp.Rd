@@ -4,21 +4,21 @@
 \alias{smooth_ppp}
 \title{Smooth outcome events}
 \usage{
-smooth_ppp(data_interest, method, initialization = TRUE, sampling = 0.05)
+smooth_ppp(data, method, init = TRUE, sampling = 0.05)
 }
 \arguments{
-\item{data_interest}{the name of a hyperframe and column of interest.
-`data_interest` should be in the form of `"hyperframe$column"`.}
+\item{data}{the name of a hyperframe and column of interest.
+`data` should be in the form of `"hyperframe$column"`.}
 
 \item{method}{methods for smoothing ppp objects.
 Either `"mclust"` or `"abramson"`. See details.}
 
-\item{initialization}{logical.
-`initialization` specifies whether to use a smaller number of samples to initialize
+\item{init}{logical.
+`init` specifies whether to use a smaller number of samples to initialize
 fitting the Gaussian mixture model. By default = TRUE}
 
 \item{sampling}{numeric between 0 and 1. `sampling` determines the proportion of data
-to use for initialization (see `initialization`).
+to use for initialization (see `init`).
 By default, `0.05`, which means that `get_smoothed_outcome()` uses 5\% of samples for initialization.}
 }
 \value{
@@ -35,7 +35,7 @@ In this package, we employ the EII model (equal volume, round shape (spherical c
 This means that we model observed points by several Gaussian densities with the same, round shape.
 This is why this model is called fixed-bandwidth smoothing. This is a simple model to smooth observed points,
 yet given that analyzing spatiotemporal data is often computationally demanding, it is often the best place to start (and end).
-Sometimes this process can also take time, which is why an option for `initialization` is included in this function.
+Sometimes this process can also take time, which is why an option for `init` is included in this function.
 
 Another, more precise, method for smoothing outcomes is adaptive smoothing (`method = "abram"`).
 This method allows users to vary bandwidths based on `Abramson (1982)`.
@@ -50,16 +50,16 @@ dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
 
 # Hyperframe
 dat_hfr <- get_hfr(data = dat_out,
-                   subtype_column = "type",
+                   col = "type",
                    window = iraq_window,
-                   time_column = "time",
+                   time_col = "time",
                    time_range = c(1, max(dat_out$time)),
                    coordinates = c("longitude", "latitude"),
                    combined = TRUE)
 
 # Smoothing outcome
-smooth_ppp(data_interest = dat_hfr$all_combined,
-                     method = "mclust",
-                     initialization = TRUE,
-                     sampling = 0.05)
+smooth_ppp(data = dat_hfr$all_combined,
+           method = "mclust",
+           init = TRUE,
+           sampling = 0.05)
 }

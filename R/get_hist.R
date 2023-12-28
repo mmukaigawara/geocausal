@@ -19,9 +19,9 @@
 #' 
 #' # Hyperframe
 #' dat_hfr <- get_hfr(data = dat_out,
-#'                    subtype_column = "type",
+#'                    col = "type",
 #'                    window = iraq_window,
-#'                    time_column = "time",
+#'                    time_col = "time",
 #'                    time_range = c(1, max(dat_out$time)),
 #'                    coordinates = c("longitude", "latitude"),
 #'                    combined = TRUE)

@@ -22,16 +22,16 @@
 #'                           
 #' # Density 1: Distance from Mosul
 #' dist_from_mosul <- get_dist_focus(window = iraq_window,
-#'                                   longitude = c(43.158),
-#'                                   latitude = c(36.349),
+#'                                   lon = c(43.158),
+#'                                   lat = c(36.349),
 #'                                   resolution = 0.5,
 #'                                   mile = FALSE,
 #'                                   preprocess = FALSE)
 #' 
 #' # Density 2: Distance from Baghdad
 #' dist_from_baghd <- get_dist_focus(window = iraq_window,
-#'                                   longitude = c(44.366),
-#'                                   latitude = c(33.315),
+#'                                   lon = c(44.366),
+#'                                   lat = c(33.315),
 #'                                   resolution = 0.5,
 #'                                   mile = FALSE,
 #'                                   preprocess = FALSE)

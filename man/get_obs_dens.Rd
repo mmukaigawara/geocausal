@@ -45,17 +45,17 @@ dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
 
 # Hyperframe
 dat_hfr <- get_hfr(data = dat_out,
-                   subtype_column = "type",
+                   col = "type",
                    window = iraq_window,
-                   time_column = "time",
+                   time_col = "time",
                    time_range = c(1, max(dat_out$time)),
                    coordinates = c("longitude", "latitude"),
                    combined = TRUE)
 
 # Covariates
 dist_baghdad <- get_dist_focus(window = iraq_window,
-                               longitude = c(44.366), #Baghdad
-                               latitude = c(33.315),
+                               lon = c(44.366), #Baghdad
+                               lat = c(33.315),
                                resolution = 0.1,
                                mile = FALSE,
                                preprocess = FALSE)

@@ -3,15 +3,15 @@
 #' @description
 #' `smooth_ppp()` takes a column of hyperframes (ppp objects) and smoothes them.
 #'
-#' @param data_interest the name of a hyperframe and column of interest.
-#' `data_interest` should be in the form of `"hyperframe$column"`.
+#' @param data the name of a hyperframe and column of interest.
+#' `data` should be in the form of `"hyperframe$column"`.
 #' @param method methods for smoothing ppp objects.
 #' Either `"mclust"` or `"abramson"`. See details.
-#' @param initialization logical.
-#' `initialization` specifies whether to use a smaller number of samples to initialize
+#' @param init logical.
+#' `init` specifies whether to use a smaller number of samples to initialize
 #' fitting the Gaussian mixture model. By default = TRUE
 #' @param sampling numeric between 0 and 1. `sampling` determines the proportion of data
-#' to use for initialization (see `initialization`).
+#' to use for initialization (see `init`).
 #' By default, `0.05`, which means that `get_smoothed_outcome()` uses 5\% of samples for initialization.
 #'
 #' @returns im objects
@@ -23,7 +23,7 @@
 #' This means that we model observed points by several Gaussian densities with the same, round shape.
 #' This is why this model is called fixed-bandwidth smoothing. This is a simple model to smooth observed points,
 #' yet given that analyzing spatiotemporal data is often computationally demanding, it is often the best place to start (and end).
-#' Sometimes this process can also take time, which is why an option for `initialization` is included in this function.
+#' Sometimes this process can also take time, which is why an option for `init` is included in this function.
 #'
 #' Another, more precise, method for smoothing outcomes is adaptive smoothing (`method = "abram"`).
 #' This method allows users to vary bandwidths based on `Abramson (1982)`.
@@ -38,27 +38,27 @@
 #'
 #' # Hyperframe
 #' dat_hfr <- get_hfr(data = dat_out,
-#'                    subtype_column = "type",
+#'                    col = "type",
 #'                    window = iraq_window,
-#'                    time_column = "time",
+#'                    time_col = "time",
 #'                    time_range = c(1, max(dat_out$time)),
 #'                    coordinates = c("longitude", "latitude"),
 #'                    combined = TRUE)
 #'
 #' # Smoothing outcome
-#' smooth_ppp(data_interest = dat_hfr$all_combined,
-#'                      method = "mclust",
-#'                      initialization = TRUE,
-#'                      sampling = 0.05)
+#' smooth_ppp(data = dat_hfr$all_combined,
+#'            method = "mclust",
+#'            init = TRUE,
+#'            sampling = 0.05)
 
-smooth_ppp <- function(data_interest,
+smooth_ppp <- function(data,
                        method,
-                       initialization = TRUE,
+                       init = TRUE,
                        sampling = 0.05) {
 
   # Obtain coordinates of interest -----
 
-  all_points_coords <- data.table::rbindlist(purrr::map(data_interest, spatstat.geom::as.data.frame.ppp))
+  all_points_coords <- data.table::rbindlist(purrr::map(data, spatstat.geom::as.data.frame.ppp))
 
   # Fit the Gaussian mixture model (mclust) -----
 
@@ -67,7 +67,7 @@ smooth_ppp <- function(data_interest,
     ## Identify the number of components (EII model)
     message("Fitting the Gaussian mixture model\n")
 
-    if (initialization == TRUE) {
+    if (init == TRUE) {
 
       ## Prepare for initialization
       M <- round((nrow(all_points_coords)*sampling), digits = 0)
@@ -93,7 +93,7 @@ smooth_ppp <- function(data_interest,
     ## Obtain smoothed outcomes
     message("Smoothing ppps\n")
 
-    smoothed_outcome <- furrr::future_map(data_interest, spatstat.explore::density.ppp,
+    smoothed_outcome <- furrr::future_map(data, spatstat.explore::density.ppp,
                                           diggle = TRUE, kernel = "gaussian", adjust = 1,
                                           sigma = spat_sigma, edge = TRUE)
 
@@ -104,7 +104,7 @@ smooth_ppp <- function(data_interest,
   if (method == "abramson") {
 
     ## Get h0 using CV on isotropic, spherical kernel smoothing
-    window <- data_interest[[1]]$window # Extract window
+    window <- data[[1]]$window # Extract window
     all_points <- spatstat.geom::as.ppp(cbind(x = all_points_coords$x,
                                               y = all_points_coords$y), W = window)
 
@@ -114,8 +114,8 @@ smooth_ppp <- function(data_interest,
     pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
 
     him_points <- spatstat.explore::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
-    num_points <- as.numeric(purrr::map(as.list(data_interest), 2, .default = NA) %>% unlist()) # Num of points for each time frame
-    bw_pt <- split(him_points, rep(1 : length(data_interest), num_points))
+    num_points <- as.numeric(purrr::map(as.list(data), 2, .default = NA) %>% unlist()) # Num of points for each time frame
+    bw_pt <- split(him_points, rep(1 : length(data), num_points))
 
     no_point_id <- which(num_points == 0) # IDs of time frames with the num of points = 0
     if (length(no_point_id) != 0) {
@@ -131,7 +131,7 @@ smooth_ppp <- function(data_interest,
     ## Obtain smoothed outcomes
     message("Smoothing ppps\n")
 
-    smoothed_outcome <- furrr::future_map2(data_interest, bw_pt, spatstat.explore::densityAdaptiveKernel,
+    smoothed_outcome <- furrr::future_map2(data, bw_pt, spatstat.explore::densityAdaptiveKernel,
                                            diggle = TRUE, kernel = "gaussian", edge = TRUE)
 
   }

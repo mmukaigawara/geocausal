@@ -3,8 +3,8 @@
 #' @description 
 #' `get_dist_focus()` generates a distance map from focus locations.
 #'
-#' @param longitude vector of longitudes
-#' @param latitude vector of latitudes
+#' @param lon vector of longitudes
+#' @param lat vector of latitudes
 #' @param window owin object
 #' @param resolution resolution of raster objects
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).
@@ -25,13 +25,13 @@
 #' 
 #' @examples
 #' get_dist_focus(window = iraq_window,
-#'                longitude = c(44.366), #Baghdad
-#'                latitude = c(33.315),
+#'                lon = c(44.366), #Baghdad
+#'                lat = c(33.315),
 #'                resolution = 0.5,
 #'                mile = FALSE,
 #'                preprocess = FALSE)
 
-get_dist_focus <- function(window, longitude, latitude, resolution,
+get_dist_focus <- function(window, lon, lat, resolution,
                            mile = FALSE, preprocess = FALSE){
   
   # Convert owin into sp objects  
@@ -43,7 +43,7 @@ get_dist_focus <- function(window, longitude, latitude, resolution,
   polygon_spdf <- window_sp[[5]]
   
   # Create sf objects
-  point_df <- data.frame(longitude = longitude, latitude = latitude)
+  point_df <- data.frame(longitude = lon, latitude = lat)
   num_points <- nrow(point_df)
   point_sf <- sf::st_as_sf(point_df, coords = c("longitude", "latitude"))
   

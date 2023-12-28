@@ -4,21 +4,14 @@
 \alias{get_dist_focus}
 \title{Get distance maps}
 \usage{
-get_dist_focus(
-  window,
-  longitude,
-  latitude,
-  resolution,
-  mile = FALSE,
-  preprocess = FALSE
-)
+get_dist_focus(window, lon, lat, resolution, mile = FALSE, preprocess = FALSE)
 }
 \arguments{
 \item{window}{owin object}
 
-\item{longitude}{vector of longitudes}
+\item{lon}{vector of longitudes}
 
-\item{latitude}{vector of latitudes}
+\item{lat}{vector of latitudes}
 
 \item{resolution}{resolution of raster objects}
 
@@ -45,8 +38,8 @@ By default, `get_dist_focus()` returns distances in kilometers unless users set 
 }
 \examples{
 get_dist_focus(window = iraq_window,
-               longitude = c(44.366), #Baghdad
-               latitude = c(33.315),
+               lon = c(44.366), #Baghdad
+               lat = c(33.315),
                resolution = 0.5,
                mile = FALSE,
                preprocess = FALSE)
