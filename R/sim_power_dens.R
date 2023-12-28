@@ -120,7 +120,7 @@ sim_power_dens <- function(target_dens, #This must be a list element
   }
   
   plot <- ggpubr::ggarrange(plotlist = plot_list, common.legend = TRUE, legend = "bottom")
-  plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob("Simulated Power Densities", face = "bold"))
+  plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob("Simulated power densities", face = "bold"))
   
   return(list(densities = power_density_list,
               plot = plot,

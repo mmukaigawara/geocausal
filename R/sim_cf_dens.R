@@ -119,7 +119,7 @@ sim_cf_dens <- function(expected_number,
   }
   
   plot <- ggpubr::ggarrange(plotlist = plot_list, common.legend = TRUE, legend = "bottom")
-  titletext <- paste0("Simulated Counterfactual Densities")
+  titletext <- paste0("Simulated counterfactual densities")
   labtext <- paste0("Note: The expected number of treatment events\nover the entire region per time period = ", expected_number)
   plot <- ggpubr::annotate_figure(plot, fig.lab = labtext, fig.lab.pos = "bottom.right", fig.lab.size = 7)
   plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob(titletext, face = "bold"))
