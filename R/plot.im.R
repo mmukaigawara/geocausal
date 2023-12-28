@@ -5,9 +5,10 @@
 #' @param main title
 #' @param window an owin object
 #' @param grayscale whether to use grayscale. By default, FALSE.
+#' @param scalename the name of the scale (for images only)
 #' 
 #' @export
-plot.im <- function(x, ...,  main = "Distance", window, grayscale = "FALSE") {
+plot.im <- function(x, ...,  main = "Distance", window, scalename = "Density", grayscale = "FALSE") {
 
   ## Convert the density image to a data frame
   pd_df <- as.data.frame(x)
@@ -27,7 +28,7 @@ plot.im <- function(x, ...,  main = "Distance", window, grayscale = "FALSE") {
       ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
       ggplot2::ggtitle(main) +
-      labs(fill = "Density") +
+      labs(fill = scalename) +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"),
             plot.subtitle = element_text(hjust = 0.5))
   
@@ -39,7 +40,7 @@ plot.im <- function(x, ...,  main = "Distance", window, grayscale = "FALSE") {
       ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") + 
       ggthemes::theme_map() +
       ggplot2::ggtitle(main) +
-      labs(fill = "Density") +
+      labs(fill = scalename) +
       theme(plot.title = element_text(hjust = 0.5, face = "bold"),
             plot.subtitle = element_text(hjust = 0.5))
     

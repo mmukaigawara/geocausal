@@ -4,7 +4,14 @@
 \alias{plot.im}
 \title{Plot densities}
 \usage{
-\method{plot}{im}(x, ..., main = "Distance", window, grayscale = "FALSE")
+\method{plot}{im}(
+  x,
+  ...,
+  main = "Distance",
+  window,
+  scalename = "Density",
+  grayscale = "FALSE"
+)
 }
 \arguments{
 \item{x}{input}
@@ -14,6 +21,8 @@
 \item{main}{title}
 
 \item{window}{an owin object}
+
+\item{scalename}{the name of the scale (for images only)}
 
 \item{grayscale}{whether to use grayscale. By default, FALSE.}
 }
