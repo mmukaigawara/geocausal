@@ -4,25 +4,17 @@
 \alias{plot.hyperframe}
 \title{Plot estimates}
 \usage{
-\method{plot}{hyperframe}(
-  x,
-  ...,
-  subtype_column,
-  time_column = "time",
-  range,
-  scalename = NA,
-  combined = TRUE
-)
+\method{plot}{hyperframe}(x, ..., col, time_col = "time", range, scalename = NA, combined = TRUE)
 }
 \arguments{
 \item{x}{input}
 
 \item{...}{arguments passed on to the function}
 
-\item{subtype_column}{The name/s of a column of interest.
+\item{col}{the name/s of a column of interest.
 To specify multiple columns, users should list column names as a character vector.}
 
-\item{time_column}{The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.}
+\item{time_col}{The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.}
 
 \item{range}{vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)}
 

@@ -2,9 +2,9 @@
 #' 
 #' @param x input
 #' @param ... arguments passed on to the function
-#' @param subtype_column The name/s of a column of interest.
+#' @param col the name/s of a column of interest.
 #' To specify multiple columns, users should list column names as a character vector.
-#' @param time_column The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
+#' @param time_col The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
 #' @param range vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot.
 #' @param scalename the name of the scale (for images only)
@@ -12,7 +12,7 @@
 #' By default = TRUE
 #' 
 #' @export
-plot.hyperframe <- function(x, ..., subtype_column, time_column = "time", range, scalename = NA, combined = TRUE) {
+plot.hyperframe <- function(x, ..., col, time_col = "time", range, scalename = NA, combined = TRUE) {
   
   # Clean the hyperframe -----
   hfr_temp <- x
@@ -20,11 +20,11 @@ plot.hyperframe <- function(x, ..., subtype_column, time_column = "time", range,
   if (length(range) == 1) { all_rows <- range } else
   { all_rows <- seq(min(range), max(range), by = 1)} #Sequence of all rows
   
-  time_id <- which(names(hfr_temp) == time_column)
+  time_id <- which(names(hfr_temp) == time_col)
   names(hfr_temp)[time_id] <- "time" #Rename the time column
   
   row_id <- which(hfr_temp$time %in% all_rows) #Obtain the time period row IDs
-  outcome_id <- which(names(hfr_temp) %in% subtype_column) #Obtain the outcome column IDs
+  outcome_id <- which(names(hfr_temp) %in% col) #Obtain the outcome column IDs
   
   hfr_cleaned <- hfr_temp[row_id, c(time_id, outcome_id)] #Return necessary portions of hfr
   
@@ -33,7 +33,7 @@ plot.hyperframe <- function(x, ..., subtype_column, time_column = "time", range,
   num_outcome_columns <- ncol(hfr_cleaned) - 1 #Subtract 1 d/t time column
   
   # Convert window to df
-  window <- spatstat.geom::Window(hfr_cleaned[1, which(colnames(hfr_cleaned) == subtype_column[1])][[1]])
+  window <- spatstat.geom::Window(hfr_cleaned[1, which(colnames(hfr_cleaned) == col[1])][[1]])
   window_sp <- conv_owin_into_sf(window)
   polygon_df <- window_sp[[2]]
   
