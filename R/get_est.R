@@ -1,87 +1,110 @@
-#' Generate a Hajek estimator
+#' Get causal estimates comparing two scenarios
 #'
-#' @description A function that returns a Hajek estimator of causal contrasts
+#' @description
+#' `get_est()` generates causal estimates comparing two counterfactual scenarios.
 #'
-#' @param weighted_surf_1 a weighted surface for scenario 1
-#' @param weighted_surf_2 another weighted surface for scenario 2
+#' @param obs_dens observed density
+#' @param cf1_dens counterfactual density 1
+#' @param cf2_dens counterfactual density 2
+#' @param mediation whether to perform causal mediation analysis (don't use; still in development). By default, FALSE.
+#' @param obs_med_log_sum_dens sum of log densities of mediators for the observed (don't use; still in development)
+#' @param cf1_med_log_sum_dens sum of log densities of mediators for counterfactual 1 (don't use; still in development)
+#' @param cf2_med_log_sum_dens sum of log densities of mediators for counterfactual 2 (don't use; still in development)
+#' @param treat column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.
+#' @param sm_out column of a hyperframe that summarizes the smoothed outcome data
+#' @param lag integer that specifies lags to calculate causal estimates
+#' @param time_after whether to include one unit time difference between treatment and outcome. By default = TRUE
+#' @param entire_window owin object (the entire region of interest)
 #' @param use_dist whether to use distance-based maps. By default, TRUE
 #' @param windows a list of owin objects (if `use_dist = FALSE`)
 #' @param dist_map distance map (an im object, if `use_dist = TRUE`)
 #' @param dist distances (a numeric vector within the max distance of `dist_map`)
-#' @param entire_window an owin object of the entire map
-#' 
-#' @returns list of Hajek estimators for each scenario (`est_haj`), 
-#' causal contrasts (Hajek estimator) as a matrix (`est_tau_haj_matrix`), and 
-#' causal contrast (scenario 2 - scenario 1) as a numeric vector (`est_tau_haj_cf2_vs_cf1`), 
-#' along with weights, windows, and smoothed outcomes
-#'  
-#' @details `get_est()` is an internal function to `get_estimates()` function, 
-#' performing the estimation analysis after `get_weighted_surf()` function
+#' @param trunc_level the level of truncation for the weights (0-1)
+#'
+#' @returns list of the following:
+#' `cf1_ave_surf`: average weighted surface for scenario 1
+#' `cf2_ave_surf`: average weighted surface for scenario 2
+#' `est_cf`: estimated effects of each scenario
+#' `est_causal`: estimated causal contrasts
+#' `var_cf`: variance upper bounds for each scenario
+#' `var_causal`: variance upper bounds for causal contrasts
+#' `windows`: list of owin objects
+#'
+#' @details The level of truncation indicates the quantile of weights at which weights are truncated.
+#' That is, if `trunc_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
 
-get_est <- function(weighted_surf_1,
-                    weighted_surf_2,
-                    use_dist = TRUE,
+get_est <- function(obs_dens,
+                    cf1_dens,
+                    cf2_dens,
+                    treat,
+                    sm_out,
+                    mediation = FALSE,
+                    obs_med_log_sum_dens = NA,
+                    cf1_med_log_sum_dens = NA,
+                    cf2_med_log_sum_dens = NA,
+                    lag,
+                    time_after = TRUE,
+                    entire_window,
+                    use_dist,
                     windows,
                     dist_map,
                     dist,
-                    entire_window) {
+                    trunc_level = NA) {
+
+  #1. Get average weighted surfaces for two counterfactuals -----
+
+  message("Calculating the average weighted surfaces for two scenarios...\n")
+
+  ## CF1
+  estimates_1 <- get_weighted_surf(obs_dens = obs_dens,
+                                   cf_dens = cf1_dens,
+                                   treatment_data = treat,
+                                   smoothed_outcome = sm_out,
+                                   mediation,
+                                   obs_med_log_sum_dens = obs_med_log_sum_dens,
+                                   cf_med_log_sum_dens = cf1_med_log_sum_dens,
+                                   lag = lag, entire_window = entire_window,
+                                   time_after,
+                                   truncation_level = trunc_level)
+
+  ## CF2
+  estimates_2 <- get_weighted_surf(obs_dens = obs_dens,
+                                   cf_dens = cf2_dens,
+                                   treatment_data = treat,
+                                   smoothed_outcome = sm_out,
+                                   mediation,
+                                   obs_med_log_sum_dens = obs_med_log_sum_dens,
+                                   cf_med_log_sum_dens = cf2_med_log_sum_dens,
+                                   lag = lag, entire_window = entire_window,
+                                   time_after,
+                                   truncation_level = trunc_level)
+
+  #2. Get estimates (contrast) -----
+  message("Obtaining the causal contrast...\n")
+
+  estimates <- get_estimates(weighted_surf_1 = estimates_1,
+                             weighted_surf_2 = estimates_2,
+                             use_dist = use_dist,
+                             windows,
+                             dist_map = dist_map,
+                             dist = dist,
+                             entire_window = entire_window)
+
+  #3. Get variance upper bounds -----
+  message("Obtaining the variance upper bounds...\n")
+
+  var_bound <- get_var_bound(estimates)
+
+  #4. Return output -----
+  out <- list(cf1_ave_surf = estimates_1$average_surf_haj,
+              cf2_ave_surf = estimates_2$average_surf_haj,
+              est_cf = estimates$est_haj,
+              est_causal = estimates$est_tau_haj_cf2_vs_cf1,
+              var_cf = var_bound$bound_haj,
+              var_causal = var_bound$bound_tau_haj,
+              windows = estimates$windows)
   
-  # Function to integrate weighted surface over entire windows
-  Integrate <- function(intensity, B) { #Integration
-    
-    r <- matrix(NA, nrow = length(intensity), ncol = length(B))
-    for (bb in 1 : length(B)) {
-      r[, bb] <- sapply(intensity, function(x) spatstat.geom::integral.im(x, domain = B[[bb]]))
-    }
-    return(r)
-  }
-  
-  # Enlist average weighted surfaces and create a matrix for weights
-  av_surf <- list(weighted_surf_1$average_surf, weighted_surf_2$average_surf)
-  av_surf_haj <- list(weighted_surf_1$average_surf_haj, weighted_surf_2$average_surf_haj)
-  weights <- rbind(weighted_surf_1$weights, weighted_surf_2$weights)
-  
-  if(use_dist) { #Distance-based windows - first generate a list of owin objects
-    
-    ## Get the range of standardized distances
-    distance_range <- range(`dist_map`$v, na.rm = TRUE)
-    
-    if (max(dist) > distance_range[2]) {
-      stop("The max distance should be within the range of the entire window.")
-    } #Confirm that max(distances) <= max(distance_range)
-    
-    distances <- c(dist, distance_range[2])
-    
-    #Note: another idea is to use quantiles, but this could take time when we obtain variances
-    #distance_quantiles <- quantile(distance_range, probs = seq(0, 1, by = 0.01))
-    
-    ## Convert the distance map to windows
-    distance_window <- matrix(`dist_map`$v, nrow = nrow(`dist_map`$v))
-    distance_windows <- lapply(distances, function(x) distance_window < x) # A list of binary matrices based on quantiles
-    distance_owin <- lapply(distance_windows, function(x) {
-      spatstat.geom::owin(mask = x, xrange = `entire_window`$xrange, yrange = `entire_window`$yrange)
-    }) # Owin objects with different distances from the focus
-    windows <- distance_owin
-    
-  }
-  
-  # Then integrate over the windows
-  est <- Integrate(intensity = av_surf, B = windows) #IPW estimates
-  est_haj <- sweep(est, MARGIN = 1, STATS = apply(weights, 1, mean), FUN = '/')
-  rownames(est_haj) <- c("cf_1", "cf_2")
-  
-  est_tau_haj <- array(NA, dim = c(nrow(est), nrow(est), ncol(est)))
-  for (ind1 in 1 : nrow(est)) {
-    for (ind2 in 1 : nrow(est)) {
-      est_tau_haj[ind1, ind2, ] <- est_haj[ind1, ] - est_haj[ind2, ] #Comparing two counterfactual scenarios
-    }
-  }
-  
-  return(list(est_haj = est_haj, 
-              est_tau_haj_matrix = est_tau_haj, 
-              est_tau_haj_cf2_vs_cf1 = est_tau_haj[2, 1, ],
-              weights = weights,
-              windows = windows,
-              smoothed_outcome = weighted_surf_1$smoothed_outcome))
-  
+  class(out) <- c("est", "list")
+  return(out)
+
 }

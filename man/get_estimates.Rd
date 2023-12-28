@@ -2,52 +2,22 @@
 % Please edit documentation in R/get_estimates.R
 \name{get_estimates}
 \alias{get_estimates}
-\title{Get causal estimates comparing two scenarios}
+\title{Generate a Hajek estimator}
 \usage{
 get_estimates(
-  obs_dens,
-  cf1_dens,
-  cf2_dens,
-  treatment_data,
-  smoothed_outcome,
-  mediation = FALSE,
-  obs_med_log_sum_dens = NA,
-  cf1_med_log_sum_dens = NA,
-  cf2_med_log_sum_dens = NA,
-  lag,
-  time_after = TRUE,
-  entire_window,
-  use_dist,
+  weighted_surf_1,
+  weighted_surf_2,
+  use_dist = TRUE,
   windows,
   dist_map,
   dist,
-  truncation_level = NA
+  entire_window
 )
 }
 \arguments{
-\item{obs_dens}{observed density}
+\item{weighted_surf_1}{a weighted surface for scenario 1}
 
-\item{cf1_dens}{counterfactual density 1}
-
-\item{cf2_dens}{counterfactual density 2}
-
-\item{treatment_data}{column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.}
-
-\item{smoothed_outcome}{column of a hyperframe that summarizes the smoothed outcome data}
-
-\item{mediation}{whether to perform causal mediation analysis. By default, FALSE.}
-
-\item{obs_med_log_sum_dens}{sum of log densities of mediators for the observed (if `mediation = TRUE`)}
-
-\item{cf1_med_log_sum_dens}{sum of log densities of mediators for counterfactual 1 (if `mediation = TRUE`)}
-
-\item{cf2_med_log_sum_dens}{sum of log densities of mediators for counterfactual 2 (if `mediation = TRUE`)}
-
-\item{lag}{integer that specifies lags to calculate causal estimates}
-
-\item{time_after}{whether to include one unit time difference between treatment and outcome. By default = TRUE}
-
-\item{entire_window}{owin object (the entire region of interest)}
+\item{weighted_surf_2}{another weighted surface for scenario 2}
 
 \item{use_dist}{whether to use distance-based maps. By default, TRUE}
 
@@ -57,22 +27,18 @@ get_estimates(
 
 \item{dist}{distances (a numeric vector within the max distance of `dist_map`)}
 
-\item{truncation_level}{the level of truncation for the weights (0-1)}
+\item{entire_window}{an owin object of the entire map}
 }
 \value{
-list of the following:
-`cf1_ave_surf`: average weighted surface for scenario 1
-`cf2_ave_surf`: average weighted surface for scenario 2
-`est_cf`: estimated effects of each scenario
-`est_causal`: estimated causal contrasts
-`var_cf`: variance upper bounds for each scenario
-`var_causal`: variance upper bounds for causal contrasts
-`windows`: list of owin objects
+list of Hajek estimators for each scenario (`est_haj`), 
+causal contrasts (Hajek estimator) as a matrix (`est_tau_haj_matrix`), and 
+causal contrast (scenario 2 - scenario 1) as a numeric vector (`est_tau_haj_cf2_vs_cf1`), 
+along with weights, windows, and smoothed outcomes
 }
 \description{
-`get_estimates()` generates causal estimates comparing two counterfactual scenarios.
+A function that returns a Hajek estimator of causal contrasts
 }
 \details{
-The level of truncation indicates the quantile of weights at which weights are truncated.
-That is, if `truncation_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
+`get_estimates()` is an internal function to `get_est()` function, 
+performing the estimation analysis after `get_weighted_surf()` function
 }
