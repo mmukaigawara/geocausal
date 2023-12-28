@@ -1,7 +1,7 @@
 #' Get the expectation of treatment events with arbitrary distances
 #'
 #' @description
-#' `get_dist_based_exp()` takes counterfactual densities and
+#' `get_distexp()` takes counterfactual densities and
 #' and returns the expected number of treatment events based on distances
 #' from a user-specified focus.
 #'
@@ -17,12 +17,12 @@
 #' and summarizes distances and areas (`window_plot`). Note that the second object can not necessarily be well drawn
 #' depending on how windows are defined.
 
-get_dist_based_exp <- function(cf_sim_results,
-                               entire_window,
-                               dist_map,
-                               dist_map_unit = "km",
-                               grayscale = FALSE,
-                               use_raw = FALSE) {
+get_distexp <- function(cf_sim_results,
+                        entire_window,
+                        dist_map,
+                        dist_map_unit = "km",
+                        grayscale = FALSE,
+                        use_raw = FALSE) {
   
   # Get the range and quantiles of standardized distances
   distance_range <- range(`dist_map`$v, na.rm = TRUE)
@@ -70,10 +70,10 @@ get_dist_based_exp <- function(cf_sim_results,
         theme_bw() +
         labs(x = x_label_text,
              y = "The expected treatment events\ncovered by the area",
-             title = "The Expected Number of Treatment Events and Distance from the Focus",
+             title = "The expected number of treatment events",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
-        theme(plot.title = element_text(hjust = 0.5),
+        theme(plot.title = element_text(hjust = 0.5, face = "bold"),
               panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
@@ -84,11 +84,11 @@ get_dist_based_exp <- function(cf_sim_results,
         theme_bw() +
         labs(x = x_label_text,
              y = "The proportion of\nexpected treatment events\ncovered by the area",
-             title = "The Expected Number of Treatment Events and Distance from the Focus",
+             title = "The expected number of treatment events",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "Greys") +
         ylim(0, 1) +        
-        theme(plot.title = element_text(hjust = 0.5),
+        theme(plot.title = element_text(hjust = 0.5, face = "bold"),
               panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
@@ -103,10 +103,10 @@ get_dist_based_exp <- function(cf_sim_results,
         theme_bw() +
         labs(x = x_label_text,
              y = "The expected treatment events\ncovered by the area",
-             title = "The Expected Number of Treatment Events and Distance from the Focus",
+             title = "The expected number of treatment events",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
-        theme(plot.title = element_text(hjust = 0.5),
+        theme(plot.title = element_text(hjust = 0.5, face = "bold"),
               panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
@@ -117,11 +117,11 @@ get_dist_based_exp <- function(cf_sim_results,
         theme_bw() +
         labs(x = x_label_text,
              y = "The proportion of\nexpected treatment events\ncovered by the area",
-             title = "The Expected Number of Treatment Events and Distance from the Focus",
+             title = "The expected number of treatment events",
              color = latex2exp::TeX("$\\alpha_{focus}$")) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
         ylim(0, 1) +         
-        theme(plot.title = element_text(hjust = 0.5),
+        theme(plot.title = element_text(hjust = 0.5, face = "bold"),
               panel.grid.major = element_blank(), panel.grid.minor = element_blank())
       #theme(plot.margin = margin(0.1, 0.1, 1, 0.1, "cm"))
       
