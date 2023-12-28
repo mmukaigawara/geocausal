@@ -3,9 +3,9 @@
 #' @description
 #' `get_est()` generates causal estimates comparing two counterfactual scenarios.
 #'
-#' @param obs_dens observed density
-#' @param cf1_dens counterfactual density 1
-#' @param cf2_dens counterfactual density 2
+#' @param obs observed density
+#' @param cf1 counterfactual density 1
+#' @param cf2 counterfactual density 2
 #' @param mediation whether to perform causal mediation analysis (don't use; still in development). By default, FALSE.
 #' @param obs_med_log_sum_dens sum of log densities of mediators for the observed (don't use; still in development)
 #' @param cf1_med_log_sum_dens sum of log densities of mediators for counterfactual 1 (don't use; still in development)
@@ -33,11 +33,7 @@
 #' @details The level of truncation indicates the quantile of weights at which weights are truncated.
 #' That is, if `trunc_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
 
-get_est <- function(obs_dens,
-                    cf1_dens,
-                    cf2_dens,
-                    treat,
-                    sm_out,
+get_est <- function(obs, cf1, cf2, treat, sm_out,
                     mediation = FALSE,
                     obs_med_log_sum_dens = NA,
                     cf1_med_log_sum_dens = NA,
@@ -56,8 +52,8 @@ get_est <- function(obs_dens,
   message("Calculating the average weighted surfaces for two scenarios...\n")
 
   ## CF1
-  estimates_1 <- get_weighted_surf(obs_dens = obs_dens,
-                                   cf_dens = cf1_dens,
+  estimates_1 <- get_weighted_surf(obs_dens = obs,
+                                   cf_dens = cf1,
                                    treatment_data = treat,
                                    smoothed_outcome = sm_out,
                                    mediation,
@@ -68,8 +64,8 @@ get_est <- function(obs_dens,
                                    truncation_level = trunc_level)
 
   ## CF2
-  estimates_2 <- get_weighted_surf(obs_dens = obs_dens,
-                                   cf_dens = cf2_dens,
+  estimates_2 <- get_weighted_surf(obs_dens = obs,
+                                   cf_dens = cf2,
                                    treatment_data = treat,
                                    smoothed_outcome = sm_out,
                                    mediation,

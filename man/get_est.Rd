@@ -5,9 +5,9 @@
 \title{Get causal estimates comparing two scenarios}
 \usage{
 get_est(
-  obs_dens,
-  cf1_dens,
-  cf2_dens,
+  obs,
+  cf1,
+  cf2,
   treat,
   sm_out,
   mediation = FALSE,
@@ -25,11 +25,11 @@ get_est(
 )
 }
 \arguments{
-\item{obs_dens}{observed density}
+\item{obs}{observed density}
 
-\item{cf1_dens}{counterfactual density 1}
+\item{cf1}{counterfactual density 1}
 
-\item{cf2_dens}{counterfactual density 2}
+\item{cf2}{counterfactual density 2}
 
 \item{treat}{column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.}
 
