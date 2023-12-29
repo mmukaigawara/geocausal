@@ -36,9 +36,9 @@ dist_from_baghd <- get_dist_focus(window = iraq_window,
                                   resolution = 0.5,
                                   mile = FALSE,
                                   preprocess = FALSE)
-                                  
+
 # Power density
 get_power_dens(target_dens = list(dist_from_mosul, dist_from_baghd),
-               priorities = c(3, 2), 
+               priorities = c(3, 2),
                window = iraq_window)
 }

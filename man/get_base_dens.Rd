@@ -39,14 +39,14 @@ get_base_dens(
 an im object of baseline density
 }
 \description{
-`get_base_dens()` takes a dataframe and 
+`get_base_dens()` takes a dataframe and
 returns the baseline densities using Scott's rule of thumb (out-of-sample data)
 or fitting an inhomogeneous Poisson model (in-sample data) by regressing
 the in-sample data on time-invariant covariates.
 }
 \examples{
 get_base_dens(option = "out",
-              out_data = airstrikes_base, 
+              out_data = airstrikes_base,
               out_coordinates = c("longitude", "latitude"),
               window = iraq_window,
               ndim = 256)
