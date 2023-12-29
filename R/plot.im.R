@@ -47,7 +47,7 @@ plot.im <- function(x, ...,  main = "Image object", window, scalename = "Density
 
   } else {
 
-    if (is.na(lim)) {
+    if (is.na(lim)[1]) {
 
       plot_dens <- plot_dens +
         ggplot2::scale_fill_viridis_c(option = "plasma")
