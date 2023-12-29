@@ -4,7 +4,15 @@
 \alias{plot.dens}
 \title{Plot densities}
 \usage{
-\method{plot}{dens}(x, ..., main = "Density", window, grayscale = "FALSE")
+\method{plot}{dens}(
+  x,
+  ...,
+  main = "Image object",
+  window,
+  scalename = "Density",
+  grayscale = "FALSE",
+  lim = NA
+)
 }
 \arguments{
 \item{x}{input}
@@ -15,7 +23,11 @@
 
 \item{window}{an owin object}
 
+\item{scalename}{the name of the scale (for images only)}
+
 \item{grayscale}{whether to use grayscale. By default, FALSE.}
+
+\item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 }
 \description{
 Plot densities

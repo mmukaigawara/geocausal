@@ -2,15 +2,16 @@
 % Please edit documentation in R/plot.im.R
 \name{plot.im}
 \alias{plot.im}
-\title{Plot densities}
+\title{Plot im}
 \usage{
 \method{plot}{im}(
   x,
   ...,
-  main = "Distance",
+  main = "Image object",
   window,
   scalename = "Density",
-  grayscale = "FALSE"
+  grayscale = "FALSE",
+  lim = NA
 )
 }
 \arguments{
@@ -25,7 +26,9 @@
 \item{scalename}{the name of the scale (for images only)}
 
 \item{grayscale}{whether to use grayscale. By default, FALSE.}
+
+\item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 }
 \description{
-Plot densities
+Plot im
 }
