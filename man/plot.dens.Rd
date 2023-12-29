@@ -21,7 +21,7 @@
 
 \item{main}{title}
 
-\item{window}{an owin object}
+\item{window}{owin object}
 
 \item{scalename}{the name of the scale (for images only)}
 

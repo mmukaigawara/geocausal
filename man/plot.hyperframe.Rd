@@ -4,7 +4,16 @@
 \alias{plot.hyperframe}
 \title{Plot estimates}
 \usage{
-\method{plot}{hyperframe}(x, ..., col, time_col = "time", range, scalename = NA, combined = TRUE)
+\method{plot}{hyperframe}(
+  x,
+  ...,
+  col,
+  time_col = "time",
+  range,
+  lim = NA,
+  scalename = NA,
+  combined = TRUE
+)
 }
 \arguments{
 \item{x}{input}
@@ -17,6 +26,8 @@ To specify multiple columns, users should list column names as a character vecto
 \item{time_col}{The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.}
 
 \item{range}{vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)}
+
+\item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 
 \item{scalename}{the name of the scale (for images only)}
 

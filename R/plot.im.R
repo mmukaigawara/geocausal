@@ -3,12 +3,13 @@
 #' @param x input
 #' @param ... arguments passed on to the function
 #' @param main title
+#' @param window owin object
 #' @param scalename the name of the scale (for images only)
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param grayscale whether to use grayscale. By default, FALSE.
 #'
 #' @export
-plot.im <- function(x, ...,  main = "Image object", scalename = "Density", grayscale = "FALSE", lim = NA) {
+plot.im <- function(x, ...,  main = "Image object", window, scalename = "Density", grayscale = "FALSE", lim = NA) {
 
   ## Convert the density image to a data frame
   pd_df <- as.data.frame(x)
@@ -43,7 +44,6 @@ plot.im <- function(x, ...,  main = "Image object", scalename = "Density", grays
         ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys", limits = lim)
 
     }
-
 
   } else {
 
