@@ -3,13 +3,12 @@
 #' @param x input
 #' @param ... arguments passed on to the function
 #' @param main title
-#' @param window an owin object
 #' @param scalename the name of the scale (for images only)
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param grayscale whether to use grayscale. By default, FALSE.
 #'
 #' @export
-plot.im <- function(x, ...,  main = "Image object", window, scalename = "Density", grayscale = "FALSE", lim = NA) {
+plot.im <- function(x, ...,  main = "Image object", scalename = "Density", grayscale = "FALSE", lim = NA) {
 
   ## Convert the density image to a data frame
   pd_df <- as.data.frame(x)
@@ -18,7 +17,7 @@ plot.im <- function(x, ...,  main = "Image object", window, scalename = "Density
   pd_df_long <- tidyr::pivot_longer(pd_df, cols = starts_with("V"), names_to = "variable", values_to = "value")
 
   ## Extract owin
-  #window <- spatstat.geom::Window(x)
+  window <- spatstat.geom::Window(x)
 
   ## Plot the image using ggplot2
   plot_dens <- ggplot() +
