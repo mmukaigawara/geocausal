@@ -79,7 +79,6 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA, sca
 
       gg <- ggplot2::ggplot() + #Plot smoothed outcome
         tidyterra::geom_spatraster(data = terra::rast(hfr_cleaned[1, 2][[1]])) +
-        ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, name = scalename) +
         ggthemes::theme_map() +
         ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -87,11 +86,11 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA, sca
 
       if (is.na(lim)[1]) {
 
-        gg <- gg + ggplot2::scale_fill_viridis_c(option = "plasma")
+        gg <- gg + ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, name = scalename)
 
         } else {
 
-        gg <- gg + ggplot2::scale_fill_viridis_c(option = "plasma", limits = lim)
+        gg <- gg + ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, name = scalename, limits = lim)
 
         }
 

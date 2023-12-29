@@ -50,12 +50,12 @@ plot.dens <- function(x, ...,  main = "Image object", window, scalename = "Densi
     if (is.na(lim)[1]) {
 
       plot_dens <- plot_dens +
-        ggplot2::scale_fill_viridis_c(option = "plasma")
+        ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA)
 
     } else {
 
       plot_dens <- plot_dens +
-        ggplot2::scale_fill_viridis_c(option = "plasma", limits = lim)
+        ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, limits = lim)
 
     }
 
