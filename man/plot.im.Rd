@@ -8,7 +8,6 @@
   x,
   ...,
   main = "Image object",
-  window,
   scalename = "Density",
   grayscale = "FALSE",
   lim = NA
@@ -20,8 +19,6 @@
 \item{...}{arguments passed on to the function}
 
 \item{main}{title}
-
-\item{window}{owin object}
 
 \item{scalename}{the name of the scale (for images only)}
 
