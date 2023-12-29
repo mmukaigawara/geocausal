@@ -32,8 +32,6 @@ get_cf_dens <- function(expected_number,
       integral(product_power_baseline, W = window) * expected_number
 
   }
-  
-  class(cf_density) <- c("dens", "im") 
 
   return(cf_density)
 
