@@ -28,7 +28,8 @@ plot.dens <- function(x, ...,  main = "Image object", window, scalename = "Densi
     ggplot2::ggtitle(main) +
     labs(fill = scalename) +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"),
-          plot.subtitle = element_text(hjust = 0.5))
+          plot.subtitle = element_text(hjust = 0.5),
+          legend.position = "bottom")
 
   if (grayscale) {
 
