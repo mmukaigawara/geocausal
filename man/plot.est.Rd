@@ -4,12 +4,14 @@
 \alias{plot.est}
 \title{Plot estimates}
 \usage{
-\method{plot}{est}(x, ...)
+\method{plot}{est}(x, ..., lim = NA)
 }
 \arguments{
 \item{x}{input}
 
 \item{...}{arguments passed on to the function}
+
+\item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 }
 \description{
 Plot estimates
