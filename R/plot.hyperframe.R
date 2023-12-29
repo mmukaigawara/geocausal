@@ -90,8 +90,6 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, scalename = N
     
     # Case 2: One time period x Multiple outcome columns: PPP only
     
-    message("Make sure to pick point pattern objects only. This function does not plot multiple image columns with multiple time periods.")
-    
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
     time_vis <- hfr_cleaned$time[1]$time #Time period to visualize
     
@@ -125,9 +123,6 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, scalename = N
   } else if (num_time_period > 1 && num_outcome_columns == 1) {
     
     # Case 3: Multiple time periods x One outcome column: PPP only
-    
-    message("Make sure to pick point pattern objects only. 
-            This function does not plot multiple image columns with multiple time periods.")
     
     ## If ppp
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
@@ -185,9 +180,6 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, scalename = N
   } else if (num_time_period > 1 && num_outcome_columns > 1) {
     
     # Case 4: Mutliple time periods x Multiple outcome columns: PPP only, automatically combine
-    
-    message("Make sure to pick point pattern objects only. 
-            This function does not plot multiple image columns with multiple time periods.")
     
     outcome_name <- colnames(hfr_cleaned)[-1] #Names of outcomes
     time_vis <- hfr_cleaned$time #Time period to visualize
