@@ -6,26 +6,22 @@
 #' @param scalename the name of the scale (for images only)
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param grayscale whether to use grayscale. By default, FALSE.
-#' @param color the color scale. By default, white and violetred.
+#' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
 #' @export
 plot.im <- function(x, ...,  main = "Image object",
-                    scalename = "Density", grayscale = "FALSE", color = c("white", "violetred"), lim = NA) {
-
-  ## Convert the density image to a data frame
-  #pd_df <- as.data.frame(x)
-
-  ## Pivot the data frame to a long format
-  #pd_df_long <- tidyr::pivot_longer(pd_df, cols = starts_with("V"), names_to = "variable", values_to = "value")
+                    scalename = "Density", grayscale = "FALSE",
+                    color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"), lim = NA) {
 
   ## Extract owin
-  #window <- spatstat.geom::Window(x)
+  window_sp <- conv_owin_into_sf(spatstat.geom::Window(x))
+  polygon_df <- window_sp[[2]] #Convert owin to DF
 
   ## Plot the image using ggplot2
   plot_dens <- ggplot() +
     tidyterra::geom_spatraster(data = terra::rast(x)) +
-    #ggplot2::geom_tile(data = pd_df_long, aes(x = x, y = y, fill = value)) +
-    #ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") +
+    ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
+                          fill = NA, color = "darkgrey", linewidth = 0.2) +
     ggthemes::theme_map() +
     ggplot2::ggtitle(main) +
     labs(fill = scalename) +

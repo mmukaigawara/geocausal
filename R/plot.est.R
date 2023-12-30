@@ -22,7 +22,7 @@ plot.est <- function(x, ..., lim = NA) {
     ggplot2::geom_tile() +
     ggplot2::coord_quickmap() +
     ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
-                          fill = NA, color = "black", size = 0.2) +
+                          fill = NA, color = "darkgrey", size = 0.2) +
     ggthemes::theme_map() +
     ggplot2::ggtitle("Differences in average weighted surfaces") + labs(fill = "Density") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "bottom")

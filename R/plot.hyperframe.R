@@ -11,11 +11,11 @@
 #' This argument applies only to the case when users specify one column with multiple time periods.
 #' By default = TRUE
 #' @param scalename the name of the scale (for images only)
-#' @param color the color scale. By default, white and violetred.
+#' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
 #' @export
 plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
-                            scalename = NA, color = c("white", "violetred"),
+                            scalename = NA, color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
                             combined = TRUE) {
 
   # Clean the hyperframe -----
@@ -80,8 +80,13 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
 
     } else { # If im
 
+      window_sp <- conv_owin_into_sf(spatstat.geom::Window(hfr_cleaned[1, 2][[1]]))
+      polygon_df <- window_sp[[2]] #Convert owin to DF
+
       gg <- ggplot2::ggplot() + #Plot smoothed outcome
         tidyterra::geom_spatraster(data = terra::rast(hfr_cleaned[1, 2][[1]])) +
+        ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
+                              fill = NA, color = "darkgrey", linewidth = 0.2) +
         ggthemes::theme_map() +
         ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -89,11 +94,11 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
 
       if (is.na(lim)[1]) {
 
-        gg <- gg + ggplot2::scale_fill_gradientn(colors = c("white", "violetred"), na.value = NA, name = scalename)
+        gg <- gg + ggplot2::scale_fill_gradientn(colors = color, na.value = NA, name = scalename)
 
         } else {
 
-        gg <- gg + ggplot2::scale_fill_gradientn(colors = c("white", "violetred"), na.value = NA, name = scalename, limits = lim)
+        gg <- gg + ggplot2::scale_fill_gradientn(colors = color, na.value = NA, name = scalename, limits = lim)
 
         }
 
