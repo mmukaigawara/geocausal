@@ -91,7 +91,7 @@ sim_cf_dens <- function(expected_number,
     plot_list <- lapply(1:length(sf_density_list),
                         function(a) {
 
-                          window_sp <- conv_owin_into_sf(spatstat.geom::Window(sf_density_list[[a]]))
+                          window_sp <- conv_owin_into_sf(window)
                           polygon_df <- window_sp[[2]] #Convert owin to DF
 
                           counterfactual_dens <- ggplot() +
@@ -114,7 +114,7 @@ sim_cf_dens <- function(expected_number,
     plot_list <- lapply(1:length(sf_density_list),
                         function(a) {
 
-                          window_sp <- conv_owin_into_sf(spatstat.geom::Window(sf_density_list[[a]]))
+                          window_sp <- conv_owin_into_sf(window)
                           polygon_df <- window_sp[[2]] #Convert owin to DF
 
                           counterfactual_dens <- ggplot() +
