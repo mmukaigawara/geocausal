@@ -92,16 +92,10 @@ sim_power_dens <- function(target_dens, #This must be a list element
     plot_list <- lapply(1:length(sf_density_list),
                         function(a) {
 
-                          window_sp <- conv_owin_into_sf(window)
-                          polygon_df <- window_sp[[2]] #Convert owin to DF
-
                           power_dens <- ggplot() +
-                            tidyterra::geom_spatraster(data = terra::rast(sf_density_list[[a]])) +
-                            #ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
+                            ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
                             ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") +
-                            ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
-                                                  fill = NA, color = "darkgrey", linewidth = 0.2) +
-                            #ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") +
+                            ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") +
                             ggthemes::theme_map() +
                             ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_manip[a], "$"))) +
                             labs(fill = "Density") +
@@ -119,13 +113,10 @@ sim_power_dens <- function(target_dens, #This must be a list element
                           polygon_df <- window_sp[[2]] #Convert owin to DF
 
                           power_dens <- ggplot() +
-                            tidyterra::geom_spatraster(data = terra::rast(sf_density_list[[a]])) +
-                            #ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
+                            ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
                             ggplot2::scale_fill_gradientn(colors = color, na.value = NA) +
                             #ggplot2::scale_fill_viridis_c(option = "plasma", limits = c(NA, max_val)) +
-                            ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
-                                                  fill = NA, color = "darkgrey", linewidth = 0.2) +
-                            #ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") +
+                            ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") +
                             ggthemes::theme_map() +
                             ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_manip[a], "$"))) +
                             labs(fill = "Density") +
