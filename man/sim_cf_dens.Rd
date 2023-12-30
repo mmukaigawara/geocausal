@@ -9,7 +9,8 @@ sim_cf_dens(
   base_dens,
   power_sim_results,
   window,
-  grayscale = FALSE
+  grayscale = FALSE,
+  color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF")
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ sim_cf_dens(
 \item{window}{owin object}
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
+
+\item{color}{the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".}
 }
 \value{
 list of counterfactual densities, a ggplot, and priorities
@@ -33,11 +36,11 @@ and returns simulated counterfactual densities.
 \examples{
 # Baseline density
 baseline <- get_base_dens(option = "out",
-                          out_data = airstrikes_base, 
+                          out_data = airstrikes_base,
                           out_coordinates = c("longitude", "latitude"),
                           window = iraq_window,
                           ndim = 64)
-                          
+
 # Density 1: Distance from Mosul
 dist_from_mosul <- get_dist_focus(window = iraq_window,
                                   lon = c(43.158),
@@ -53,7 +56,7 @@ dist_from_baghd <- get_dist_focus(window = iraq_window,
                                   resolution = 0.5,
                                   mile = FALSE,
                                   preprocess = FALSE)
-                                  
+
 # Simulation of power density
 sim_power_mosul <- sim_power_dens(target_dens = list(dist_from_baghd),
                                   dens_manip = dist_from_mosul,
