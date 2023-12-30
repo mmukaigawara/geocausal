@@ -11,9 +11,12 @@
 #' This argument applies only to the case when users specify one column with multiple time periods.
 #' By default = TRUE
 #' @param scalename the name of the scale (for images only)
+#' @param color the color scale. By default, white and violetred.
 #'
 #' @export
-plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA, scalename = NA, combined = TRUE) {
+plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
+                            scalename = NA, color = c("white", "violetred"),
+                            combined = TRUE) {
 
   # Clean the hyperframe -----
   hfr_temp <- x
@@ -46,7 +49,7 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA, sca
         ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
     } else {
       ggplot_obj <- ggplot_object +
-        ggplot2::scale_fill_viridis_c(option = "plasma")
+        ggplot2::scale_fill_gradientn(colors = color)
     }
 
     return(ggplot_obj)
@@ -86,11 +89,11 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA, sca
 
       if (is.na(lim)[1]) {
 
-        gg <- gg + ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, name = scalename)
+        gg <- gg + ggplot2::scale_fill_gradientn(colors = c("white", "violetred"), na.value = NA, name = scalename)
 
         } else {
 
-        gg <- gg + ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, name = scalename, limits = lim)
+        gg <- gg + ggplot2::scale_fill_gradientn(colors = c("white", "violetred"), na.value = NA, name = scalename, limits = lim)
 
         }
 

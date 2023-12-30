@@ -10,6 +10,7 @@
   main = "Image object",
   scalename = "Density",
   grayscale = "FALSE",
+  color = c("white", "violetred"),
   lim = NA
 )
 }
@@ -23,6 +24,8 @@
 \item{scalename}{the name of the scale (for images only)}
 
 \item{grayscale}{whether to use grayscale. By default, FALSE.}
+
+\item{color}{the color scale. By default, white and violetred.}
 
 \item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 }

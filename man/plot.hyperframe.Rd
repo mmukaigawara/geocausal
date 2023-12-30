@@ -12,6 +12,7 @@
   range,
   lim = NA,
   scalename = NA,
+  color = c("white", "violetred"),
   combined = TRUE
 )
 }
@@ -30,6 +31,8 @@ To specify multiple columns, users should list column names as a character vecto
 \item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 
 \item{scalename}{the name of the scale (for images only)}
+
+\item{color}{the color scale. By default, white and violetred.}
 
 \item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot.
 This argument applies only to the case when users specify one column with multiple time periods.

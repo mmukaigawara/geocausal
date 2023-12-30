@@ -6,9 +6,11 @@
 #' @param scalename the name of the scale (for images only)
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param grayscale whether to use grayscale. By default, FALSE.
+#' @param color the color scale. By default, white and violetred.
 #'
 #' @export
-plot.im <- function(x, ...,  main = "Image object", scalename = "Density", grayscale = "FALSE", lim = NA) {
+plot.im <- function(x, ...,  main = "Image object",
+                    scalename = "Density", grayscale = "FALSE", color = c("white", "violetred"), lim = NA) {
 
   ## Convert the density image to a data frame
   #pd_df <- as.data.frame(x)
@@ -50,12 +52,12 @@ plot.im <- function(x, ...,  main = "Image object", scalename = "Density", grays
     if (is.na(lim)[1]) {
 
       plot_dens <- plot_dens +
-        ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA)
+        ggplot2::scale_fill_gradientn(colors = color, na.value = NA, name = scalename)
 
     } else {
 
       plot_dens <- plot_dens +
-        ggplot2::scale_fill_viridis_c(option = "plasma", na.value = NA, limits = lim)
+        ggplot2::scale_fill_gradientn(colors = color, na.value = NA, limits = lim, name = scalename)
 
     }
 
