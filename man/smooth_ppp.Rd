@@ -4,7 +4,7 @@
 \alias{smooth_ppp}
 \title{Smooth outcome events}
 \usage{
-smooth_ppp(data, method, init = TRUE, sampling = 0.05)
+smooth_ppp(data, method, sampling = NA)
 }
 \arguments{
 \item{data}{the name of a hyperframe and column of interest.
@@ -13,13 +13,8 @@ smooth_ppp(data, method, init = TRUE, sampling = 0.05)
 \item{method}{methods for smoothing ppp objects.
 Either `"mclust"` or `"abramson"`. See details.}
 
-\item{init}{logical.
-`init` specifies whether to use a smaller number of samples to initialize
-fitting the Gaussian mixture model. By default = TRUE}
-
 \item{sampling}{numeric between 0 and 1. `sampling` determines the proportion of data
-to use for initialization (see `init`).
-By default, `0.05`, which means that `get_smoothed_outcome()` uses 5\% of samples for initialization.}
+to use for initialization. By default, NA (meaning that it uses all data without sampling).}
 }
 \value{
 im objects
@@ -55,11 +50,10 @@ dat_hfr <- get_hfr(data = dat_out,
                    time_col = "time",
                    time_range = c(1, max(dat_out$time)),
                    coordinates = c("longitude", "latitude"),
-                   combined = TRUE)
+                   combine = TRUE)
 
 # Smoothing outcome
 smooth_ppp(data = dat_hfr$all_combined,
            method = "mclust",
-           init = TRUE,
            sampling = 0.05)
 }

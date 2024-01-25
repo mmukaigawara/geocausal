@@ -50,7 +50,7 @@ dat_hfr <- get_hfr(data = dat_out,
                    time_col = "time",
                    time_range = c(1, max(dat_out$time)),
                    coordinates = c("longitude", "latitude"),
-                   combined = TRUE)
+                   combine = TRUE)
 
 # Covariates
 dist_baghdad <- get_dist_focus(window = iraq_window,
@@ -66,6 +66,6 @@ dat_hfr$dist_bagh <- dist_baghdad
 get_obs_dens(dat_hfr,
              dep_var = "all_combined",
              indep_var = c("dist_bagh"),
-             ngrid = 100, 
+             ngrid = 100,
              window = iraq_window)
 }

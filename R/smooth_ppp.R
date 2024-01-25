@@ -7,12 +7,8 @@
 #' `data` should be in the form of `"hyperframe$column"`.
 #' @param method methods for smoothing ppp objects.
 #' Either `"mclust"` or `"abramson"`. See details.
-#' @param init logical.
-#' `init` specifies whether to use a smaller number of samples to initialize
-#' fitting the Gaussian mixture model. By default = TRUE
 #' @param sampling numeric between 0 and 1. `sampling` determines the proportion of data
-#' to use for initialization (see `init`).
-#' By default, `0.05`, which means that `get_smoothed_outcome()` uses 5\% of samples for initialization.
+#' to use for initialization. By default, NA (meaning that it uses all data without sampling).
 #'
 #' @returns im objects
 #'
@@ -43,18 +39,16 @@
 #'                    time_col = "time",
 #'                    time_range = c(1, max(dat_out$time)),
 #'                    coordinates = c("longitude", "latitude"),
-#'                    combined = TRUE)
+#'                    combine = TRUE)
 #'
 #' # Smoothing outcome
 #' smooth_ppp(data = dat_hfr$all_combined,
 #'            method = "mclust",
-#'            init = TRUE,
 #'            sampling = 0.05)
 
 smooth_ppp <- function(data,
                        method,
-                       init = TRUE,
-                       sampling = 0.05) {
+                       sampling = NA) {
 
   # Obtain coordinates of interest -----
 
@@ -67,7 +61,14 @@ smooth_ppp <- function(data,
     ## Identify the number of components (EII model)
     message("Fitting the Gaussian mixture model\n")
 
-    if (init == TRUE) {
+    if (is.na(sampling)) {
+
+      ## Fit the model without initialization
+      BIC <- mclust::mclustBIC(all_points_coords, modelNames = c("EII"))
+      mod_mcl <- mclust::Mclust(all_points_coords, x = BIC, modelNames = "EII")
+
+
+    } else {
 
       ## Prepare for initialization
       M <- round((nrow(all_points_coords)*sampling), digits = 0)
@@ -76,12 +77,6 @@ smooth_ppp <- function(data,
       ## Fit the mixture Gaussian model
       BIC <- mclust::mclustBIC(all_points_coords, modelNames = c("EII"),
                                initialization = init)
-      mod_mcl <- mclust::Mclust(all_points_coords, x = BIC, modelNames = "EII")
-
-    } else {
-
-      ## Fit the model without initialization
-      BIC <- mclust::mclustBIC(all_points_coords, modelNames = c("EII"))
       mod_mcl <- mclust::Mclust(all_points_coords, x = BIC, modelNames = "EII")
 
     }

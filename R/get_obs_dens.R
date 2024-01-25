@@ -24,12 +24,12 @@
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`.
 #' Users should note that the coefficients in the output are not directly interpretable,
 #' since they are the coefficients inside the exponential of the poisson model.
-#' 
+#'
 #' @examples
 #' # Data
 #' dat_out <- insurgencies[1:100, ]
 #' dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
-#' 
+#'
 #' # Hyperframe
 #' dat_hfr <- get_hfr(data = dat_out,
 #'                    col = "type",
@@ -37,7 +37,7 @@
 #'                    time_col = "time",
 #'                    time_range = c(1, max(dat_out$time)),
 #'                    coordinates = c("longitude", "latitude"),
-#'                    combined = TRUE)
+#'                    combine = TRUE)
 #'
 #' # Covariates
 #' dist_baghdad <- get_dist_focus(window = iraq_window,
@@ -46,14 +46,14 @@
 #'                                resolution = 0.1,
 #'                                mile = FALSE,
 #'                                preprocess = FALSE)
-#' 
+#'
 #' dat_hfr$dist_bagh <- dist_baghdad
-#' 
+#'
 #' # Observed density
 #' get_obs_dens(dat_hfr,
 #'              dep_var = "all_combined",
 #'              indep_var = c("dist_bagh"),
-#'              ngrid = 100, 
+#'              ngrid = 100,
 #'              window = iraq_window)
 
 get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
@@ -81,7 +81,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
               intens_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Counts
               sum_log_intens = sum_log_intensity) #Sum of log(intensity) for each time period
-  
+
   class(out) <- c("list", "obs")
   return(out)
 
