@@ -1,6 +1,7 @@
 # geocausal 0.3.0
 
-* Included the `med_sum_log_intens()` function.
+* Updated the estimation procedure.
+* Introduced S3 methods throughout (changed the names of several key functions such as `plot()` and `summary()`).
 
 # geocausal 0.2.1
 
