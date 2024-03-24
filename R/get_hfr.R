@@ -111,6 +111,8 @@ get_hfr <- function(data, col,
   # Finalizing the hyperframe ----------
   message("Generating a hyperframe of point processes...\n")
 
+  class(x_hyperframe) <- c("hyperframe", "hfr")
+
   return(x_hyperframe)
 
 }
