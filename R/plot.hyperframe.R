@@ -14,9 +14,9 @@
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
 #' @export
-plot.hfr <- function(x, ..., col, time_col = "time", range, lim = NA,
-                     scalename = NA, color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
-                     combined = TRUE) {
+plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
+                            scalename = NA, color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
+                            combined = TRUE) {
 
   # Clean the hyperframe -----
   hfr_temp <- x
