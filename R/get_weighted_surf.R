@@ -5,6 +5,7 @@
 #' @param obs_dens observed density
 #' @param cf_dens counterfactual density
 #' @param mediation whether to perform causal mediation analysis. By default, FALSE.
+#' @param cate whether to perform the heterogeneity analysis. By default, FALSE.
 #' @param obs_med_log_sum_dens sum of log densities of mediators for the observed (if `mediation = TRUE`)
 #' @param cf_med_log_sum_dens sum of log densities of mediators for counterfactual (if `mediation = TRUE`)
 #' @param treatment_data column of a hyperframe that summarizes treatment data. In the form of `hyperframe$column`.
@@ -13,6 +14,7 @@
 #' @param entire_window owin object (the entire region of interest)
 #' @param truncation_level the level at which the weights are truncated (see `get_estimates()`)
 #' @param time_after whether to include one unit time difference between treatment and outcome
+#' @param save_surface_list whether to save a list of weighted surface for each time period. Default is FALSE.
 #'
 #' @returns list of an average weighted surface (`avarage_surf`, an `im` object),
 #' a Hajek average weighted surface (`average_weighted_surf_haj`, an `im` object),
@@ -24,6 +26,7 @@
 
 get_weighted_surf <- function(obs_dens, cf_dens,
                               mediation = FALSE,
+                              cate = FALSE,
                               obs_med_log_sum_dens, cf_med_log_sum_dens,
                               treatment_data,
                               smoothed_outcome,
@@ -91,6 +94,13 @@ get_weighted_surf <- function(obs_dens, cf_dens,
   average_weighted_surface <- spatstat.geom::as.im(apply(mat_im_weighted, c(1, 2), mean),
                                                    W = entire_window) #This is IPW; one pixel image
   average_weighted_surface_haj <- average_weighted_surface / mean(weights) #Hajek; one pixel image
+  
+  if(cate){ 
+    
+    return(list(weighted_surface_arr = mat_im_weighted,
+                weighted_surface_arr_haj = mat_im_weighted/mean(weights),
+                weights = weights))
+  }
 
   return(list(average_surf = average_weighted_surface,
               average_surf_haj = average_weighted_surface_haj,
