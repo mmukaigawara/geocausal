@@ -9,6 +9,7 @@
 #' @param dimyx pixel array dimensions. A single integer, or an integer vector of length 2 giving dimensions in the y and x directions.Default is `c(128,128)`.
 #' @param weights Optional vector of weights associated with the points.
 #' @param DivideByPixelArea Logical value determining whether the resulting pixel values should be devided by the pixel area. Default value is `False`.
+#' @param ... parameters passed on to the function.
 #'
 #' @returns im objects
 #'
@@ -30,9 +31,9 @@
 #' # Smoothing outcome
 #' pixel_count_ppp(data = dat_hfr$all_combined)
 
-pixel_count_ppp <- function(data,dimyx = c(128,128), W=NULL, weights = NULL,DivideByPixelArea = FALSE) {
+pixel_count_ppp <- function(data,dimyx = c(128,128), W=NULL, weights = NULL,DivideByPixelArea = FALSE,...) {
   
-  pixel_count <- furrr::future_map(data, spatstat.geom::pixellate.ppp,dimyx = dimyx,W = W, weights = weights, DivideByPixelArea = DivideByPixelArea)
+  pixel_count <- furrr::future_map(data, spatstat.geom::pixellate.ppp,dimyx = dimyx,W = W, weights = weights, DivideByPixelArea = DivideByPixelArea,...)
   
   return(pixel_count)
   

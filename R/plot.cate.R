@@ -2,29 +2,31 @@
 #' 
 #' @param cate a cate object returned by `get_cate()` function
 #' @param ... arguments passed on to the function
-#' @param categorical a vector of boolean values indicating whether each value in `eval_values` should be treated as a categorical (TRUE) or continuous (FALSE).
-#' @param xlim a vector of two values specifying the limits of x. Default is NULL
-#' @param ylim a vector of two values specifying the limits of y. Default is NULL 
+#' @param categorical boolean or a vector of boolean values indicating whether each value in `eval_values` should be treated as a categorical (TRUE) or continuous (FALSE). Default is `FALSE`.
+#' @param xrange an optional vector of two values the range of x shown.
+#' @param ylim an optional vector of two values specifying the limits of y
 #' @param main title
 #' @param xlab label of x-axis
 #' 
 #' @export 
-plot.cate <- function(cate,...,categorical = NULL,xlim = NULL,main = "",xlab = "",ylim = NULL) {
+plot.cate <- function(cate,...,categorical = 0,scale = 1,xrange = NULL,main = "",xlab = "",ylim = NULL) {
 
-  V <- diag(cate$V_eval)
+  V <- diag(cate$V_eval)*scale^2
   x <- cate$specification$eval_values
-  m <- cate$est_eval
+  m <- cate$est_eval*scale
   ub <- m+qnorm(c(0.975))*sqrt(V)
   lb <- m+qnorm(c(0.025))*sqrt(V)
   
   
+  
+  
   # Create a data frame for plotting
   df_plot <- data.frame(x = x, m = m, ub = ub, lb = lb)
-  if(is.null(categorical)){
-    categorical <- rep(1,length(x))
+  if(length(categorical)==1){
+    categorical <- rep(categorical,length(x))
   }
   
-  group <- cumsum(c(1, diff(categorical) != 0))
+  group <- cumsum((c(0, diff(categorical) != 0)+categorical)>0)
   
   # Create a data frame
   df_plot$group <- factor(group)
@@ -44,10 +46,11 @@ plot.cate <- function(cate,...,categorical = NULL,xlim = NULL,main = "",xlab = "
   # Create the plot
   p <- ggplot() +
     ggplot2::geom_point(data = subset(df_plot, !(duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, y = m), color = "black") +
-    ggplot2::geom_errorbar(data = subset(df_plot, !(duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub), width = 0.2) +
+    ggplot2::geom_errorbar(data = subset(df_plot, !(duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub), width = 0.1) +
     ggplot2::geom_line(data = subset(df_plot, (duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, y = m,group=group), color = "black") +
+    ggplot2::geom_hline(yintercept = cate$mean_effect*scale, linetype = "dashed", color = "red")+
     ggplot2::geom_ribbon(data = subset(df_plot, (duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub,group = group), fill = "grey", alpha = 0.5) +
-    ggplot2::theme_classic()+
+    ggplot2::theme_bw()+
     ggplot2::labs(x = xlab, y = "CATE", title = main)
   
   
@@ -55,6 +58,7 @@ plot.cate <- function(cate,...,categorical = NULL,xlim = NULL,main = "",xlab = "
   if (!is.null(ylim)) {
     p <- p + ylim(ylim[1], ylim[2])
   }
+
   
   # Print the plot
   print(p)

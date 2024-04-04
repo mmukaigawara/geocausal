@@ -56,11 +56,11 @@ get_est <- function(obs, cf1, cf2, treat, sm_out,
                                    cf_dens = cf1,
                                    treatment_data = treat,
                                    smoothed_outcome = sm_out,
-                                   mediation,
+                                   mediation = mediation,
                                    obs_med_log_sum_dens = obs_med_log_sum_dens,
                                    cf_med_log_sum_dens = cf1_med_log_sum_dens,
                                    lag = lag, entire_window = entire_window,
-                                   time_after,
+                                   time_after = time_after,
                                    truncation_level = trunc_level)
 
   ## CF2
@@ -68,11 +68,11 @@ get_est <- function(obs, cf1, cf2, treat, sm_out,
                                    cf_dens = cf2,
                                    treatment_data = treat,
                                    smoothed_outcome = sm_out,
-                                   mediation,
+                                   mediation = mediation,
                                    obs_med_log_sum_dens = obs_med_log_sum_dens,
                                    cf_med_log_sum_dens = cf2_med_log_sum_dens,
                                    lag = lag, entire_window = entire_window,
-                                   time_after,
+                                   time_after = time_after,
                                    truncation_level = trunc_level)
 
   #2. Get estimates (contrast) -----
