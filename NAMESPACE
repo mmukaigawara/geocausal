@@ -30,6 +30,7 @@ importFrom(splines, "ns")
 importFrom(splines, "bs")
 importFrom("stats", "as.formula", "complete.cases", "density",
            "quantile", "time")
+importFrom("stats", "na.omit", "pchisq", "predict", "qnorm")
 S3method("summary", "est")
 S3method("summary", "obs")
 S3method("summary", "cate")
