@@ -1,16 +1,17 @@
 #' Plot estimated CATE
 #' 
-#' @param cate a cate object returned by `get_cate()` function
+#' @param x input
 #' @param ... arguments passed on to the function
 #' @param categorical boolean or a vector of boolean values indicating whether each value in `eval_values` should be treated as a categorical (TRUE) or continuous (FALSE). Default is `FALSE`.
 #' @param xrange an optional vector of two values the range of x shown.
 #' @param ylim an optional vector of two values specifying the limits of y
 #' @param main title
 #' @param xlab label of x-axis
+#' @param scale a positive number specifying the scale by which the estimates will be scaled. If provided, the estimates will be scaled by this value. Default is NULL, which means no scaling is applied.
 #' 
 #' @export 
-plot.cate <- function(cate,...,categorical = 0,scale = 1,xrange = NULL,main = "",xlab = "",ylim = NULL) {
-
+plot.cate <- function(x,...,categorical = 0,scale = 1,xrange = NULL,main = "",xlab = "",ylim = NULL) {
+  cate <- x
   V <- diag(cate$V_eval)*scale^2
   x <- cate$specification$eval_values
   m <- cate$est_eval*scale

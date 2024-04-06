@@ -8,6 +8,7 @@ get_weighted_surf(
   obs_dens,
   cf_dens,
   mediation = FALSE,
+  cate = FALSE,
   obs_med_log_sum_dens,
   cf_med_log_sum_dens,
   treatment_data,
@@ -24,6 +25,8 @@ get_weighted_surf(
 \item{cf_dens}{counterfactual density}
 
 \item{mediation}{whether to perform causal mediation analysis. By default, FALSE.}
+
+\item{cate}{whether to perform the heterogeneity analysis. By default, FALSE.}
 
 \item{obs_med_log_sum_dens}{sum of log densities of mediators for the observed (if `mediation = TRUE`)}
 

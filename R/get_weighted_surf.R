@@ -14,7 +14,6 @@
 #' @param entire_window owin object (the entire region of interest)
 #' @param truncation_level the level at which the weights are truncated (see `get_estimates()`)
 #' @param time_after whether to include one unit time difference between treatment and outcome
-#' @param save_surface_list whether to save a list of weighted surface for each time period. Default is FALSE.
 #'
 #' @returns list of an average weighted surface (`avarage_surf`, an `im` object),
 #' a Hajek average weighted surface (`average_weighted_surf_haj`, an `im` object),

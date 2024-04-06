@@ -20,5 +20,4 @@ get_em_vec <- function(em,time_after = TRUE,lag,entire_window = NULL){
   
   return(res)
 }
-plot(as.im(array(eee[1000:(1000+128*128)],c(128,128))))
-plot(as.im(array(fff[1000:(1000+128*128)],c(128,128))))
+

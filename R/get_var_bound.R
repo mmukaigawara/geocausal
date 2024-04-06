@@ -3,14 +3,21 @@
 #' @description A function that calculates variance upper bounds
 #'
 #' @param estimates an object returned from `get_est()` function
+#' @param bound_est an integer specifying the estimator for the asymptotic variance bound. Use `1` for the first estimator and `2` for the second estimator.Default is `1`. See details.
 #' 
 #' @returns list of variance upper bounds for each scenario (`bound_haj`) and causal contrasts (`bound_tau_haj`). 
 #' Note that this function returns variance upper bounds for Hajek estimators
 #'  
 #' @details `get_var_bound()` is an internal function to `get_estimates()` function, 
-#' performing the estimation analysis after `get_est()` function
+#' performing the estimation analysis after `get_est()` function. There are two consistent
+#'  estimators for the asymptotic variance bound. The first estimator (default, `bound_est=1`) 
+#'  performs well in simulations but may underestimate the true bound when there are extremely 
+#'  large weights. In such cases, users may consider using `bound_est=2` for the second estimator.  
+#'  However, it is important to note that the second estimator (`bound_est=2`) may exhibit some  
+#'  under-coverage issues in certain simulation cases. Users should carefully consider the  
+#'  characteristics of their data when selecting the estimator. 
 
-get_var_bound <- function(estimates) {
+get_var_bound <- function(estimates, bound_est = 1) {
   
   # Define arguments
   weights <- estimates$weights
@@ -55,6 +62,10 @@ get_var_bound <- function(estimates) {
   # Bound for Hajek
   mean_weight <- apply(weights, 1, mean)
   all_est <- sweep(all_est, MARGIN = 1, mean_weight, FUN = '/')
+  if(bound_est==2){
+    weights <- sweep(weights, MARGIN = 1, mean_weight, FUN = '/')
+  }
+
 
   # bound_haj <- sweep(bound, 1, mean_weight ^ 2, FUN = '/')     # ad hoc approach
   # bound_t_haj <- array(NA, dim = c(num_interv, num_interv, num_B))

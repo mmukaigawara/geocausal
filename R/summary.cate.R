@@ -2,15 +2,16 @@
 #' 
 #' @description `summary` functions take the output and summarize it.
 #' 
-#' @param cate a cate object
-#' @param significance_level Numeric scalar between 0 and 1, inclusive, representing the significance level for the chi-square test. The test is used to determine whether at least one of the coefficients (except the intercept) is not equal to 0. Default is 0.05
+#' @param object an output object
 #' @param ... arguments passed on to the function
+#' @param significance_level Numeric scalar between 0 and 1, inclusive, representing the significance level for the chi-square test. The test is used to determine whether at least one of the coefficients (except the intercept) is not equal to 0. Default is 0.05
 #' 
 #' @details Currently, observed densities (class: obs), estimates (class: est) and heterogeneity estimates (class: cate) are supported by this function.
 #'
 #' @export
-summary.cate <- function(cate, significance_level = 0.05,...) {
+summary.cate <- function(object,..., significance_level = 0.05) {
   
+  cate <- object
   #1. Summary for the regression coefficients
   intercept <- cate$specification$intercept
   if(intercept==0){
