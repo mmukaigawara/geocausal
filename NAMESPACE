@@ -26,6 +26,7 @@ importFrom(mclust, "mclustBIC")
 importFrom(tidyselect, "starts_with")
 importFrom(spatstat.geom, "integral")
 importFrom(spatstat.geom, "pixellate.ppp")
+importFrom(spatstat.geom, "as.im")
 importFrom(splines, "ns")
 importFrom(splines, "bs")
 importFrom("stats", "as.formula", "complete.cases", "density",
