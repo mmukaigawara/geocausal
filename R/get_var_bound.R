@@ -11,10 +11,10 @@
 #' @details `get_var_bound()` is an internal function to `get_estimates()` function, 
 #' performing the estimation analysis after `get_est()` function. There are two consistent
 #'  estimators for the asymptotic variance bound. The first estimator (default, `bound_est=1`) 
-#'  performs well in simulations but may underestimate the true bound when there are extremely 
-#'  large weights. In such cases, users may consider using `bound_est=2` for the second estimator.  
-#'  However, it is important to note that the second estimator (`bound_est=2`) may exhibit some  
-#'  under-coverage issues in certain simulation cases. Users should carefully consider the  
+#'  performs well in scenarios with low variability, but exhibit some under coverage issue for high
+#'  variability scenarios where longer time series are needed for getting robust estimator. The second 
+#'  estimator(`bound_est=2`) yields good coverage rates in simulations, but gives unreasonably large bound when there 
+#'  'are extremely large IPW weights.  Users should carefully consider the  
 #'  characteristics of their data when selecting the estimator. 
 
 get_var_bound <- function(estimates, bound_est = 1) {
@@ -62,7 +62,7 @@ get_var_bound <- function(estimates, bound_est = 1) {
   # Bound for Hajek
   mean_weight <- apply(weights, 1, mean)
   all_est <- sweep(all_est, MARGIN = 1, mean_weight, FUN = '/')
-  if(bound_est==2){
+  if(bound_est==1){
     weights <- sweep(weights, MARGIN = 1, mean_weight, FUN = '/')
   }
 

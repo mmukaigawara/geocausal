@@ -2,7 +2,10 @@
 #' 
 #' @param x input
 #' @param ... arguments passed on to the function
-#' @param categorical boolean or a vector of boolean values indicating whether each value in `eval_values` should be treated as a categorical (TRUE) or continuous (FALSE). Default is `FALSE`.
+#' @param type The type of plot to draw. 
+#'   - If 'type' is "p", points with error bars will be drawn.
+#'   - If 'type' is "l", lines with shaded region will be drawn.
+#'   - If 'type' is a vector of strings, each element specifies the type for the corresponding `eval_values` value.
 #' @param xrange an optional vector of two values the range of x shown.
 #' @param ylim an optional vector of two values specifying the limits of y
 #' @param main title
@@ -10,7 +13,7 @@
 #' @param scale a positive number specifying the scale by which the estimates will be scaled. If provided, the estimates will be scaled by this value. Default is NULL, which means no scaling is applied.
 #' 
 #' @export 
-plot.cate <- function(x,...,categorical = 0,scale = 1,xrange = NULL,main = "",xlab = "",ylim = NULL) {
+plot.cate <- function(x,...,type = "l",scale = 1,xrange = NULL,main = "",xlab = "",ylim = NULL) {
   cate <- x
   V <- diag(cate$V_eval)*scale^2
   x <- cate$specification$eval_values
@@ -18,7 +21,7 @@ plot.cate <- function(x,...,categorical = 0,scale = 1,xrange = NULL,main = "",xl
   ub <- m+qnorm(c(0.975))*sqrt(V)
   lb <- m+qnorm(c(0.025))*sqrt(V)
   
-  
+  categorical <- ifelse(type=="p",1,0)
   
   
   # Create a data frame for plotting

@@ -17,7 +17,9 @@
 #' @param intercept whether to include intercept in the regression model. Default is TRUE. 
 #' @param eval_values a vector of values of the effect modifier for which CATE will be evaluated. Default is a `seq(a,b,length.out=20)` where `a` and `b` are minimum and maximum values of the effect modifier.
 #' @param eval_mat evaluated spline basis (excluding the intercept) matrix at `eval_values`.  If `intercept = TRUE`, then a column of 1 will be add to `eval_mat`.
-#' @param test_beta a vector of integers contain the indices of the coefficients that are included in the hypothesis test. By default, the null hypothesis is that all coefficient  (except the intercept is 0). See details below 
+#' @param test_beta a vector of integers contain the indices of the coefficients that are included in the hypothesis test. By default, the null hypothesis is that all coefficient  (except the intercept is 0). See details below
+#' @param bound either `1` or `2` specifying which bound estimator will be used. Default is `1`
+#' @param save_weights whether to save weights. Default is `TRUE`
 #' @param ... arguments passed onto the function 
 #' 
 #' @returns list of the following:
@@ -41,14 +43,14 @@
 get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95, time_after=TRUE,entire_window = NULL,
                      em = NULL,E_mat = NULL,
                      nbase, spline_type = "ns",intercept = TRUE,
-                     eval_values = NULL, eval_mat = NULL,test_beta = NULL,...) {
+                     eval_values = NULL, eval_mat = NULL,test_beta = NULL,bound=1,save_weights = TRUE,...) {
   # pixel_ratio <- 8451/(128*128)
   chisq_stat <- NULL
   p.value <- NULL
   total_effect <- NULL
   mean_effect <- NULL
   E_mat_provided <- !is.null(E_mat)
-  
+  weights <- NULL
   
   # --------------------------check the format of the arguments-------------------
   is_positive_integer_within_range <- function(x, min_val, max_val) {
@@ -203,9 +205,18 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   # Jocobian matrix 
   J <- cbind(-diag(p),
              diag(p),
-             beta1,
-             -beta2)
+             beta1/mean(weights[1,]),
+             -beta2/mean(weights[2,]))
   
+  if(bound==2){
+    J <- cbind(-diag(p),
+               diag(p),
+               beta1,
+               -beta2)
+  }
+
+  
+
   
   V <- J%*%Vt%*%t(J) # variance for beta_hat
   beta <- beta2-beta1  # beta_hat
@@ -237,7 +248,6 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   #-----------------------prediction and varaince-------------------------------
   cat("Get the predicted value and variance... \n") 
-  
   V_eval <- eval_mat%*%V%*%t(eval_mat)/time_points   # NOTE we divide by T here!
 
   est_eval <- c(eval_mat%*%beta)
@@ -247,6 +257,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
     specification <- list(eval_values = eval_values, intercept = intercept,test_beta = paste0("basis",test_beta-intercept))
   }
   
+  class(weights) <- weights
   cate <- list(est_beta = beta,
                V_beta = V/time_points,    # note we divided by T, and this is the variance bound for CI
                chisq_stat = chisq_stat,
@@ -255,7 +266,8 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
                est_eval = est_eval,
                V_eval = V_eval,
                total_effect = total_effect,
-               mean_effect = mean_effect)
+               mean_effect = mean_effect,
+               weights = weights)
   
   class(cate) <- c("cate","list")
   

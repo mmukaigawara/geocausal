@@ -7,7 +7,7 @@
 \method{plot}{cate}(
   x,
   ...,
-  categorical = 0,
+  type = "l",
   scale = 1,
   xrange = NULL,
   main = "",
@@ -20,7 +20,10 @@
 
 \item{...}{arguments passed on to the function}
 
-\item{categorical}{boolean or a vector of boolean values indicating whether each value in `eval_values` should be treated as a categorical (TRUE) or continuous (FALSE). Default is `FALSE`.}
+\item{type}{The type of plot to draw. 
+- If 'type' is "p", points with error bars will be drawn.
+- If 'type' is "l", lines with shaded region will be drawn.
+- If 'type' is a vector of strings, each element specifies the type for the corresponding `eval_values` value.}
 
 \item{scale}{a positive number specifying the scale by which the estimates will be scaled. If provided, the estimates will be scaled by this value. Default is NULL, which means no scaling is applied.}
 
