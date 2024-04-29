@@ -27,7 +27,7 @@ plot.est <- function(x, ..., lim = NA) {
     ggplot2::ggtitle("Differences in average weighted surfaces") + labs(fill = "Density") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "bottom")
 
-  if (is.na(lim)) {
+  if (is.na(lim[1])) {
 
     surf_plot <- surf_plot +
       ggplot2::scale_fill_gradientn(
