@@ -2,7 +2,7 @@
 #'
 #' @param x input
 #' @param ... arguments passed on to the function
-#' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
+#' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector of max and min
 #'
 #' @export
 plot.est <- function(x, ..., lim = NA) {
