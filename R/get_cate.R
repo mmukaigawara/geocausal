@@ -42,7 +42,7 @@
 
 get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95, time_after=TRUE,entire_window = NULL,
                      em = NULL,E_mat = NULL,
-                     nbase, spline_type = "ns",intercept = TRUE,
+                     nbase = 6, spline_type = "ns",intercept = TRUE,
                      eval_values = NULL, eval_mat = NULL,test_beta = NULL,bound=1,save_weights = TRUE,...) {
   # pixel_ratio <- 8451/(128*128)
   chisq_stat <- NULL
@@ -143,9 +143,10 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   if(is.null(eval_values)){
     eval_values <- seq(min(unlist(em),na.rm = TRUE),max(unlist(em),na.rm = TRUE),length.out = 20)
+  }
+  if(is.null(eval_mat)){
     eval_mat <- predict(E_mat,newx = eval_values)
   }
-  
   
   
   if(intercept){
@@ -153,7 +154,8 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
     eval_mat <- cbind(1,eval_mat)
   }
   
-  
+  print(dim(E_mat))
+  print(dim(eval_mat))
   #---------------------------------fit the model-----------------------------------
   cat("Fit the model...\n")
   # form a dataframe for the estimates and covariates

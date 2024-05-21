@@ -22,6 +22,7 @@ plot.cate <- function(x,...,type = "l",scale = 1,xrange = NULL,main = "",xlab = 
   lb <- m+qnorm(c(0.025))*sqrt(V)
   
   categorical <- ifelse(type=="p",1,0)
+
   
   
   # Create a data frame for plotting
@@ -30,32 +31,40 @@ plot.cate <- function(x,...,type = "l",scale = 1,xrange = NULL,main = "",xlab = 
     categorical <- rep(categorical,length(x))
   }
   
-  group <- cumsum((c(0, diff(categorical) != 0)+categorical)>0)
-  
-  # Create a data frame
-  df_plot$group <- factor(group)
-  
-  # Filter the data frame based on xrange if provided
-  if (!is.null(xrange)) {
-    df_plot <- df_plot[df_plot$x >= xrange[1] & df_plot$x <= xrange[2], ]
-  }
-
+  if(sum(categorical==0)==0){
+    df_plot$x <- as.factor(x)
+    p <- ggplot() +
+      ggplot2::geom_point(data = df_plot, aes(x = x, y = m), color = "black") +
+      ggplot2::geom_errorbar(data = df_plot, aes(x = x, ymin = lb, ymax = ub), width = 0.1) +
+      ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "red")+
+      ggplot2::theme_bw()+
+      ggplot2::labs(x = xlab, y = "CATE", title = main)
+    
+  }else{
+    group <- cumsum((c(0, diff(categorical) != 0)+categorical)>0)
+    
+    # Create a data frame
+    df_plot$group <- factor(group)
+    
+    # Filter the data frame based on xrange if provided
+    if (!is.null(xrange)) {
+      df_plot <- df_plot[df_plot$x >= xrange[1] & df_plot$x <= xrange[2], ]
+    }
+    
+    
+    
     # Create the plot
-    # p <- ggplot(df_plot, aes(x = x, y = m)) +
-    #   geom_line() +
-    #   geom_ribbon(aes(ymin = lb, ymax = ub), fill = "grey75", alpha = 0.5) +
-    #   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-    #   labs(x = xlab, y = "CATE", title = main)+theme_classic()
+    p <- ggplot() +
+      ggplot2::geom_point(data = subset(df_plot, !(duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, y = m), color = "black") +
+      ggplot2::geom_errorbar(data = subset(df_plot, !(duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub), width = 0.1) +
+      ggplot2::geom_line(data = subset(df_plot, (duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, y = m,group=group), color = "black") +
+      ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "red")+
+      ggplot2::geom_ribbon(data = subset(df_plot, (duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub,group = group), fill = "grey", alpha = 0.5) +
+      ggplot2::theme_bw()+
+      ggplot2::labs(x = xlab, y = "CATE", title = main)
+  }
   
-  # Create the plot
-  p <- ggplot() +
-    ggplot2::geom_point(data = subset(df_plot, !(duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, y = m), color = "black") +
-    ggplot2::geom_errorbar(data = subset(df_plot, !(duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub), width = 0.1) +
-    ggplot2::geom_line(data = subset(df_plot, (duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, y = m,group=group), color = "black") +
-    ggplot2::geom_hline(yintercept = cate$mean_effect*scale, linetype = "dashed", color = "red")+
-    ggplot2::geom_ribbon(data = subset(df_plot, (duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub,group = group), fill = "grey", alpha = 0.5) +
-    ggplot2::theme_bw()+
-    ggplot2::labs(x = xlab, y = "CATE", title = main)
+
   
   
   # Adjust y-axis limits if specified
@@ -64,7 +73,7 @@ plot.cate <- function(x,...,type = "l",scale = 1,xrange = NULL,main = "",xlab = 
   }
 
   
-  # Print the plot
-  print(p)
+
+  return(p)
   
 }
