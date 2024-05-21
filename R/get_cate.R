@@ -154,8 +154,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
     eval_mat <- cbind(1,eval_mat)
   }
   
-  print(dim(E_mat))
-  print(dim(eval_mat))
+
   #---------------------------------fit the model-----------------------------------
   cat("Fit the model...\n")
   # form a dataframe for the estimates and covariates

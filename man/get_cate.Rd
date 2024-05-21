@@ -16,7 +16,7 @@ get_cate(
   entire_window = NULL,
   em = NULL,
   E_mat = NULL,
-  nbase,
+  nbase = 6,
   spline_type = "ns",
   intercept = TRUE,
   eval_values = NULL,
