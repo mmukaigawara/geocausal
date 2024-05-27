@@ -50,7 +50,7 @@ get_base_dens <- function(window,
     scott_bandwidth <- spatstat.explore::bw.scott(baseline_ppp)
 
     baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = ndim) #Kernel density estimation
-    baseline_density <- baseline_density / spatstat.geom::integral(baseline_density) #Divide by integral of the density
+    baseline_density <- baseline_density / spatstat.univar::integral(baseline_density) #Divide by integral of the density
 
   } else if (option == "in") {
 
@@ -66,7 +66,7 @@ get_base_dens <- function(window,
 
     mod <- spatstat.model::mppm(as.formula(text_form), data = hfr, nd = ndim) #Use mppm
     pred <- spatstat.model::predict.mppm(mod, ngrid = ndim, type = "cif")[1, ] #Pick the first one (all identical)
-    baseline_density <- pred[["cif"]] / spatstat.geom::integral(pred[["cif"]])
+    baseline_density <- pred[["cif"]] / spatstat.univar::integral(pred[["cif"]])
 
   }
 

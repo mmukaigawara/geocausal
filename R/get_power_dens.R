@@ -49,7 +49,7 @@ get_power_dens <- function(target_dens,
       ) }
   }
 
-  power_density <- power_density/spatstat.geom::integral(power_density, domain = window)
+  power_density <- power_density/spatstat.univar::integral(power_density, domain = window)
 
   return(power_density)
 
