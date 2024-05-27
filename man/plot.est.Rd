@@ -11,7 +11,7 @@
 
 \item{...}{arguments passed on to the function}
 
-\item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
+\item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector of max and min}
 }
 \description{
 Plot estimates

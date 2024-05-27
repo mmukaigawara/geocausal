@@ -20,7 +20,7 @@
 #' @param dist_map distance map (an im object, if `use_dist = TRUE`)
 #' @param dist distances (a numeric vector within the max distance of `dist_map`)
 #' @param trunc_level the level of truncation for the weights (0-1)
-#'
+#' @param save_weights whether to save weights
 #' @returns list of the following:
 #' `cf1_ave_surf`: average weighted surface for scenario 1
 #' `cf2_ave_surf`: average weighted surface for scenario 2
@@ -45,7 +45,8 @@ get_est <- function(obs, cf1, cf2, treat, sm_out,
                     windows,
                     dist_map,
                     dist,
-                    trunc_level = NA) {
+                    trunc_level = NA,
+                    save_weights = TRUE) {
 
   #1. Get average weighted surfaces for two counterfactuals -----
 
@@ -56,11 +57,11 @@ get_est <- function(obs, cf1, cf2, treat, sm_out,
                                    cf_dens = cf1,
                                    treatment_data = treat,
                                    smoothed_outcome = sm_out,
-                                   mediation,
+                                   mediation = mediation,
                                    obs_med_log_sum_dens = obs_med_log_sum_dens,
                                    cf_med_log_sum_dens = cf1_med_log_sum_dens,
                                    lag = lag, entire_window = entire_window,
-                                   time_after,
+                                   time_after = time_after,
                                    truncation_level = trunc_level)
 
   ## CF2
@@ -68,11 +69,11 @@ get_est <- function(obs, cf1, cf2, treat, sm_out,
                                    cf_dens = cf2,
                                    treatment_data = treat,
                                    smoothed_outcome = sm_out,
-                                   mediation,
+                                   mediation = mediation,
                                    obs_med_log_sum_dens = obs_med_log_sum_dens,
                                    cf_med_log_sum_dens = cf2_med_log_sum_dens,
                                    lag = lag, entire_window = entire_window,
-                                   time_after,
+                                   time_after = time_after,
                                    truncation_level = trunc_level)
 
   #2. Get estimates (contrast) -----
@@ -92,13 +93,19 @@ get_est <- function(obs, cf1, cf2, treat, sm_out,
   var_bound <- get_var_bound(estimates)
 
   #4. Return output -----
+  weights <- NULL
+  if(save_weights)
+    weights <- estimates$weights
+  class(weights) <- weights
+  
   out <- list(cf1_ave_surf = estimates_1$average_surf_haj,
               cf2_ave_surf = estimates_2$average_surf_haj,
               est_cf = estimates$est_haj,
               est_causal = estimates$est_tau_haj_cf2_vs_cf1,
               var_cf = var_bound$bound_haj,
               var_causal = var_bound$bound_tau_haj,
-              windows = estimates$windows)
+              windows = estimates$windows,
+              weights = weights)
   
   class(out) <- c("est", "list")
   return(out)

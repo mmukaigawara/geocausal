@@ -21,7 +21,8 @@ get_est(
   windows,
   dist_map,
   dist,
-  trunc_level = NA
+  trunc_level = NA,
+  save_weights = TRUE
 )
 }
 \arguments{
@@ -58,6 +59,8 @@ get_est(
 \item{dist}{distances (a numeric vector within the max distance of `dist_map`)}
 
 \item{trunc_level}{the level of truncation for the weights (0-1)}
+
+\item{save_weights}{whether to save weights}
 }
 \value{
 list of the following:
