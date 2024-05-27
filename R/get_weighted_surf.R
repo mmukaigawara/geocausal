@@ -61,7 +61,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
       observed_sum_log - obs_med_log_sum_dens # Added conditionals
   } else {
     # For causal inference without mediation
-    log_density_ratio <- obs_dens$estimated_counts - spatstat.geom::integral(cf_dens, window = entire_window) + # Expected counts
+    log_density_ratio <- obs_dens$estimated_counts - spatstat.univar::integral(cf_dens, window = entire_window) + # Expected counts
       counterfactual_sum_log - observed_sum_log # Sum log intens
   }
 

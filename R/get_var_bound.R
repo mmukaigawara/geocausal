@@ -29,7 +29,7 @@ get_var_bound <- function(estimates, bound_est = 1) {
   
   # Integrate smoothed outcomes over each window
   calc_integrals_for_domain <- function(domain) {
-    sapply(smoothed_outcome, function(s) spatstat.geom::integral(s, domain = domain))
+    sapply(smoothed_outcome, function(s) spatstat.univar::integral(s, domain = domain))
   }
   out_in_B <- suppressMessages( 
     purrr::map_dfc(B, calc_integrals_for_domain)
