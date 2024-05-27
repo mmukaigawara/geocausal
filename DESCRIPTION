@@ -50,6 +50,7 @@ Imports:
     spatstat.explore,
     spatstat.geom,
     spatstat.model,
+    spatstat.univar,
     terra,
     tidyr,
     tidyselect,

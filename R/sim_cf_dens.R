@@ -67,7 +67,7 @@ sim_cf_dens <- function(expected_number,
                                         function(x) { #Suppress warnings for incompatibility of images
                                           suppressWarnings( product_power_baseline <- base_dens * power_densities[[x]] )
                                           counterfactual_density <- product_power_baseline/
-                                            spatstat.geom::integral(product_power_baseline, W = window) * expected_number
+                                            spatstat.univar::integral(product_power_baseline, W = window) * expected_number
                                           return(counterfactual_density)
                                           }
                                         )

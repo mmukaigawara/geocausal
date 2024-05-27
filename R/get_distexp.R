@@ -40,7 +40,7 @@ get_distexp <- function(cf_sim_results,
     lapply(`cf_sim_results`$densities, function(y) {
       counter <- y
       spatstat.geom::Window(counter) <- x
-      return(spatstat.geom::integral(counter))
+      return(spatstat.univar::integral(counter))
     })
   })
   
@@ -49,7 +49,7 @@ get_distexp <- function(cf_sim_results,
     expectation_results <- data.table::rbindlist(partial_expectations)
   } else {
     expectation_results <- data.table::rbindlist(partial_expectations)/
-      spatstat.geom::integral(`cf_sim_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
+      spatstat.univar::integral(`cf_sim_results`$densities[[1]]) #Row = 0 to 100%, Column = Diff value of priorities
   }
   
   result_data <- data.frame(expectation = c(unlist(expectation_results)),

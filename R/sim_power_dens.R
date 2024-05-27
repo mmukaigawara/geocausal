@@ -61,14 +61,14 @@ sim_power_dens <- function(target_dens, #This must be a list element
 
   for (jj in 1:length(priorities_manip)){
     temp <- power_density * dens_manip ^ priorities_manip[jj]
-    temp <- temp/spatstat.geom::integral(temp, domain = window)
+    temp <- temp/spatstat.univar::integral(temp, domain = window)
     power_density_list[[jj]] <- temp
   }
 
   power_density_list <- lapply(1:length(priorities_manip),
                                function(x) {
                                  temp <- power_density * dens_manip ^ priorities_manip[x]
-                                 temp <- temp/spatstat.geom::integral(temp, domain = window)
+                                 temp <- temp/spatstat.univar::integral(temp, domain = window)
                                  return(temp)
                                }
                                )
