@@ -32,9 +32,9 @@ coming soon.**
 
 Please cite this package as follows:
 
-> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, Imai K (2023).
+> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, Imai K (2024).
 > geocausal: Causal Inference with Spatio-Temporal Data. R package
-> version 0.1.0, <https://github.com/mmukaigawara/geocausal>
+> version 0.3.0, <https://github.com/mmukaigawara/geocausal>
 
 ## Installation
 
