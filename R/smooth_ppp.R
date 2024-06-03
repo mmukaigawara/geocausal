@@ -108,7 +108,7 @@ smooth_ppp <- function(data,
     use_h0 <- as.numeric(scott_bw)
     pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
 
-    him_points <- spatstat.explore::bw.abram(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
+    him_points <- spatstat.explore::bw.abram.ppp(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
     num_points <- as.numeric(purrr::map(as.list(data), 2, .default = NA) %>% unlist()) # Num of points for each time frame
     bw_pt <- split(him_points, rep(1 : length(data), num_points))
 
