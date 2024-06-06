@@ -119,7 +119,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   if(is.null(E_mat)){
     cat("Generate spline basis...\n")
     if("im"%in%class(em[[1]])){
-      em <- lapply(1:length(em), function(x) as.matrix(as.im(em[[x]],ngrid = dimyx)))
+      em <- lapply(1:length(em), function(x) as.matrix(as.im(em[[x]],dimyx = dimyx)))
     }else if(!"array"%in%class(em[[1]])){
       stop("em is not a list of im or 2D arrays")
     }

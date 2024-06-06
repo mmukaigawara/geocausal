@@ -19,8 +19,8 @@ imls_to_arr <- function(imls,start = 1,end = NULL,entire_window = NULL,ngrid = N
     end <- length(imls)
   }
   
-  if(is.null(dimyx)){
-    dimyx <- dim(imls[[1]])
+  if(is.null(ngrid)){
+    ngrid <- dim(imls[[1]])
     adjust_dim <- FALSE
   }
   if(length(ngrid)==1){
@@ -28,17 +28,17 @@ imls_to_arr <- function(imls,start = 1,end = NULL,entire_window = NULL,ngrid = N
   }
     
   if(!is.null(entire_window)){
-    window_matrix <- spatstat.geom::as.matrix.owin(entire_window,dimyx = dimyx)
+    window_matrix <- spatstat.geom::as.matrix.owin(entire_window,dimyx = ngrid)
     window_matrix[window_matrix==0] <- NA
     if(adjust_dim){
-      imls <- lapply(start:end, function(x) spatstat.geom::as.matrix.im(spatstat.geom::as.im(imls[[x]],dimyx = dimyx))*window_matrix)
+      imls <- lapply(start:end, function(x) spatstat.geom::as.matrix.im(spatstat.geom::as.im(imls[[x]],dimyx = ngrid))*window_matrix)
     }else{
       imls <- lapply(start:end, function(x) spatstat.geom::as.matrix.im(imls[[x]])*window_matrix)
     }
     
   }else{
     if(adjust_dim){
-      imls <- lapply(start:end, function(x) spatstat.geom::as.matrix.im(spatstat.geom::as.im(imls[[x]],dimyx = dimyx)))
+      imls <- lapply(start:end, function(x) spatstat.geom::as.matrix.im(spatstat.geom::as.im(imls[[x]],dimyx = ngrid)))
     }else{
       imls <- lapply(start:end, function(x) spatstat.geom::as.matrix.im(imls[[x]]))
     }
