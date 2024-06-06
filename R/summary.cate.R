@@ -21,14 +21,13 @@ summary.cate <- function(object,..., significance_level = 0.05) {
   }
   
   result_betas <- data.frame(
-    basis = basis,
     point_estimate = cate$est_beta,
     upper_95 = cate$est_beta + 1.96 * sqrt(diag(cate$V_beta)),
     lower_95 = cate$est_beta - 1.96 * sqrt(diag(cate$V_beta)),
     upper_90 = cate$est_beta + 1.645 * sqrt(diag(cate$V_beta)),
     lower_90 = cate$est_beta - 1.645 * sqrt(diag(cate$V_beta))
   )
-  
+  row.names(result_betas) <-  basis
   
   #2. Summary for the cate evaluted at chosen values
   result_values <- data.frame(

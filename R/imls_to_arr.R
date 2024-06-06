@@ -7,12 +7,12 @@
 #' @param start the index of the first im to be converted. Default is 1.
 #' @param end the index of the last im to be converted. If not provided, then it will be set to the length of the list.
 #' @param entire_window a owin object. If given, then the values outside the region will be set to `NA`
-#' @param dimyx  an optional vector of two integers specifying the dimensions of the `im` objects. If provided, the dimensions of the objects will be adjusted to `dimyx` before the conversion to the array.
+#' @param ngrid  an optional arugument that takes one integer or  vector of two integers specifying the dimensions of the `im` objects. If provided, the dimensions of the objects will be adjusted to `ngrid` before the conversion to the array.
 #' 
 #' @details `imls_to_arr()` is a internal function for `imls_to_vec()`. By default, it returns a three-dimensional array of dimension \eqn{n} by \eqn{m} by\eqn{l} where \eqn{n} and \eqn{m}
 #' are the dimensions of the im objects, and \eqn{l} is the length of the list. All the im objects in the list need to have the same dimensions. 
 
-imls_to_arr <- function(imls,start = 1,end = NULL,entire_window = NULL,dimyx = NULL){
+imls_to_arr <- function(imls,start = 1,end = NULL,entire_window = NULL,ngrid = NULL){
   adjust_dim <- TRUE
   
   if(is.null(end)){
@@ -22,6 +22,9 @@ imls_to_arr <- function(imls,start = 1,end = NULL,entire_window = NULL,dimyx = N
   if(is.null(dimyx)){
     dimyx <- dim(imls[[1]])
     adjust_dim <- FALSE
+  }
+  if(length(ngrid)==1){
+    ngrid <- rep(ngrid,2)
   }
     
   if(!is.null(entire_window)){

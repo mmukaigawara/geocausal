@@ -38,7 +38,10 @@ plot.cate <- function(x,...,type = "l",scale = 1,xrange = NULL,main = "",xlab = 
       ggplot2::geom_errorbar(data = df_plot, aes(x = x, ymin = lb, ymax = ub), width = 0.1) +
       ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "red")+
       ggplot2::theme_bw()+
-      ggplot2::labs(x = xlab, y = "CATE", title = main)
+      ggplot2::labs(x = xlab, y = "CATE", title = main)+
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            plot.subtitle = element_text(hjust = 0.5),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
     
   }else{
     group <- cumsum((c(0, diff(categorical) != 0)+categorical)>0)
@@ -61,7 +64,10 @@ plot.cate <- function(x,...,type = "l",scale = 1,xrange = NULL,main = "",xlab = 
       ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "red")+
       ggplot2::geom_ribbon(data = subset(df_plot, (duplicated(group) | duplicated(group, fromLast = TRUE))), aes(x = x, ymin = lb, ymax = ub,group = group), fill = "grey", alpha = 0.5) +
       ggplot2::theme_bw()+
-      ggplot2::labs(x = xlab, y = "CATE", title = main)
+      ggplot2::labs(x = xlab, y = "CATE", title = main)+
+      theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+            plot.subtitle = element_text(hjust = 0.5),
+            panel.grid.major = element_blank(), panel.grid.minor = element_blank())
   }
   
 
