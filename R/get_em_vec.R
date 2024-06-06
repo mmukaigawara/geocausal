@@ -19,7 +19,7 @@ get_em_vec <- function(em,time_after = TRUE,lag,entire_window = NULL,ngrid=NULL)
     ngrid <- rep(ngrid,2)
   }
   l <- length(em)
-  res <- imls_to_arr(em,start=1,end=l-time_after-lag+1,entire_window,dimyx = ngrid)
+  res <- imls_to_arr(em,start=1,end=l-time_after-lag+1,entire_window,ngrid = ngrid)
   res <- c(res)
   
   return(res)

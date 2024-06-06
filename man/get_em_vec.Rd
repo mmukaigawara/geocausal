@@ -4,7 +4,7 @@
 \alias{get_em_vec}
 \title{convert a list of im objects to a vector}
 \usage{
-get_em_vec(em, time_after = TRUE, lag, entire_window = NULL, dimyx = NULL)
+get_em_vec(em, time_after = TRUE, lag, entire_window = NULL, ngrid = NULL)
 }
 \arguments{
 \item{em}{column of a hyperframe that summarizes effect modifier data. In the form of `hyperframe$column`.}
@@ -15,7 +15,7 @@ get_em_vec(em, time_after = TRUE, lag, entire_window = NULL, dimyx = NULL)
 
 \item{entire_window}{owin object (the entire region of interest). If given, then the values outside the region will be set to `NA`.}
 
-\item{dimyx}{a vector of 2 integer specifying the pixel dimension. If NULL, the pixel dimension of the original
+\item{ngrid}{a number or a vector of two numbers that specify the dimension of pixels. If NULL, the pixel dimension of the original
 images will not be changed}
 }
 \description{
