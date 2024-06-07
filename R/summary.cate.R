@@ -21,14 +21,14 @@ summary.cate <- function(object,..., significance_level = 0.05) {
   }
   
   result_betas <- data.frame(
-    basis = basis,
     point_estimate = cate$est_beta,
     upper_95 = cate$est_beta + 1.96 * sqrt(diag(cate$V_beta)),
     lower_95 = cate$est_beta - 1.96 * sqrt(diag(cate$V_beta)),
     upper_90 = cate$est_beta + 1.645 * sqrt(diag(cate$V_beta)),
     lower_90 = cate$est_beta - 1.645 * sqrt(diag(cate$V_beta))
   )
-  
+  row.names(result_betas) <-  basis
+  result_betas <-  round(result_betas, digits = 5)
   
   #2. Summary for the cate evaluted at chosen values
   result_values <- data.frame(
@@ -39,9 +39,13 @@ summary.cate <- function(object,..., significance_level = 0.05) {
     upper_90 = cate$est_eval + 1.645 * sqrt(diag(cate$V_eval)),
     lower_90 = cate$est_eval - 1.645 * sqrt(diag(cate$V_eval))
   )
+  result_values <- round(result_values,digits = 5)
   
   #3. Summary for the chi-square test
-  chisq_test <- data.frame(chisq_stat = cate$chisq_stat, p.value = cate$p.value,significance_level = significance_level, reject = cate$p.value<significance_level)
+  chisq_test <- data.frame(chisq_stat = cate$chisq_stat,
+                           p.value = cate$p.value,
+                           significance_level = significance_level, reject = cate$p.value<significance_level)
+  chisq_test[,1:2] <- round(chisq_test[,1:2],digits = 5)
     
   return(list(result_betas = result_betas, result_values = result_values,chisq_test = chisq_test))
 }

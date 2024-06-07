@@ -6,7 +6,7 @@
 #' @param data the name of a hyperframe and column of interest.
 #' @param W Optional window mask (object of class `"owin"`) determining the pixel raster.
 #' `data` should be in the form of `"hyperframe$column"`.
-#' @param dimyx pixel array dimensions. A single integer, or an integer vector of length 2 giving dimensions in the y and x directions.Default is `c(128,128)`.
+#' @param ngrid a number or a vector of two numbers specifying the pixel array dimensions. A single integer, or an integer vector of length 2 giving dimensions in the y and x directions.Default is `c(128,128)`.
 #' @param weights Optional vector of weights associated with the points.
 #' @param DivideByPixelArea Logical value determining whether the resulting pixel values should be devided by the pixel area. Default value is `False`.
 #' @param ... parameters passed on to the function.
@@ -28,12 +28,14 @@
 #'                    coordinates = c("longitude", "latitude"),
 #'                    combine = TRUE)
 #'
-#' # Smoothing outcome
+#' # Get the number of events for each pixel
 #' pixel_count_ppp(data = dat_hfr$all_combined)
 
-pixel_count_ppp <- function(data,dimyx = c(128,128), W=NULL, weights = NULL,DivideByPixelArea = FALSE,...) {
-  
-  pixel_count <- furrr::future_map(data, spatstat.geom::pixellate.ppp,dimyx = dimyx,W = W, weights = weights, DivideByPixelArea = DivideByPixelArea,...)
+pixel_count_ppp <- function(data,ngrid = c(128,128), W=NULL, weights = NULL,DivideByPixelArea = FALSE,...) {
+  if(length(ngrid)==1){
+    ngrid <- rep(ngrid,2)
+  }
+  pixel_count <- furrr::future_map(data, spatstat.geom::pixellate.ppp,dimyx = ngrid,W = W, weights = weights, DivideByPixelArea = DivideByPixelArea,...)
   
   return(pixel_count)
   

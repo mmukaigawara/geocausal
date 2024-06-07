@@ -7,6 +7,7 @@
 \method{plot}{cate}(
   x,
   ...,
+  result = "cate",
   type = "l",
   scale = 1,
   xrange = NULL,
@@ -20,10 +21,14 @@
 
 \item{...}{arguments passed on to the function}
 
-\item{type}{The type of plot to draw. 
-- If 'type' is "p", points with error bars will be drawn.
-- If 'type' is "l", lines with shaded region will be drawn.
-- If 'type' is a vector of strings, each element specifies the type for the corresponding `eval_values` value.}
+\item{result}{specify which values will be used for plot. Default is "cate"
+- If `result` is "cate", then estimated cate values will be used
+- If `result` is "beta", then the estimated regression coefficients will be used}
+
+\item{type}{The type of plot to draw. This argument will be ignored if `result` = "beta". Default is "l".
+- If `type` is "p", points with error bars will be drawn.
+- If `type` is "l", lines with shaded region will be drawn.
+- If `type` is a vector of strings, each element specifies the type for the corresponding `eval_values` value.}
 
 \item{scale}{a positive number specifying the scale by which the estimates will be scaled. If provided, the estimates will be scaled by this value. Default is NULL, which means no scaling is applied.}
 
