@@ -17,7 +17,7 @@ get_dist_focus(window, lon, lat, resolution, mile = FALSE, preprocess = FALSE)
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).}
 
-\item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point. 
+\item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point.
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
 }
 \value{
@@ -27,20 +27,12 @@ an im object
 `get_dist_focus()` generates a distance map from focus locations.
 }
 \details{
-`get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`. 
-Since it calculates accurate distances considering the ellipsoid, the process sometimes 
-becomes computationally demanding, namely when we need to obtain distances from many points. 
-In that case, users can set `preprocess = TRUE`. With this option, `get_dist_focus()` calculates 
+`get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`.
+Since it calculates accurate distances considering the ellipsoid, the process sometimes
+becomes computationally demanding, namely when we need to obtain distances from many points.
+In that case, users can set `preprocess = TRUE`. With this option, `get_dist_focus()` calculates
 distances from points by first identifying the closest point using `sf::st_nearest_feature()` with approximations.
-This process is more efficient than computing distances from all the points 
-with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances. 
+This process is more efficient than computing distances from all the points
+with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances.
 By default, `get_dist_focus()` returns distances in kilometers unless users set `mile =  TRUE`.
-}
-\examples{
-get_dist_focus(window = iraq_window,
-               lon = c(44.366), #Baghdad
-               lat = c(33.315),
-               resolution = 0.5,
-               mile = FALSE,
-               preprocess = FALSE)
 }

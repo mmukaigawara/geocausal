@@ -21,7 +21,7 @@ get_cf_dens <- function(expected_number,
                         power_dens = NA,
                         window) {
 
-  if (class(power_dens) == "logical") { # identify NA; counterfactual_type = intensity only -> multiply by the expectation
+  if (inherits(power_dens, "logical")) { # identify NA; counterfactual_type = intensity only -> multiply by the expectation
 
     cf_density <- expected_number * base_dens
 
