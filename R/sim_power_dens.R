@@ -12,31 +12,6 @@
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
 #' @returns list of densities, plot, and priorities
-#'
-#' @examples
-#' # Density 1: Distance from Mosul
-#' dist_from_mosul <- get_dist_focus(window = iraq_window,
-#'                                   lon = c(43.158),
-#'                                   lat = c(36.349),
-#'                                   resolution = 0.5,
-#'                                   mile = FALSE,
-#'                                   preprocess = FALSE)
-#'
-#' # Density 2: Distance from Baghdad
-#' dist_from_baghd <- get_dist_focus(window = iraq_window,
-#'                                   lon = c(44.366),
-#'                                   lat = c(33.315),
-#'                                   resolution = 0.5,
-#'                                   mile = FALSE,
-#'                                   preprocess = FALSE)
-#'
-#' # Simulation
-#' sim_power_dens(target_dens = list(dist_from_baghd),
-#'                dens_manip = dist_from_mosul,
-#'                priorities = 1,
-#'                priorities_manip = c(1, 2, 5, 10, 15, 50),
-#'                window = iraq_window,
-#'                grayscale = FALSE)
 
 sim_power_dens <- function(target_dens, #This must be a list element
                            dens_manip,

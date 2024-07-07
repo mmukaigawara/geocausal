@@ -38,22 +38,3 @@ Essentially, this model assumes that the bandwidth is inversely proportional to 
 Since the bandwidth is adaptive, the estimation is usually more precise than the Gaussian mixture model.
 However, the caveat is that this method is often extremely computationally demanding.
 }
-\examples{
-# Time variable
-dat_out <- insurgencies[1:100, ]
-dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
-
-# Hyperframe
-dat_hfr <- get_hfr(data = dat_out,
-                   col = "type",
-                   window = iraq_window,
-                   time_col = "time",
-                   time_range = c(1, max(dat_out$time)),
-                   coordinates = c("longitude", "latitude"),
-                   combine = TRUE)
-
-# Smoothing outcome
-smooth_ppp(data = dat_hfr$all_combined,
-           method = "mclust",
-           sampling = 0.05)
-}

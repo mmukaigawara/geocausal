@@ -38,34 +38,3 @@ calculates observed densities for each time period. It depends on `spatstat.mode
 Users should note that the coefficients in the output are not directly interpretable,
 since they are the coefficients inside the exponential of the poisson model.
 }
-\examples{
-# Data
-dat_out <- insurgencies[1:100, ]
-dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
-
-# Hyperframe
-dat_hfr <- get_hfr(data = dat_out,
-                   col = "type",
-                   window = iraq_window,
-                   time_col = "time",
-                   time_range = c(1, max(dat_out$time)),
-                   coordinates = c("longitude", "latitude"),
-                   combine = TRUE)
-
-# Covariates
-dist_baghdad <- get_dist_focus(window = iraq_window,
-                               lon = c(44.366), #Baghdad
-                               lat = c(33.315),
-                               resolution = 0.1,
-                               mile = FALSE,
-                               preprocess = FALSE)
-
-dat_hfr$dist_bagh <- dist_baghdad
-
-# Observed density
-get_obs_dens(dat_hfr,
-             dep_var = "all_combined",
-             indep_var = c("dist_bagh"),
-             ngrid = 100,
-             window = iraq_window)
-}

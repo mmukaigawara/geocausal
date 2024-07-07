@@ -20,25 +20,3 @@ list of an im object and a ggplot object of power densities
 `get_power_dens()` takes the target densities and their priorities
 and returns a power density.
 }
-\examples{
-# Density 1: Distance from Mosul
-dist_from_mosul <- get_dist_focus(window = iraq_window,
-                                  lon = c(43.158),
-                                  lat = c(36.349),
-                                  resolution = 0.5,
-                                  mile = FALSE,
-                                  preprocess = FALSE)
-
-# Density 2: Distance from Baghdad
-dist_from_baghd <- get_dist_focus(window = iraq_window,
-                                  lon = c(44.366),
-                                  lat = c(33.315),
-                                  resolution = 0.5,
-                                  mile = FALSE,
-                                  preprocess = FALSE)
-
-# Power density
-get_power_dens(target_dens = list(dist_from_mosul, dist_from_baghd),
-               priorities = c(3, 2),
-               window = iraq_window)
-}
