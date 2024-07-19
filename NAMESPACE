@@ -28,7 +28,7 @@ importFrom(spatstat.geom, "pixellate.ppp")
 importFrom(splines, "ns")
 importFrom(splines, "bs")
 importFrom(spatstat.geom, "as.polygonal", "as.ppp", "interp.im", "as.im", "owin", "Window", "transmat", "im", "hyperframe", "superimpose", "as.matrix.im", "as.data.frame.ppp", "integral.im")
-importFrom(spatstat.univar, "integral")
+importFrom(spatstat.univar, "integral", "densityAdaptiveKernel")
 importFrom("stats", "as.formula", "complete.cases", "density",
            "quantile", "time")
 importFrom("stats", "na.omit", "pchisq", "predict", "qnorm")

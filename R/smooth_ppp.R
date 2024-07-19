@@ -107,7 +107,7 @@ smooth_ppp <- function(data,
     ## Obtain smoothed outcomes
     message("Smoothing ppps\n")
 
-    smoothed_outcome <- furrr::future_map2(data, bw_pt, spatstat.explore::densityAdaptiveKernel,
+    smoothed_outcome <- furrr::future_map2(data, bw_pt, spatstat.univar::densityAdaptiveKernel,
                                            diggle = TRUE, kernel = "gaussian", edge = TRUE)
 
   }
