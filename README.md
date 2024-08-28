@@ -18,6 +18,12 @@ provide the raw data of locations and timings of treatment and outcome
 events, specify counterfactual scenarios, and the package estimates
 causal effects over specified spatial and temporal windows.
 
+For a user guide, please refer to the following preprint.
+
+> Mukaigawara, M., Zhou, L., Papadogeorgou, G., Lyall, J., & Imai, K.
+> (2024, August 27). geocausal: An R Package for Spatio-Temporal Causal
+> Inference. <https://doi.org/10.31219/osf.io/5kc6f>
+
 For methodological details, please refer to the following article.
 
 > Papadogeorgou G, Imai K, Lyall J, and Li F (2022). Causal inference
@@ -25,16 +31,13 @@ For methodological details, please refer to the following article.
 > insurgent violence in Iraq. *J R Stat Soc Series B.*
 > <https://doi.org/10.1111/rssb.12548>.
 
-Additionally, **an article describing the usage of this package is
-coming soon.**
-
 ## Citation
 
 Please cite this package as follows:
 
-> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, Imai K (2024).
-> geocausal: Causal Inference with Spatio-Temporal Data. R package
-> version 0.3.1, <https://github.com/mmukaigawara/geocausal>
+> Mukaigawara, M., Zhou, L., Papadogeorgou, G., Lyall, J., & Imai, K.
+> (2024, August 27). geocausal: An R Package for Spatio-Temporal Causal
+> Inference. <https://doi.org/10.31219/osf.io/5kc6f>
 
 ## Installation
 
