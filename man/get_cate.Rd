@@ -22,7 +22,6 @@ get_cate(
   eval_values = NULL,
   eval_mat = NULL,
   test_beta = NULL,
-  bound = 1,
   save_weights = TRUE,
   ...
 )
@@ -61,8 +60,6 @@ get_cate(
 \item{eval_mat}{evaluated spline basis (excluding the intercept) matrix at `eval_values`.  If `intercept = TRUE`, then a column of 1 will be add to `eval_mat`.}
 
 \item{test_beta}{a vector of integers contain the indices of the coefficients that are included in the hypothesis test. By default, the null hypothesis is that all coefficient  (except the intercept is 0). See details below}
-
-\item{bound}{either `1` or `2` specifying which bound estimator will be used. Default is `1`}
 
 \item{save_weights}{whether to save weights. Default is `TRUE`}
 
