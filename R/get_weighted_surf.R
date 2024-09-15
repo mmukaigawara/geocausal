@@ -70,6 +70,17 @@ get_weighted_surf <- function(obs_dens, cf_dens,
     weight <- exp(sum(log_density_ratio[(x - lag + 1): x]))
     return(weight)
   })
+  
+
+  stabilizer <- furrr::future_map_dbl(1 : length(log_density_ratio), function(x) {
+    weight <- exp(sum(log_density_ratio[x]))
+    return(weight)
+  })
+  if (!is.null(truncation_level)) { #Truncation of weights
+    truncate_at <- quantile(stabilizer, probs = truncation_level)
+  }
+  stabilizer <- mean(sapply(stabilizer, function(x) min(x, truncate_at)))^lag
+  
 
   if (!is.null(truncation_level)) { #Truncation of weights
     truncate_at <- quantile(weights, probs = truncation_level)
@@ -98,11 +109,13 @@ get_weighted_surf <- function(obs_dens, cf_dens,
     
     return(list(weighted_surface_arr = mat_im_weighted,
                 weighted_surface_arr_haj = mat_im_weighted/mean(weights),
-                weights = weights))
+                weights = weights,
+                stabilizer = stabilizer))
   }
 
   return(list(average_surf = average_weighted_surface,
               average_surf_haj = average_weighted_surface_haj,
               weights = weights,
+              stabilizer = stabilizer,
               smoothed_outcome = smoothed)) #Note that first lag-1 obs are omitted from the smoothed outcome
 }

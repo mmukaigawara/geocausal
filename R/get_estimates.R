@@ -40,6 +40,7 @@ get_estimates <- function(weighted_surf_1,
   av_surf <- list(weighted_surf_1$average_surf, weighted_surf_2$average_surf)
   av_surf_haj <- list(weighted_surf_1$average_surf_haj, weighted_surf_2$average_surf_haj)
   weights <- rbind(weighted_surf_1$weights, weighted_surf_2$weights)
+  stabilizer <- c(weighted_surf_1$stabilizer, weighted_surf_2$stabilizer) 
   
   if(use_dist) { #Distance-based windows - first generate a list of owin objects
     
@@ -81,6 +82,7 @@ get_estimates <- function(weighted_surf_1,
               est_tau_haj_matrix = est_tau_haj, 
               est_tau_haj_cf2_vs_cf1 = est_tau_haj[2, 1, ],
               weights = weights,
+              stabilizer = stabilizer,
               windows = windows,
               smoothed_outcome = weighted_surf_1$smoothed_outcome))
   

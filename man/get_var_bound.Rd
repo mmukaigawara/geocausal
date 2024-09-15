@@ -4,12 +4,10 @@
 \alias{get_var_bound}
 \title{Calculate variance upper bounds}
 \usage{
-get_var_bound(estimates, bound_est = 1)
+get_var_bound(estimates)
 }
 \arguments{
 \item{estimates}{an object returned from `get_est()` function}
-
-\item{bound_est}{an integer specifying the estimator for the asymptotic variance bound. Use `1` for the first estimator and `2` for the second estimator.Default is `1`. See details.}
 }
 \value{
 list of variance upper bounds for each scenario (`bound_haj`) and causal contrasts (`bound_tau_haj`). 
@@ -20,11 +18,5 @@ A function that calculates variance upper bounds
 }
 \details{
 `get_var_bound()` is an internal function to `get_estimates()` function, 
-performing the estimation analysis after `get_est()` function. There are two consistent
- estimators for the asymptotic variance bound. The first estimator (default, `bound_est=1`) 
- performs well in scenarios with low variability, but exhibit some under coverage issue for high
- variability scenarios where longer time series are needed for getting robust estimator. The second 
- estimator(`bound_est=2`) yields good coverage rates in simulations, but gives unreasonably large bound when there 
- 'are extremely large IPW weights.  Users should carefully consider the  
- characteristics of their data when selecting the estimator.
+performing the estimation analysis after `get_est()` function.
 }
