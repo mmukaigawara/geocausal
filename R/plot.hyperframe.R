@@ -3,6 +3,7 @@
 #' @param x input
 #' @param ... arguments passed on to the function
 #' @param col the name/s of a column of interest.
+#' @param main title
 #' To specify multiple columns, users should list column names as a character vector.
 #' @param time_col The name of the column of time variable. By default, `"time"`. Note that the time variable must be integers.
 #' @param range vector that specifies the range of tiem variable (e.g., `c("2007-01-01", "2007-01-31")`)
@@ -14,7 +15,7 @@
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
 #' @export
-plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
+plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA, main = "Image object",
                             scalename = NA, color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
                             combined = TRUE) {
 
@@ -46,10 +47,12 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
 
     if (grayscale) {
       ggplot_obj <- ggplot_object +
-        ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys")
+        ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") +
+        ggplot2::ggtitle(main)
     } else {
       ggplot_obj <- ggplot_object +
-        ggplot2::scale_fill_gradientn(colors = color)
+        ggplot2::scale_fill_gradientn(colors = color) +
+        ggplot2::ggtitle(main)
     }
 
     return(ggplot_obj)
@@ -75,7 +78,7 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
         ggplot2::coord_quickmap() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
-        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
+        ggplot2::ggtitle(paste0(main, "\n(Time Period ", time_vis, ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
     } else { # If im
@@ -88,7 +91,7 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                               fill = NA, color = "darkgrey", linewidth = 0.2) +
         ggthemes::theme_map() +
-        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Period ", time_vis, ")")) +
+        ggplot2::ggtitle(paste0(main, "\n(Time Period ", time_vis, ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"),
                        legend.position = "bottom")
 
@@ -130,7 +133,7 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
       ggplot2::coord_quickmap() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "), "\n(Time period ", time_vis, ")")) +
+      ggplot2::ggtitle(paste0(paste0(main, collapse = ", "), "\n(Time period ", time_vis, ")")) +
       ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
                      strip.background = element_rect(fill = "white", color = "white"),
                      plot.title = element_text(hjust = 0.5, face = "bold")) +
@@ -161,7 +164,7 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
         ggplot2::coord_quickmap() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
-        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+        ggplot2::ggtitle(paste0(main, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
         ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
     } else {
@@ -187,7 +190,7 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
         ggplot2::coord_quickmap() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
-        ggplot2::ggtitle(paste0(outcome_name, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
+        ggplot2::ggtitle(paste0(main, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
         ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
                        strip.background = element_rect(fill = "white", color = "white"),
                        plot.title = element_text(hjust = 0.5, face = "bold")) +
@@ -225,7 +228,7 @@ plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA,
       ggplot2::coord_quickmap() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
-      ggplot2::ggtitle(paste0(paste0(outcome_name, collapse = ", "),
+      ggplot2::ggtitle(paste0(paste0(main, collapse = ", "),
                               "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
       ggplot2::theme(strip.text = element_text(hjust = 0.5, face = "bold"),
                      strip.background = element_rect(fill = "white", color = "white"),
