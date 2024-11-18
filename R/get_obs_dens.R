@@ -51,7 +51,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
               estimated_counts = estimated_counts, #Counts
               sum_log_intens = sum_log_intensity) #Sum of log(intensity) for each time period
 
-  class(out) <- c("list", "obs")
+  class(out) <- c("obs", "list")
   return(out)
 
 }
