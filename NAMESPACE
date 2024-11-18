@@ -1,4 +1,4 @@
-exportPattern("^[[:alpha:]]+")
+#exportPattern("^[[:alpha:]]+")
 importFrom(dplyr, "%>%")
 importFrom(data.table, ".SD")
 importFrom(ggplot2, "aes")
