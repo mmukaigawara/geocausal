@@ -1,4 +1,4 @@
-#' Plot point pattenrs
+#' Plot point patterns
 #'
 #' @param x input
 #' @param ... arguments passed on to the function
