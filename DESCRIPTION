@@ -38,7 +38,8 @@ Suggests:
     gridExtra,
     ggthemes,
     knitr,
-    readr
+    readr,
+    gridGraphics
 Imports:
     data.table,
     dplyr,
