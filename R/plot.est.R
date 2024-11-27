@@ -3,9 +3,10 @@
 #' @param x input
 #' @param ... arguments passed on to the function
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector of max and min
+#' @param surface whether to produce the surface plot. By default, FALSE
 #'
 #' @export
-plot.est <- function(x, ..., lim = NA) {
+plot.est <- function(x, ..., surface = FALSE, lim = NA) {
 
   estimates <- x
 
@@ -72,6 +73,14 @@ plot.est <- function(x, ..., lim = NA) {
           plot.subtitle = element_text(hjust = 0.5),
           panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
-  return(list(surface = surf_plot, expectation = expectation_plot))
+  if (surface) {
+
+    return(list(surface = surf_plot, expectation = expectation_plot))
+
+  } else {
+
+    return(expectation_plot)
+
+    }
 
 }
