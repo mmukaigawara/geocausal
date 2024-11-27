@@ -128,11 +128,11 @@ plot.distlist <- function(x, ..., dist_map_unit = "km",
 
   if(win_plot) {
 
-    return(expectation_plot)
+    return(window_plot)
 
     } else {
 
-    return(window_plot)
+    return(expectation_plot)
 
       }
 
