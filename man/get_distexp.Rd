@@ -9,7 +9,6 @@ get_distexp(
   entire_window,
   dist_map,
   dist_map_unit = "km",
-  grayscale = FALSE,
   use_raw = FALSE
 )
 }
@@ -22,15 +21,12 @@ get_distexp(
 
 \item{dist_map_unit}{either `"km"` or `"mile"`}
 
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
-
 \item{use_raw}{logical. `use_raw` specifies whether to use the raw value of expectations or percentiles.
 By default, `FALSE`.}
 }
 \value{
-A list of ggplot objects that summarizes how expectations change over distances from a focus (`expectation_plot`)
-and summarizes distances and areas (`window_plot`). Note that the second object can not necessarily be well drawn
-depending on how windows are defined.
+A list of resulting dataframe (`result_data`), windows (`window_list`), data for distance quantiles,
+and a window object for the entire window
 }
 \description{
 `get_distexp()` takes counterfactual densities and

@@ -4,15 +4,7 @@
 \alias{sim_power_dens}
 \title{Simulate power densities}
 \usage{
-sim_power_dens(
-  target_dens,
-  dens_manip,
-  priorities,
-  priorities_manip,
-  window,
-  color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
-  grayscale = FALSE
-)
+sim_power_dens(target_dens, dens_manip, priorities, priorities_manip, window)
 }
 \arguments{
 \item{target_dens}{list of target densities. This should always be a list, even if there is only one target density.}
@@ -24,13 +16,9 @@ sim_power_dens(
 \item{priorities_manip}{vector of priorities for the density that we manipulate.}
 
 \item{window}{owin object}
-
-\item{color}{the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".}
-
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
-list of densities, plot, and priorities
+list of densities and priorities
 }
 \description{
 A function that takes the target densities and their priorities

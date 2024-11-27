@@ -4,7 +4,15 @@
 \alias{plot.obs}
 \title{Plot observed densities}
 \usage{
-\method{plot}{obs}(x, ..., dens_2 = NA, dens_3 = NA, actual_data = NA, time_unit = NA)
+\method{plot}{obs}(
+  x,
+  ...,
+  dens_2 = NA,
+  dens_3 = NA,
+  actual_data = NA,
+  time_unit = NA,
+  combined = TRUE
+)
 }
 \arguments{
 \item{x}{input}
@@ -18,6 +26,9 @@
 \item{actual_data}{actual data in the form of `hyperframe$column`.}
 
 \item{time_unit}{x-axis label of the output}
+
+\item{combined}{whether to combine the two plots. By default, TRUE. If TRUE,
+then the plot function produces one ggplot object. If FALSE, three objects (two ggplot and one dataframe) will be produced.}
 }
 \description{
 Plot observed densities

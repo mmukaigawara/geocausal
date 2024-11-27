@@ -4,14 +4,7 @@
 \alias{sim_cf_dens}
 \title{Simulate counterfactual densities}
 \usage{
-sim_cf_dens(
-  expected_number,
-  base_dens,
-  power_sim_results,
-  window,
-  grayscale = FALSE,
-  color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF")
-)
+sim_cf_dens(expected_number, base_dens, power_sim_results, window)
 }
 \arguments{
 \item{expected_number}{the expected number of observations}
@@ -21,13 +14,9 @@ sim_cf_dens(
 \item{power_sim_results}{the results obtained by `simulate_power_density()`}
 
 \item{window}{owin object}
-
-\item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
-
-\item{color}{the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".}
 }
 \value{
-list of counterfactual densities, a ggplot, and priorities
+list of counterfactual densities, power as numerics, and expected number as a numeric
 }
 \description{
 `sim_cf_dens()` takes a list of power densities
