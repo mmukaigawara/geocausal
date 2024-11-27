@@ -17,6 +17,9 @@ plot.powerlist <- function(x, ...,
   power_density_list <- x[[1]] # First element = simulated power densities
   priorities_manip <- x[[2]] # Second element = priorities
 
+  if(grayscale) {
+    color = c("white", "#D4D4D4", "#B4B4B4", "#909090", "#636363") } # Grayscale colors
+
   # Figure - density
   sf_density_list <- lapply(1:length(power_density_list),
                             function(x) {
@@ -35,29 +38,7 @@ plot.powerlist <- function(x, ...,
   window_sp <- conv_owin_into_sf(spatstat.geom::Window(power_density_list[[1]]))
   polygon_df <- window_sp[[2]] #Convert owin to DF
 
-  if (grayscale) {
-
-    plot_list <- lapply(1:length(sf_density_list),
-                        function(a) {
-
-                          power_dens <- ggplot() +
-                            tidyterra::geom_spatraster(data = terra::rast(power_density_list[[a]])) +
-                            ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
-                                                  fill = NA, color = "darkgrey", linewidth = 0.2) +
-                            #ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
-                            #ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") +
-                            ggplot2::scale_fill_distiller(type = "seq", direction = -1, palette = "Greys") +
-                            ggthemes::theme_map() +
-                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_manip[a], "$"))) +
-                            labs(fill = "Density") +
-                            theme(plot.title = element_text(hjust = 0.5))
-
-                          return(power_dens)
-                        })
-
-  } else {
-
-    plot_list <- lapply(1:length(sf_density_list),
+  plot_list <- lapply(1:length(sf_density_list),
                         function(a) {
 
                           power_dens <- ggplot() +
@@ -74,9 +55,7 @@ plot.powerlist <- function(x, ...,
                             theme(plot.title = element_text(hjust = 0.5))
 
                           return(power_dens)
-                        })
-
-  }
+                          })
 
   plot <- ggpubr::ggarrange(plotlist = plot_list, common.legend = TRUE, legend = "bottom")
   plot <- ggpubr::annotate_figure(plot, top = ggpubr::text_grob("Simulated power densities", face = "bold"))
