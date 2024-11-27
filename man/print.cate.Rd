@@ -4,17 +4,15 @@
 \alias{print.cate}
 \title{Print results}
 \usage{
-\method{print}{cate}(x, ..., significance_level = 0.05)
+\method{print}{cate}(x, ...)
 }
 \arguments{
 \item{x}{an output object}
 
 \item{...}{arguments passed on to the function}
-
-\item{significance_level}{Numeric scalar between 0 and 1, inclusive, representing the significance level for the chi-square test. The test is used to determine whether at least one of the coefficients (except the intercept) is not equal to 0. Default is 0.05}
 }
 \description{
-`summary` functions take the output and print the summary of it.
+`print` functions take the output and print the summary of it.
 }
 \details{
 Currently, observed densities (class: obs), estimates (class: est) and heterogeneity estimates (class: cate) are supported by this function.

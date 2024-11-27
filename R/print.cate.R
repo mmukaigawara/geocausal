@@ -1,15 +1,14 @@
 #' Print results
 #'
-#' @description `summary` functions take the output and print the summary of it.
+#' @description `print` functions take the output and print the summary of it.
 #'
 #' @param x an output object
 #' @param ... arguments passed on to the function
-#' @param significance_level Numeric scalar between 0 and 1, inclusive, representing the significance level for the chi-square test. The test is used to determine whether at least one of the coefficients (except the intercept) is not equal to 0. Default is 0.05
 #'
 #' @details Currently, observed densities (class: obs), estimates (class: est) and heterogeneity estimates (class: cate) are supported by this function.
 #'
 #' @export
-print.cate <- function(x,..., significance_level = 0.05) {
+print.cate <- function(x,...) {
 
   cate <- x
   result_values <- data.frame(

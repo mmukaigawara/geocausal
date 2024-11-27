@@ -21,7 +21,6 @@ print.est <- function(x, ...) {
     lower_90 = estimates$est_causal - 1.645 * sqrt(estimates$var_causal)
   )
 
-
   return(result)
 
 }
