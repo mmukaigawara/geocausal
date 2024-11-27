@@ -11,7 +11,7 @@
 #' @export
 print.cate <- function(x,..., significance_level = 0.05) {
 
-  cate <- object
+  cate <- x
   result_values <- data.frame(
     values = cate$specification$eval_values,
     point_estimate = cate$est_eval,
