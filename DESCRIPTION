@@ -1,7 +1,7 @@
 Package: geocausal
 Type: Package
 Title: Causal Inference with Spatio-Temporal Data
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: c(
     person(given = "Mitsuru", family = "Mukaigawara", 
            email = "mitsuru_mukaigawara@g.harvard.edu", 
@@ -27,7 +27,8 @@ Description: Spatio-temporal causal inference based on point process data.
     You provide the raw data of locations and timings of treatment and 
     outcome events, specify counterfactual scenarios, and the package 
     estimates causal effects over specified spatial and temporal windows.
-    See Papadogeorgou, et  al. (2022) <doi:10.1111/rssb.12548>.
+    See Papadogeorgou, et  al. (2022) <doi:10.1111/rssb.12548> and
+    Mukaigawara, et al. (2024) <doi:10.31219/osf.io/5kc6f>.
 License: MIT + file LICENSE
 URL: https://github.com/mmukaigawara/geocausal
 Encoding: UTF-8
