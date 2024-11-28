@@ -107,7 +107,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   
   dimyx <- dim(estimates_1$weighted_surface_arr_haj)[c(1,2)]
-  message('In the analysis, pixel grid dimension is', dimyx,"\n")
+  message('In the analysis, pixel grid dimension is ', dimyx[1],"x",dimyx[2],"\n")
   time_points <- dim(estimates_1$weighted_surface_arr_haj)[3]
   # dimyx <- dim(estimates$av_surface[[1]])[c(1,2)]
   # time_points <- dim(estimates$av_surface[[1]])[3]
