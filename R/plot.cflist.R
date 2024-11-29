@@ -44,7 +44,7 @@ plot.cflist <- function(x, ...,
 
                         suppressWarnings( # Suppress warnings for inherent NAs
                           counterfactual_dens <- ggplot() +
-                          tidyterra::geom_spatraster(data = terra::rast(sf_density_list[[a]]), aes(fill = value)) +
+                          tidyterra::geom_spatraster(data = terra::rast(counterfactual_density_list[[a]])) +
                           ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                                                 fill = NA, color = "darkgrey", linewidth = 0.2) +
                           ggplot2::scale_fill_gradientn(colors = color, na.value = NA) +
