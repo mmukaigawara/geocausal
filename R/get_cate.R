@@ -80,7 +80,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   }
   
   #-------------------------get the weighted surfaces------------------------------------
-  cat("Get weighted surfaces... \n")
+  message("Get weighted surfaces... \n")
   # CF1
   estimates_1 <- get_weighted_surf(obs_dens = obs,
                                    cf_dens = cf1,
@@ -107,7 +107,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   
   dimyx <- dim(estimates_1$weighted_surface_arr_haj)[c(1,2)]
-  cat('In the analysis, pixel grid dimension is', dimyx,"\n")
+  message('In the analysis, pixel grid dimension is ', dimyx[1],"x",dimyx[2],"\n")
   time_points <- dim(estimates_1$weighted_surface_arr_haj)[3]
   # dimyx <- dim(estimates$av_surface[[1]])[c(1,2)]
   # time_points <- dim(estimates$av_surface[[1]])[3]
@@ -116,7 +116,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   #------------------------construct the basis matrix if not provided----------------------
   if(is.null(E_mat)){
-    cat("Generate spline basis...\n")
+    message("Generate spline basis...\n")
     if("im"%in%class(em[[1]])){
       em <- lapply(1:length(em), function(x) as.matrix(as.im(em[[x]],dimyx = dimyx)))
     }else if(!"array"%in%class(em[[1]])){
@@ -155,7 +155,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
 
   #---------------------------------fit the model-----------------------------------
-  cat("Fit the model...\n")
+  message("Fit the model...\n")
   # form a dataframe for the estimates and covariates
   df <- cbind.data.frame(E = E_mat,estimates1 = c(estimates_1$weighted_surface_arr_haj),estimates2 = c(estimates_2$weighted_surface_arr_haj))
   weights <- rbind(estimates_1$weights,estimates_2$weights)
@@ -241,7 +241,7 @@ get_cate <- function(obs, cf1, cf2, treat, pixel_count_out,lag, trunc_level=0.95
   
   
   #-----------------------prediction and varaince-------------------------------
-  cat("Get the predicted value and variance... \n") 
+  message("Get the predicted value and variance... \n") 
   V_eval <- eval_mat%*%V%*%t(eval_mat)/time_points   # NOTE we divide by T here!
 
   est_eval <- c(eval_mat%*%beta)
