@@ -22,7 +22,7 @@ plot.list <- function(x, ..., main = "list", lim = NA,
                       grayscale = FALSE, ncol = NA, nrow = NA) {
 
 
-  if(inherits(x[[1]]) == "im") {
+  if(inherits(x[[1]], "im")) {
 
     num_time_period <- length(frame)
 
