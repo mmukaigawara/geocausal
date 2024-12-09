@@ -3,16 +3,17 @@
 #' @param x input
 #' @param ... arguments passed on to the function
 #' @param main title
+#' @param frame the element number of the list object (by default, 1)
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot.
 #' This argument applies only to the case when users specify one column with multiple time periods.
 #' By default = TRUE
 #'
 #' @export
-plot.ppplist <- function(x, ..., main = "ppp", combined = TRUE) {
+plot.ppplist <- function(x, ..., frame = 1, main = "ppp", combined = TRUE) {
 
-  ppp_temp <- x
-  time_vis <- names(ppp_temp)
-  num_time_period <- length(ppp_temp)
+  ppp_temp <- x[frame]
+  time_vis <- frame
+  num_time_period <- length(frame)
 
   # Convert window to df -----
   window <- spatstat.geom::Window(ppp_temp[1][[1]])

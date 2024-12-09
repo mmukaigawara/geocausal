@@ -4,12 +4,14 @@
 \alias{plot.ppplist}
 \title{Plot point patterns}
 \usage{
-\method{plot}{ppplist}(x, ..., main = "ppp", combined = TRUE)
+\method{plot}{ppplist}(x, ..., frame = 1, main = "ppp", combined = TRUE)
 }
 \arguments{
 \item{x}{input}
 
 \item{...}{arguments passed on to the function}
+
+\item{frame}{the element number of the list object (by default, 1)}
 
 \item{main}{title}
 
