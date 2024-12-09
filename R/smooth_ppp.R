@@ -112,6 +112,8 @@ smooth_ppp <- function(data,
 
   }
 
+  class(smoothed_outcome) <- c("list", "imlist")
+
   return(smoothed_outcome)
 
 }
