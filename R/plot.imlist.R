@@ -9,23 +9,55 @@
 #' @param grayscale grayscale or not. By default, FALSE.
 #' @param ncol the number of columns (if plotitng multiple images at once)
 #' @param nrow the number of rows (if plotting multiple images at once)
+#' @param transf a function to transform the pixel values (by default, NULL)
+#' @param frame the element number of the list object (by default, 1)
 #'
 #' @export
 plot.imlist <- function(x, ..., main = "image", lim = NA,
+                        transf = NULL, frame = 1,
                         scalename = "Density", color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
                         grayscale = FALSE, ncol = NA, nrow = NA) {
 
-  im_temp <- x
-  time_vis <- names(im_temp)
-  num_time_period <- length(im_temp)
+  num_time_period <- length(frame)
+
+  if (num_time_period == 1) {
+
+    # Convert window to df -----
+    im_temp <- x[[frame]]
+    window <- spatstat.geom::Window(im_temp)
+    window_sp <- conv_owin_into_sf(window)
+    polygon_df <- window_sp[[2]]
+
+    if (!is.null(transf)) {
+      if (is.function(transf)) {
+        im_temp <- transf(im_temp)
+      } else {
+        stop("The 'transf' parameter must be a valid function.")
+      }
+    }
+
+  } else {
+
+    # Convert window to df -----
+    im_temp <- x[frame]
+    window <- spatstat.geom::Window(im_temp[[1]])
+    window_sp <- conv_owin_into_sf(window)
+    polygon_df <- window_sp[[2]]
+
+    if (!is.null(transf)) {
+      if (is.function(transf)) {
+        for (i in 1:length(im_temp)) { im_temp[[i]] <- transf(im_temp[[i]]) }
+      } else {
+        stop("The 'transf' parameter must be a valid function.")
+      }
+    }
+
+  }
+
+  time_vis <- frame
 
   if(grayscale) {
     color = c("white", "#D4D4D4", "#B4B4B4", "#909090", "#636363") } # Grayscale colors
-
-  # Convert window to df -----
-  window <- spatstat.geom::Window(im_temp[1][[1]])
-  window_sp <- conv_owin_into_sf(window)
-  polygon_df <- window_sp[[2]]
 
   # Visualization -----
 
@@ -34,7 +66,7 @@ plot.imlist <- function(x, ..., main = "image", lim = NA,
     # Case 1: One time period x One outcome column -----
 
     gg <- ggplot2::ggplot() + #Plot smoothed outcome
-      tidyterra::geom_spatraster(data = terra::rast(im_temp[[1]])) +
+      tidyterra::geom_spatraster(data = terra::rast(im_temp)) +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                             fill = NA, color = "darkgrey", linewidth = 0.2) +
       ggthemes::theme_map() +
@@ -81,7 +113,7 @@ plot.imlist <- function(x, ..., main = "image", lim = NA,
                             common.legend = TRUE, legend = "bottom")
 
     gg <- ggpubr::annotate_figure(
-      ggpubr::ggarrange(gg, legend, ncol = 1, heights = c(10, 1)),
+      ggpubr::ggarrange(gg, ncol = 1, heights = c(10, 1)),
       top = ggpubr::text_grob(main, face = "bold", hjust = 0.5))
 
   }

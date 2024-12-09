@@ -9,6 +9,8 @@
   ...,
   main = "image",
   lim = NA,
+  transf = NULL,
+  frame = 1,
   scalename = "Density",
   color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
   grayscale = FALSE,
@@ -24,6 +26,10 @@
 \item{main}{title}
 
 \item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
+
+\item{transf}{a function to transform the pixel values (by default, NULL)}
+
+\item{frame}{the element number of the list object (by default, 1)}
 
 \item{scalename}{the name of the scale}
 
