@@ -6,20 +6,35 @@
 #' @param scalename the name of the scale (for images only)
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param grayscale whether to use grayscale. By default, FALSE.
+#' @param transf a function to transform the pixel values (by default, NULL)
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
 #' @export
 plot.im <- function(x, ...,  main = "Image object",
                     scalename = "Density", grayscale = "FALSE",
+                    transf = NULL,
                     color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"), lim = NA) {
 
+  im_temp <- x
+  window <- spatstat.geom::Window(im_temp)
+  window_sp <- conv_owin_into_sf(window)
+  polygon_df <- window_sp[[2]]
+
+  if (!is.null(transf)) {
+    if (is.function(transf)) {
+      im_temp <- transf(im_temp)
+    } else {
+      stop("The 'transf' parameter must be a valid function.")
+    }
+  }
+
   ## Extract owin
-  window_sp <- conv_owin_into_sf(spatstat.geom::Window(x))
+  window_sp <- conv_owin_into_sf(spatstat.geom::Window(im_temp))
   polygon_df <- window_sp[[2]] #Convert owin to DF
 
   ## Plot the image using ggplot2
   plot_dens <- ggplot() +
-    tidyterra::geom_spatraster(data = terra::rast(x)) +
+    tidyterra::geom_spatraster(data = terra::rast(im_temp)) +
     ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                           fill = NA, color = "darkgrey", linewidth = 0.2) +
     ggthemes::theme_map() +

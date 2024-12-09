@@ -10,6 +10,7 @@
   main = "Image object",
   scalename = "Density",
   grayscale = "FALSE",
+  transf = NULL,
   color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),
   lim = NA
 )
@@ -24,6 +25,8 @@
 \item{scalename}{the name of the scale (for images only)}
 
 \item{grayscale}{whether to use grayscale. By default, FALSE.}
+
+\item{transf}{a function to transform the pixel values (by default, NULL)}
 
 \item{color}{the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".}
 
