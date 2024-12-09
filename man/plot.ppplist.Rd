@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.ppplist.R
 \name{plot.ppplist}
 \alias{plot.ppplist}
-\title{Plot point patterns}
+\title{Plot point pattern (list)}
 \usage{
 \method{plot}{ppplist}(x, ..., frame = 1, main = "ppp", combined = TRUE)
 }
@@ -20,5 +20,5 @@ This argument applies only to the case when users specify one column with multip
 By default = TRUE}
 }
 \description{
-Plot point patterns
+Plot point pattern (list)
 }
