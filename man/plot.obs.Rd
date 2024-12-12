@@ -4,15 +4,7 @@
 \alias{plot.obs}
 \title{Plot observed densities}
 \usage{
-\method{plot}{obs}(
-  x,
-  ...,
-  dens_2 = NA,
-  dens_3 = NA,
-  actual_data = NA,
-  time_unit = NA,
-  combined = TRUE
-)
+\method{plot}{obs}(x, ..., dens_2 = NA, dens_3 = NA, time_unit = NA, combined = TRUE)
 }
 \arguments{
 \item{x}{input}
@@ -22,8 +14,6 @@
 \item{dens_2}{density 2 (if any). By default, `NA`.}
 
 \item{dens_3}{density 3 (if any). By default, `NA`.}
-
-\item{actual_data}{actual data in the form of `hyperframe$column`.}
 
 \item{time_unit}{x-axis label of the output}
 

@@ -1,6 +1,5 @@
 #' Plot observed densities
 #'
-#' @param actual_data actual data in the form of `hyperframe$column`.
 #' @param x input
 #' @param ... arguments passed on to the function
 #' @param dens_2 density 2 (if any). By default, `NA`.
@@ -11,7 +10,7 @@
 #'
 #' @export
 plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA,
-                      actual_data = NA, time_unit = NA, combined = TRUE) {
+                      time_unit = NA, combined = TRUE) {
 
   color_actual = "darkgrey"
   color_dens_1 = "#f68f46ff"
@@ -20,7 +19,7 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA,
 
   dens_1 <- x
 
-  actual_counts <- unlist(purrr::map(actual_data, function(x) x$n))
+  actual_counts <- dens_1$actual_counts
 
   if (is.na(dens_2)[1]) {
     predicted_counts <- dens_1$estimated_counts
