@@ -5,9 +5,12 @@
 
 <!-- badges: start -->
 
-![](http://www.r-pkg.org/badges/version/geocausal?color=green)
-![](http://cranlogs.r-pkg.org/badges/grand-total/geocausal?color=green)
-![](http://cranlogs.r-pkg.org/badges/last-week/geocausal?color=green)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/geocausal)](https://CRAN.R-project.org/package=geocausal)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/geocausal)](https://cran.r-project.org/package=geocausal)
+[![CRAN total
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/geocausal)](https://cran.r-project.org/package=geocausal)
 <!-- badges: end -->
 
 The goal of the package
