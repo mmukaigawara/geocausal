@@ -5,9 +5,9 @@
 
 <!-- badges: start -->
 
-[![](http://www.r-pkg.org/badges/version/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
-[![](http://cranlogs.r-pkg.org/badges/last-week/geocausal?color=green)](https://cran.r-project.org/package=geocausal)
+![](http://www.r-pkg.org/badges/version/geocausal?color=green)
+![](http://cranlogs.r-pkg.org/badges/grand-total/geocausal?color=green)
+![](http://cranlogs.r-pkg.org/badges/last-week/geocausal?color=green)
 <!-- badges: end -->
 
 The goal of the package
@@ -21,7 +21,7 @@ Please refer to the following preprint for the user guide.
 
 > Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024).
 > Geocausal: An R Package for Spatio-temporal Causal Inference. OSF
-> Preprints. August 27. <https://doi.org/10.31219/osf.io/5kc6f>.
+> Preprints. December 16. <https://doi.org/10.31219/osf.io/5kc6f>.
 
 For methodological details, please refer to the following article.
 
@@ -36,7 +36,7 @@ Please cite this package as follows:
 
 > Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024).
 > Geocausal: An R Package for Spatio-temporal Causal Inference. OSF
-> Preprints. August 27. <https://doi.org/10.31219/osf.io/5kc6f>.
+> Preprints. December 16. <https://doi.org/10.31219/osf.io/5kc6f>.
 
 ## Installation
 
