@@ -1,3 +1,7 @@
+# geocausal 0.3.4
+
+* Updated plot functions
+
 # geoacusal 0.3.3
 
 * Updated plot functions and restructured the package
