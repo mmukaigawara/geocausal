@@ -40,21 +40,21 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
   r <- terra::rast(res = 0.1)
   v <- terra::vect(polygon_sf)  # Vect object in terra
   terra::ext(r) <- terra::ext(v)  # Set the extent of r to match the extent of v
-  
+
   # Define the extent of the raster
   v <- terra::vect(polygon_spdf)
   r <- terra::rast(terra::ext(v), res = resolution)
-  
+
   # Rasterize the polygon
   r <- terra::rasterize(v, r, field = 1)
-  
+
   # Mask the raster with the polygon
   r <- terra::mask(r, v)
-  
+
   # Convert raster to SpatialPixels
   rast_points <- terra::as.points(r)
   rast_points <- terra::crds(rast_points)
-  
+
   # Calculate distance for each pixel -----
 
   message("Calculating distance...\n")
@@ -94,7 +94,7 @@ get_dist_line <- function(window, path_to_shapefile, line_data = NULL,
         suppressWarnings( #Suppress warnings
 
           dist <- as.numeric(geosphere::dist2Line(rast_points[rast_point_id, ],
-                                                  roads[[lines_covered[l]]][[1]],
+                                                  roads[[lines_covered[l]]][[1]][[1]],
                                                   distfun = geosphere::distVincentyEllipsoid)[, 1])
 
         )
