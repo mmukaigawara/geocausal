@@ -16,7 +16,7 @@ A tibble with 808 rows and 3 variables:
 airstrikes_base
 }
 \description{
-A subset of airstrikes data in Iraq (a subset of airstrikes in 2006) that can be used to construct baseline densities
+A dataset of airstrikes data in Iraq (in 2006) that can be used to construct baseline densities
 }
 \examples{
 airstrikes_base
