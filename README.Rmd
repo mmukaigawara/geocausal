@@ -23,6 +23,23 @@ knitr::opts_chunk$set(
 
 The goal of the package [geocausal](https://github.com/mmukaigawara/geocausal) is to implement causal inference analytic methods based on spatio-temporal data. Users provide the raw data of locations and timings of treatment and outcome events, specify counterfactual scenarios, and the package estimates causal effects over specified spatial and temporal windows.
 
+## Installation
+
+You can install the package [geocausal](https://github.com/mmukaigawara/geocausal) from [GitHub](https://github.com/mmukaigawara/geocausal) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("mmukaigawara/geocausal")
+```
+
+and [CRAN](https://cran.r-project.org/package=geocausal) with:
+
+```r
+install.packages("geocausal")
+```
+
+## Key publications
+
 Please refer to the following preprint for the **user guide**.
 
 > Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024). Geocausal: An R Package for Spatio-temporal Causal Inference. OSF Preprints. December 16. https://doi.org/10.31219/osf.io/5kc6f.
@@ -45,19 +62,6 @@ For methodological details, please refer to the following articles.
 
 Please cite this package as follows:
 
+> Mukaigawara M, Imai K, Lyall J, Papadogeorgou G (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv Preprints. April 4. https://arxiv.org/abs/2504.03464
+
 > Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024). Geocausal: An R Package for Spatio-temporal Causal Inference. OSF Preprints. December 16. https://doi.org/10.31219/osf.io/5kc6f.
-
-## Installation
-
-You can install the package [geocausal](https://github.com/mmukaigawara/geocausal) from [GitHub](https://github.com/mmukaigawara/geocausal) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("mmukaigawara/geocausal")
-```
-
-and [CRAN](https://cran.r-project.org/package=geocausal) with:
-
-```r
-install.packages("geocausal")
-```
