@@ -20,18 +20,35 @@ provide the raw data of locations and timings of treatment and outcome
 events, specify counterfactual scenarios, and the package estimates
 causal effects over specified spatial and temporal windows.
 
-Please refer to the following preprint for the user guide.
+Please refer to the following preprint for the **user guide**.
 
 > Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024).
 > Geocausal: An R Package for Spatio-temporal Causal Inference. OSF
 > Preprints. December 16. <https://doi.org/10.31219/osf.io/5kc6f>.
 
-For methodological details, please refer to the following article.
+For methodological details, please refer to the following articles.
+
+**General methodological framework** (ATE, heterogeneity, and
+**mediation**):
+
+> Mukaigawara M, Imai K, Lyall J, Papadogeorgou G (2025). Spatiotemporal
+> causal inference with arbitrary spillover and carryover effects. arXiv
+> Preprints. April 4. <https://arxiv.org/abs/2504.03464>
+
+**ATE**:
 
 > Papadogeorgou G, Imai K, Lyall J, and Li F (2022). Causal inference
 > with spatio-temporal data: Estimating the effects of airstrikes on
 > insurgent violence in Iraq. *J R Stat Soc Series B.*
 > <https://doi.org/10.1111/rssb.12548>.
+
+**Heterogeneity**:
+
+> Zhou L, Imai K, Lyall J, Papadogeorgou G (2024). Estimating
+> Heterogeneous Treatment Effects for Spatio-Temporal Causal Inference:
+> How Economic Assistance Moderates the Effects of Airstrikes on
+> Insurgent Violence. arXiv Preprints. Dec 19.
+> <https://arxiv.org/abs/2412.15128>
 
 ## Citation
 
