@@ -42,7 +42,7 @@ install.packages("geocausal")
 
 <div style="text-align: center;">
   <a href="https://github.com/mmukaigawara/geocausal">
-    <img src="inst/figure/poster.png" style="max-width: 100%; height: auto;" height="200" />
+    <img src="inst/figure/poster.png" align="center" height="auto" />
   </a>
 </div>
 
