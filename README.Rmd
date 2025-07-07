@@ -46,6 +46,8 @@ install.packages("geocausal")
   </a>
 </div>
 
+<br>
+
 **General methodological framework** (ATE, heterogeneity, and **mediation**):
 
 > Mukaigawara M, Imai K, Lyall J, Papadogeorgou G (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv Preprints. April 4. https://arxiv.org/abs/2504.03464

@@ -46,6 +46,8 @@ install.packages("geocausal")
 
 </div>
 
+<br>
+
 **General methodological framework** (ATE, heterogeneity, and
 **mediation**):
 
