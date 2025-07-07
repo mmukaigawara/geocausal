@@ -39,13 +39,13 @@ install.packages("geocausal")
 
 ## Key publications
 
-Please refer to the following preprint for the **user guide**.
+<div style="text-align: center;">
 
-> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024).
-> Geocausal: An R Package for Spatio-temporal Causal Inference. OSF
-> Preprints. December 16. <https://doi.org/10.31219/osf.io/5kc6f>.
+<a href="https://github.com/mmukaigawara/geocausal">
+<img src="inst/figure/poster.png" style="max-width: 100%; height: auto;" height="200" />
+</a>
 
-For methodological details, please refer to the following articles.
+</div>
 
 **General methodological framework** (ATE, heterogeneity, and
 **mediation**):
@@ -68,6 +68,12 @@ For methodological details, please refer to the following articles.
 > How Economic Assistance Moderates the Effects of Airstrikes on
 > Insurgent Violence. arXiv Preprints. Dec 19.
 > <https://arxiv.org/abs/2412.15128>
+
+Please refer to the following preprint for the **user guide**.
+
+> Mukaigawara M, Zhou L, Papadogeorgou G, Lyall J, and Imai K (2024).
+> Geocausal: An R Package for Spatio-temporal Causal Inference. OSF
+> Preprints. December 16. <https://doi.org/10.31219/osf.io/5kc6f>.
 
 ## Citation
 
