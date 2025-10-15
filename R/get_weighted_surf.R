@@ -37,7 +37,6 @@ get_weighted_surf <- function(obs_dens, cf_dens,
   # 1. Weight
 
   message("Calculating weights...\n")
-
   # 1-1. Log density
   if (class(cf_dens)[1] == "im") { #get_cf_dens returns class c("dens", "im")
     counterfactual_sum_log <- get_cf_sum_log_intens(cf_dens = cf_dens,
@@ -61,7 +60,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
       observed_sum_log - obs_med_log_sum_dens # Added conditionals
   } else {
     # For causal inference without mediation
-    log_density_ratio <- obs_dens$estimated_counts - spatstat.univar::integral(cf_dens, window = entire_window) + # Expected counts
+    log_density_ratio <- obs_dens$estimated_counts - ifelse(is.null(cf_dens$estimated_counts),spatstat.univar::integral(cf_dens, window = entire_window),cf_dens$estimated_counts) + # Expected counts
       counterfactual_sum_log - observed_sum_log # Sum log intens
   }
 
