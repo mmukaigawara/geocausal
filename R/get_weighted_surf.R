@@ -60,8 +60,22 @@ get_weighted_surf <- function(obs_dens, cf_dens,
       observed_sum_log - obs_med_log_sum_dens # Added conditionals
   } else {
     # For causal inference without mediation
-    log_density_ratio <- obs_dens$estimated_counts - ifelse(is.null(cf_dens$estimated_counts),spatstat.univar::integral(cf_dens, window = entire_window),cf_dens$estimated_counts) + # Expected counts
-      counterfactual_sum_log - observed_sum_log # Sum log intens
+    
+    log_density_ratio <- obs_dens$estimated_counts -
+      {
+        if (!is.null(cf_dens$estimated_counts)) {
+          cf_dens$estimated_counts
+        } else if (is.list(cf_dens)) {
+          vapply(cf_dens, function(im_obj)
+            spatstat.univar::integral(im_obj, window = entire_window),
+            numeric(1)
+          )
+        } else {
+          spatstat.univar::integral(cf_dens, window = entire_window)
+        }
+      } +
+      counterfactual_sum_log - observed_sum_log
+    
   }
 
   # 1-3. Convert LDR to weights (weights for each time period)
