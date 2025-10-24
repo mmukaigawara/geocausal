@@ -22,7 +22,7 @@
 #'      * `sum_log_intens`: the sum of log intensities for each time period
 #'      * `actual_counts`: the number of events (actual counts)
 #'
-#' @details `get_obs_dens()` assumes the poisson point process model and
+#' @details `get_adaptive_baseline_dens()` assumes the poisson point process model and
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`.
 #' Users should note that the coefficients in the output are not directly interpretable,
 #' since they are the coefficients inside the exponential of the poisson model.
@@ -66,16 +66,21 @@ get_adaptive_baseline_dens <- function(hfr_hist, hfr_current, dep_var, indep_var
   # Evaluate each predicted CIF image at the actual current point pattern
   # and sum log(lambda) safely (0 if no points that period).
   message("Computing sum of log intensity at observed points (current data)...\n")
-  sum_log_intensity <- purrr::map2_dbl(
-    cif_current, hfr_current[[dep_var]],
-    .f = function(img, pat) {
-      if (is.null(pat) || spatstat.geom::npoints(pat) == 0) return(0)
-      vals <- img[pat]                     # lookup CIF at event locations
-      vals <- vals[is.finite(vals) & vals > 0]  # guard against NA/nonpositive
-      if (length(vals) == 0) return(0)
-      sum(log(vals))
-    }
+  
+  pred <- spatstat.model::predict.mppm(
+    mod,
+    type = "cif",
+    newdata = hfr_current,
+    locations = hfr_current[[dep_var]]
   )
+
+  # Extract numeric values at point locations
+  intensity_of_each_obs <- lapply(pred$cif, spatstat.geom::marks)
+
+  # Sum log intensities
+  sum_log_intensity <- sapply(intensity_of_each_obs, function(x) sum(log(x)))
+
+  
   
   # ---- 5) Actual counts for the current periods ----
   actual_counts <- unlist(purrr::map(hfr_current[[dep_var]], function(x) x$n))

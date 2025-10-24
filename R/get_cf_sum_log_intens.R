@@ -10,7 +10,7 @@
 
 get_cf_sum_log_intens <- function(cf_dens,
                                   treatment_data) {
-  
+
   if (spatstat.geom::is.im(cf_dens)) {
     # Case 1: single image used for all treatment times
     intensity_of_each_obs <- lapply(seq_along(treatment_data), function(t) {
@@ -20,13 +20,13 @@ get_cf_sum_log_intens <- function(cf_dens,
         bilinear = TRUE
       )
     })
-    
+
   } else if (is.list(cf_dens) && all(vapply(cf_dens, spatstat.geom::is.im, logical(1)))) {
     # Case 2: list of images (same length as treatment_data)
     if (length(cf_dens) != length(treatment_data)) {
       stop("When cf_dens is a list, it must have the same length as treatment_data.")
     }
-    
+
     intensity_of_each_obs <- lapply(seq_along(treatment_data), function(t) {
       spatstat.geom::interp.im(
         cf_dens[[t]],
@@ -34,7 +34,7 @@ get_cf_sum_log_intens <- function(cf_dens,
         bilinear = TRUE
       )
     })
-    
+
   } else {
     stop("cf_dens must be a spatstat 'im' or a list of 'im' objects.")
   }
@@ -53,3 +53,4 @@ get_cf_sum_log_intens <- function(cf_dens,
 
   return(sum_log_intensity)
 }
+

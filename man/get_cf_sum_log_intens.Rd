@@ -7,7 +7,7 @@
 get_cf_sum_log_intens(cf_dens, treatment_data)
 }
 \arguments{
-\item{cf_dens}{A counterfactual density (an im object)}
+\item{cf_dens}{A counterfactual density (an im object or a list of im objects)}
 
 \item{treatment_data}{In the form of hyperframe$column}
 }
