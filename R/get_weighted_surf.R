@@ -60,12 +60,12 @@ get_weighted_surf <- function(obs_dens, cf_dens,
       observed_sum_log - obs_med_log_sum_dens # Added conditionals
   } else {
     # For causal inference without mediation
-    
+
     log_density_ratio <- obs_dens$estimated_counts -
       {
         if (!is.null(cf_dens$estimated_counts)) {
           cf_dens$estimated_counts
-        } else if (is.im(cf_dens)) {
+        } else if (spatstat.geom::is.im(cf_dens)) {
           spatstat.univar::integral(cf_dens, window = entire_window)
         } else {
           vapply(cf_dens, function(im_obj)
@@ -75,11 +75,11 @@ get_weighted_surf <- function(obs_dens, cf_dens,
         }
       } +
       counterfactual_sum_log - observed_sum_log
-    
-    
 
-    
-    
+
+
+
+
   }
 
   # 1-3. Convert LDR to weights (weights for each time period)
@@ -87,7 +87,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
     weight <- exp(sum(log_density_ratio[(x - lag + 1): x]))
     return(weight)
   })
-  
+
 
   stabilizer <- furrr::future_map_dbl(1 : length(log_density_ratio), function(x) {
     weight <- exp(sum(log_density_ratio[x]))
@@ -97,7 +97,7 @@ get_weighted_surf <- function(obs_dens, cf_dens,
     truncate_at <- quantile(stabilizer, probs = truncation_level)
   }
   stabilizer <- mean(sapply(stabilizer, function(x) min(x, truncate_at)))^lag
-  
+
 
   if (!is.null(truncation_level)) { #Truncation of weights
     truncate_at <- quantile(weights, probs = truncation_level)
@@ -121,9 +121,9 @@ get_weighted_surf <- function(obs_dens, cf_dens,
   average_weighted_surface <- spatstat.geom::as.im(apply(mat_im_weighted, c(1, 2), mean),
                                                    W = entire_window) #This is IPW; one pixel image
   average_weighted_surface_haj <- average_weighted_surface / mean(weights) #Hajek; one pixel image
-  
-  if(cate){ 
-    
+
+  if(cate){
+
     return(list(weighted_surface_arr = mat_im_weighted,
                 weighted_surface_arr_haj = mat_im_weighted/mean(weights),
                 weights = weights,
