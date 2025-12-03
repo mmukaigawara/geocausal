@@ -1,6 +1,6 @@
 #' airstrikes
 #'
-#' A dataset of airstrikes data in Iraq (March to June 2007)
+#' A dataset of airstrikes data in Iraq (February to June 2007)
 #'
 #' @format A tibble with 3938 rows and 4 variables:
 #' \describe{
