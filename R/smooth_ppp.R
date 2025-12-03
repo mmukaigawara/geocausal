@@ -10,7 +10,7 @@
 #' @param sampling numeric between 0 and 1. `sampling` determines the proportion of data
 #' to use for initialization. By default, NA (meaning that it uses all data without sampling).
 #'
-#' @returns im objects
+#' @returns im objects as a list
 #'
 #' @details To smooth ppp objects, users can choose either the Gaussian mixture model (`method = "mclust"`)
 #' or Abramson's adaptive smoothing (`method = "abramson"`).

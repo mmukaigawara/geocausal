@@ -8,7 +8,7 @@
 #' @param priorities vector of priorities for each of target densities
 #' @param window owin object
 #'
-#' @returns list of an im object and a ggplot object of power densities
+#' @returns an im object of power densities
 
 
 get_power_dens <- function(target_dens,
