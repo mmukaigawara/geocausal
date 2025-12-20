@@ -35,13 +35,13 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     elevatr,
-    geosphere,
     gridExtra,
-    ggthemes,
     knitr,
     readr,
     gridGraphics
 Imports:
+    geosphere,
+    ggthemes,
     data.table,
     dplyr,
     furrr,
