@@ -12,7 +12,7 @@ get_cf_dens_adaptive(baseline_den, scale_factor)
 \item{scale_factor}{a positive number that scales the baseline intensity}
 }
 \value{
-an list of the following:
+a list of the following:
      * `intens_grid_cells`: im object of counterfactural intensities for each time period
      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
      * `sum_log_intens`: the sum of log intensities for each time period

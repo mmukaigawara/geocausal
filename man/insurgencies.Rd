@@ -17,7 +17,7 @@ A tibble with 68573 rows and 4 variables:
 insurgencies
 }
 \description{
-A dataset of insurgencies data in Iraq (March to June 2007)
+A dataset of insurgencies data in Iraq (February to July 2007)
 }
 \examples{
 insurgencies

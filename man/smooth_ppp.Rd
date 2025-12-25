@@ -17,7 +17,7 @@ Either `"mclust"` or `"abramson"`. See details.}
 to use for initialization. By default, NA (meaning that it uses all data without sampling).}
 }
 \value{
-im objects
+im objects as a list
 }
 \description{
 `smooth_ppp()` takes a column of hyperframes (ppp objects) and smoothes them.

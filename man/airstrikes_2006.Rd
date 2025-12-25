@@ -17,7 +17,7 @@ A tibble with 2101 rows and 4 variables:
 airstrikes_2006
 }
 \description{
-A dataset of airstrikes data in Iraq in 2006 (2006/1/1-2006/9/24)
+A dataset of airstrikes in Iraq in 2006 (2006/1/1-2006/9/24)
 }
 \examples{
 airstrikes_2006

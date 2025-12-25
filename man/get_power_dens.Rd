@@ -14,7 +14,7 @@ get_power_dens(target_dens, priorities, window)
 \item{window}{owin object}
 }
 \value{
-list of an im object and a ggplot object of power densities
+an im object of power densities
 }
 \description{
 `get_power_dens()` takes the target densities and their priorities
