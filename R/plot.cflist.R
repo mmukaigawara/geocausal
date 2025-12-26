@@ -49,7 +49,7 @@ plot.cflist <- function(x, ...,
                                                 fill = NA, color = "darkgrey", linewidth = 0.2) +
                           ggplot2::scale_fill_gradientn(colors = color, na.value = NA) +
                           ggthemes::theme_map() +
-                          ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", powers[a], "$"))) +
+                          ggplot2::ggtitle(bquote(alpha[focus] == .(powers[a]))) +
                           labs(fill = "Density") +
                           theme(plot.title = element_text(hjust = 0.5))
                           )

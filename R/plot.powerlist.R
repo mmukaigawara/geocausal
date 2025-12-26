@@ -45,12 +45,9 @@ plot.powerlist <- function(x, ...,
                             tidyterra::geom_spatraster(data = terra::rast(power_density_list[[a]])) +
                             ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                                                   fill = NA, color = "darkgrey", linewidth = 0.2) +
-                            #ggplot2::geom_tile(data = sf_density_list[[a]], aes(x = x, y = y, fill = value)) +
-                            #ggplot2::geom_path(data = as.data.frame(window), aes(x = x, y = y), color = "white") +
                             ggplot2::scale_fill_gradientn(colors = color, na.value = NA) +
-                            #ggplot2::scale_fill_viridis_c(option = "plasma", limits = c(NA, max_val)) +
                             ggthemes::theme_map() +
-                            ggplot2::ggtitle(latex2exp::TeX(paste0("$\\alpha_{focus} = ", priorities_manip[a], "$"))) +
+                            ggplot2::ggtitle(bquote(alpha[focus] == .(powers[a]))) +
                             labs(fill = "Density") +
                             theme(plot.title = element_text(hjust = 0.5))
 

@@ -11,17 +11,19 @@ get_hfr(
   time_col,
   time_range,
   coordinates = c("longitude", "latitude"),
-  combine = TRUE
+  combine = TRUE,
+  input_crs = 4326
 )
 }
 \arguments{
-\item{data}{dataframe. The dataframe must have time and location variables.
-Location variables should be standard coordinates (i.e., longitudes and latitudes).}
+\item{data}{dataframe. The dataframe must have time and location variables.}
 
-\item{col}{the name of the column for subtypes of events of interest}
+\item{col}{the name of the column for types of events of interest}
 
 \item{window}{owin object (for more information, refer to `spatstat.geom::owin()`).
-Basically, an owin object specifies the geographical boundaries of areas of interest.}
+Must be a projected window (e.g., created via \code{get_window} with a \code{target_crs}
+specified). This function automatically detects the projection from the window and projects
+the event data accordingly.}
 
 \item{time_col}{the name of the column for time variable. Note that the time variable must be integers.}
 
@@ -34,6 +36,9 @@ By default, `c("longitude", "latitude")` in this order. Note that the coordinate
 
 \item{combine}{logical. `combine` tells whether to generate output for all subtypes of events combined.
 By default, `TRUE`, which means that a column of ppp objects with all subtypes combined is generated in the output.}
+
+\item{input_crs}{the CRS of the input \code{coordinates}. Defaults to \code{4326}
+(WGS84 decimal degrees). The function will transform these to match the \code{window} projection}
 }
 \value{
 A hyperframe is generated with rows representing time and columns representing the following:
@@ -44,8 +49,6 @@ A hyperframe is generated with rows representing time and columns representing t
 \description{
 `get_hfr()` takes a dataframe with time and location variables
 and generates a hyperframe with point patterns.
-`get_hfr()` is usually the first function that users employ in order to
-perform spatiotemporal causal inference analytic methods.
 }
 \examples{
 # Data

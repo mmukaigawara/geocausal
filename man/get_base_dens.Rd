@@ -6,20 +6,21 @@
 \usage{
 get_base_dens(
   window,
-  option,
+  option = "out",
   ndim = 256,
-  out_data,
+  out_data = NULL,
   out_coordinates = c("longitude", "latitude"),
-  hfr,
-  dep_var,
-  indep_var,
-  ratio
+  hfr = NULL,
+  dep_var = NULL,
+  indep_var = NULL,
+  ratio = NULL,
+  input_crs = 4326
 )
 }
 \arguments{
 \item{window}{owin object}
 
-\item{option}{"in" (using in-sample data) or "out" (using out-of-sample data)}
+\item{option}{"in" (using in-sample data) or "out" (using out-of-sample data). "out" by default}
 
 \item{ndim}{the number of dimensions of grid cells (ndim^2). By default, ndim = 256.}
 
@@ -34,6 +35,9 @@ get_base_dens(
 \item{indep_var}{the names of time-invariant independent varaibles (if using in-sample data)}
 
 \item{ratio}{for random sampling of data (if using in-sample data)}
+
+\item{input_crs}{the CRS of the input \code{coordinates}. Defaults to \code{4326}
+(WGS84 decimal degrees). The function will transform these to match the \code{window} projection}
 }
 \value{
 an im object of baseline density

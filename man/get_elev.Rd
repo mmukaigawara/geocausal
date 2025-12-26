@@ -15,5 +15,5 @@ get_elev(load_path, ...)
 an im object (unit: meters)
 }
 \description{
-`get_elevation()` takes a directory that hosts shapefile and returns an owin object of altitudes.
+`get_elev()` takes a directory that hosts shapefile and returns an owin object of altitudes.
 }

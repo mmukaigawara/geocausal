@@ -47,7 +47,6 @@ Imports:
     furrr,
     ggplot2,
     ggpubr,
-    latex2exp,
     mclust,
     progressr,
     purrr,

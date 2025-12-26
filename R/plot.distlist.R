@@ -30,7 +30,7 @@ plot.distlist <- function(x, ..., dist_map_unit = "km",
         labs(x = x_label_text,
              y = "The expected treatment events\ncovered by the area",
              title = "The expected number of treatment events",
-             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+             color = expression(alpha[focus])) +
         ggplot2::scale_color_brewer(palette = "Greys") +
         theme(plot.title = element_text(hjust = 0.5, face = "bold"),
               panel.grid.major = element_blank(), panel.grid.minor = element_blank())
@@ -43,7 +43,7 @@ plot.distlist <- function(x, ..., dist_map_unit = "km",
         labs(x = x_label_text,
              y = "The proportion of\nexpected treatment events\ncovered by the area",
              title = "The expected number of treatment events",
-             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+             color = expression(alpha[focus])) +
         ggplot2::scale_color_brewer(palette = "Greys") +
         ylim(0, 1) +
         theme(plot.title = element_text(hjust = 0.5, face = "bold"),
@@ -61,7 +61,7 @@ plot.distlist <- function(x, ..., dist_map_unit = "km",
         labs(x = x_label_text,
              y = "The expected treatment events\ncovered by the area",
              title = "The expected number of treatment events",
-             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+             color = expression(alpha[focus])) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
         theme(plot.title = element_text(hjust = 0.5, face = "bold"),
               panel.grid.major = element_blank(), panel.grid.minor = element_blank())
@@ -74,7 +74,7 @@ plot.distlist <- function(x, ..., dist_map_unit = "km",
         labs(x = x_label_text,
              y = "The proportion of\nexpected treatment events\ncovered by the area",
              title = "The expected number of treatment events",
-             color = latex2exp::TeX("$\\alpha_{focus}$")) +
+             color = expression(alpha[focus])) +
         ggplot2::scale_color_brewer(palette = "PiYG") +
         ylim(0, 1) +
         theme(plot.title = element_text(hjust = 0.5, face = "bold"),
