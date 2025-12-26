@@ -14,16 +14,7 @@
 #' to match the window CRS to ensure isotropic distance calculations.
 #'
 #' @returns an im object
-#'
-#' @details
-#' `get_dist_focus()` depends on `geosphere::distVincentyEllipsoid()`.
-#' Since it calculates accurate distances considering the ellipsoid, the process sometimes
-#' becomes computationally demanding, namely when we need to obtain distances from many points.
-#' In that case, users can set `preprocess = TRUE`. With this option, `get_dist_focus()` calculates
-#' distances from points by first identifying the closest point using `sf::st_nearest_feature()` with approximations.
-#' This process is more efficient than computing distances from all the points
-#' with `geosphere::distVincentyEllipsoid()` and then obtaining the minimum of all the distances.
-#' By default, `get_dist_focus()` returns distances in kilometers unless users set `mile =  TRUE`.
+
 
 get_dist_focus <- function(window, lon, lat, resolution = 1000,
                            mile = FALSE, preprocess = FALSE,

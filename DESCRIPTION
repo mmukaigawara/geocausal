@@ -41,7 +41,6 @@ Suggests:
     gridGraphics
 Imports:
     crsuggest,
-    geosphere,
     ggthemes,
     data.table,
     dplyr,
