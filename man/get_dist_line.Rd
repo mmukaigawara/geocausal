@@ -6,10 +6,10 @@
 \usage{
 get_dist_line(
   window,
-  path_to_shapefile,
+  path_to_shapefile = NULL,
   line_data = NULL,
   mile = FALSE,
-  resolution,
+  resolution = 1000,
   preprocess = TRUE
 )
 }
@@ -22,7 +22,7 @@ get_dist_line(
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).}
 
-\item{resolution}{resolution of raster objects}
+\item{resolution}{resolution of raster objects (in meters; by default = 1000)}
 
 \item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point.
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
@@ -32,4 +32,9 @@ an im object
 }
 \description{
 `get_dist_line()` generates a distance map from lines and polygons.
+}
+\details{
+The function ensures spatial integrity by automatically projecting the
+\code{line_data} or shapefile to match the Coordinate Reference System (CRS)
+of the \code{window}.
 }

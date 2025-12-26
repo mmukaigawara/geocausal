@@ -61,6 +61,8 @@ get_window <- function(load_path, target_crs = NULL) {
                                                          y = temp_matrix[, 2]))
   }
 
+  attr(temp_window, "crs") <- sf::st_crs(temp) # Add crs information
+
   return(temp_window)
 
 }

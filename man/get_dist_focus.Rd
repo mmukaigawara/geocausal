@@ -4,7 +4,15 @@
 \alias{get_dist_focus}
 \title{Get distance maps}
 \usage{
-get_dist_focus(window, lon, lat, resolution, mile = FALSE, preprocess = FALSE)
+get_dist_focus(
+  window,
+  lon,
+  lat,
+  resolution = 1000,
+  mile = FALSE,
+  preprocess = FALSE,
+  input_crs = 4326
+)
 }
 \arguments{
 \item{window}{owin object}
@@ -13,12 +21,15 @@ get_dist_focus(window, lon, lat, resolution, mile = FALSE, preprocess = FALSE)
 
 \item{lat}{vector of latitudes}
 
-\item{resolution}{resolution of raster objects}
+\item{resolution}{resolution of raster objects (in meters; by default, 1000)}
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).}
 
 \item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point.
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
+
+\item{input_crs}{the CRS of the focus points (defaults to 4326). These points are internally projected
+to match the window CRS to ensure isotropic distance calculations.}
 }
 \value{
 an im object
