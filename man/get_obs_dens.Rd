@@ -24,6 +24,9 @@ By default = 100. Notice that as you increase `ngrid`, the process gets computat
 list of the following:
      * `indep_var`: independent variables
      * `coef`: coefficients
+     * `deviance`: deviance
+     * `null_deviance`: null deviance
+     * `dispersion`: dispersion parameter
      * `intens_grid_cells`: im object of observed densities for each time period
      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
      * `sum_log_intens`: the sum of log intensities for each time period

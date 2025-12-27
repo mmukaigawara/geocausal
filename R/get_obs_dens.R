@@ -16,6 +16,9 @@
 #' @returns list of the following:
 #'      * `indep_var`: independent variables
 #'      * `coef`: coefficients
+#'      * `deviance`: deviance
+#'      * `null_deviance`: null deviance
+#'      * `dispersion`: dispersion parameter
 #'      * `intens_grid_cells`: im object of observed densities for each time period
 #'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
 #'      * `sum_log_intens`: the sum of log intensities for each time period
@@ -32,7 +35,13 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
   message("Fitting the model...\n")
   mod <- spatstat.model::mppm(as.formula(text_form), data = hfr) #Fit mppm
-  coefficients <- as.numeric(spatstat.model::summary.mppm(mod)$coef) #Coefficients
+  #coefficients <- as.numeric(spatstat.model::summary.mppm(mod)$coef) #Coefficients
+  glm_summary <- summary(mod$Fit$FIT)
+  coefficients <- glm_summary$coefficients # Coef
+  out_deviance <- mod$Fit$FIT$deviance # Deviance
+  out_null_dev <- mod$Fit$FIT$null.deviance # Null deviance
+  pearson_chisq <- sum(stats::residuals(mod$Fit$FIT, type = "pearson")^2)
+  out_dispersion <- pearson_chisq / mod$Fit$FIT$df.residual # Dispersion
 
   # Obtain fitted values of the propensity score -----
   message("Calculating the intensity...\n")
@@ -51,6 +60,9 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
 
   out <- list(indep_var = indep_var, #List of independent variables
               coef = coefficients, #Coefficients
+              deviance = out_deviance, #Deviance
+              null_deviance = out_null_dev, #Null deviance
+              dispersion = out_dispersion, #Dispersion
               intens_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Estimated Counts
               sum_log_intens = sum_log_intensity, #Sum of log(intensity) for each time period
