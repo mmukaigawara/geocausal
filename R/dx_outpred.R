@@ -1,7 +1,7 @@
 #' Perform out-of-sample prediction
 #'
 #' @description
-#' `predict_obs_dens()` performs out-of-sample prediction
+#' `dx_outpred()` performs out-of-sample prediction
 #' (separating data into training and test sets).
 #' It assumes that training and test sets have the same window.
 #'
@@ -20,8 +20,7 @@
 #'      * `sum_log_intens`: the sum of log intensities for each time period
 #'      * `training_row_max`: the max row ID of the training set
 
-predict_obs_dens <- function(hfr, ratio,
-                             dep_var, indep_var, ngrid = 100, window) {
+dx_outpred <- function(hfr, ratio, dep_var, indep_var, ngrid = 100, window) {
 
   # Separate data into training and test sets
   training_row_max <- trunc(nrow(hfr)*ratio)
