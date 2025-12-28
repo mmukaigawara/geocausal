@@ -10,10 +10,10 @@
 #' @export
 summary.obs <- function(object, ...) {
   obs_density <- object
-  cat("\n--- Observed Density Model Summary ---\n")
-  cat(sprintf("Dispersion parameter: %.4f\n", obs_density$dispersion))
-  cat(sprintf("Deviance: %.2f; Null deviance: %.2f\n",
-              obs_density$deviance, obs_density$null_deviance))
-  cat("------------------------------------------\n\n")
+  message("\n----- Observed Density Model Summary -----\n")
+  message(sprintf("Dispersion parameter: %.4f\n", obs_density$dispersion))
+  message(sprintf("Deviance: %.2f; Null deviance: %.2f\n",
+                  obs_density$deviance, obs_density$null_deviance))
+  message("------------------------------------------\n\n")
   return(obs_density$coef)
 }

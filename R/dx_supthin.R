@@ -32,7 +32,7 @@ dx_supthin <- function(hfr, dep_var, indep_var, ngrid = 100, window,
   # Set the critical value and rescale the map to km -----
   lambda_im <- predict(mod, type = "trend") # Prediction
 
-  w_km <- spatstat.geom::rescale(Window(lambda_im$trend[[1]]), rescale, "km")
+  w_km <- spatstat.geom::rescale(spatstat.geom::Window(lambda_im$trend[[1]]), rescale, "km")
   total_area_km <- spatstat.geom::area(w_km)
   total_points <- sum(sapply(hfr[[dep_var]], function(x) x$n))
 
