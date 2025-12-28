@@ -32,6 +32,7 @@ list of the following:
      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
      * `sum_log_intens`: the sum of log intensities for each time period
      * `actual_counts`: the number of events (actual counts)
+     * `window`: window object used as an input
 }
 \description{
 `get_obs_dens()` takes a hyperframe and returns observed densities.

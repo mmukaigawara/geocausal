@@ -32,7 +32,7 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, lim = c(-1, 1), window,
     ggplot2::geom_tile() +
     ggplot2::coord_quickmap() +
     ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
-                          fill = NA, color = "darkgrey", size = 0.2) +
+                          fill = NA, color = "darkgrey", linewidth = 0.2) +
     ggthemes::theme_map() +
     ggplot2::scale_fill_gradientn(
       colors = c("steelblue1", "white", "violetred"),

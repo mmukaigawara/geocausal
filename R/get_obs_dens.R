@@ -24,6 +24,7 @@
 #'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
 #'      * `sum_log_intens`: the sum of log intensities for each time period
 #'      * `actual_counts`: the number of events (actual counts)
+#'      * `window`: window object used as an input
 #'
 #' @details `get_obs_dens()` assumes the poisson point process model and
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`.
@@ -75,7 +76,8 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
               intens_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Estimated Counts
               sum_log_intens = sum_log_intensity, #Sum of log(intensity) for each time period
-              actual_counts = actual_counts) #Actual counts
+              actual_counts = actual_counts, #Actual counts
+              window = window)
 
   class(out) <- c("obs", "list")
   return(out)
