@@ -45,6 +45,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
   pearson_chisq <- sum(stats::residuals(mod$Fit$FIT, type = "pearson")^2)
   out_dispersion <- pearson_chisq / mod$Fit$FIT$df.residual # Dispersion
 
+  # Obtain residual fields -----
   res <- residuals(mod)
   res_combined <- Reduce(`+`, res)
   res_smooth_im <- spatstat.explore::Smooth(res_combined)

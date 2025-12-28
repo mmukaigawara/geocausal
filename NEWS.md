@@ -1,3 +1,8 @@
+# geocausal 0.4.0
+
+* Updated the package throughout to accommodate projection of location information
+* Incorporated functions to perform diagnostic tests of the propensity score model
+
 # geocausal 0.3.4
 
 * Updated plot functions
