@@ -19,6 +19,7 @@
 #'      * `deviance`: deviance
 #'      * `null_deviance`: null deviance
 #'      * `dispersion`: dispersion parameter
+#'      * `res_df`: average residuals as a dataframe
 #'      * `intens_grid_cells`: im object of observed densities for each time period
 #'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
 #'      * `sum_log_intens`: the sum of log intensities for each time period
@@ -43,6 +44,13 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
   pearson_chisq <- sum(stats::residuals(mod$Fit$FIT, type = "pearson")^2)
   out_dispersion <- pearson_chisq / mod$Fit$FIT$df.residual # Dispersion
 
+  res <- residuals(mod)
+  res_combined <- Reduce(`+`, res)
+  res_smooth_im <- spatstat.explore::Smooth(res_combined)
+  res_df <- as.data.frame(res_smooth_im)
+  res_df$value = res_df$value / length(res)
+  colnames(res_df) <- c("x", "y", "value")
+
   # Obtain fitted values of the propensity score -----
   message("Calculating the intensity...\n")
   intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", ngrid = ngrid)$cif #Returns intensity (cif) over nxn grid cells
@@ -63,6 +71,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
               deviance = out_deviance, #Deviance
               null_deviance = out_null_dev, #Null deviance
               dispersion = out_dispersion, #Dispersion
+              res_df = res_df, #Average residuals as df
               intens_grid_cells = intensity_grid_cells, #Integrated intensity as images
               estimated_counts = estimated_counts, #Estimated Counts
               sum_log_intens = sum_log_intensity, #Sum of log(intensity) for each time period

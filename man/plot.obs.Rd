@@ -4,7 +4,16 @@
 \alias{plot.obs}
 \title{Plot observed densities}
 \usage{
-\method{plot}{obs}(x, ..., dens_2 = NA, dens_3 = NA, time_unit = NA, combined = TRUE)
+\method{plot}{obs}(
+  x,
+  ...,
+  dens_2 = NA,
+  dens_3 = NA,
+  lim = c(-1, 1),
+  window,
+  time_unit = NA,
+  combined = TRUE
+)
 }
 \arguments{
 \item{x}{input}
@@ -14,6 +23,10 @@
 \item{dens_2}{density 2 (if any). By default, `NA`.}
 
 \item{dens_3}{density 3 (if any). By default, `NA`.}
+
+\item{lim}{limits of the scale for the average residual fields. By default, c(0, -1). To set limits manually, provide a vector of max and min}
+
+\item{window}{owin object to plot the average residual fields}
 
 \item{time_unit}{x-axis label of the output}
 

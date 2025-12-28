@@ -7,9 +7,11 @@
 #' @param time_unit x-axis label of the output
 #' @param combined whether to combine the two plots. By default, TRUE. If TRUE,
 #' then the plot function produces one ggplot object. If FALSE, three objects (two ggplot and one dataframe) will be produced.
+#' @param lim limits of the scale for the average residual fields. By default, c(0, -1). To set limits manually, provide a vector of max and min
+#' @param window owin object to plot the average residual fields
 #'
 #' @export
-plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA,
+plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, lim = c(-1, 1), window,
                       time_unit = NA, combined = TRUE) {
 
   color_actual = "darkgrey"
@@ -20,6 +22,24 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA,
   dens_1 <- x
 
   actual_counts <- dens_1$actual_counts
+
+  # Average residual fields
+  window_sp <- conv_owin_into_sf(window)
+  polygon_df <- window_sp[[2]] #Convert owin to DF
+  res_df <- x$res_df
+
+  plot_arf <- ggplot(data = res_df, aes(x = x, y = y, fill = value)) +
+    ggplot2::geom_tile() +
+    ggplot2::coord_quickmap() +
+    ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
+                          fill = NA, color = "darkgrey", size = 0.2) +
+    ggthemes::theme_map() +
+    ggplot2::scale_fill_gradientn(
+      colors = c("steelblue1", "white", "violetred"),
+      limits = lim
+    ) +
+    labs(fill = "Average residuals") +
+    theme(legend.position = "bottom")
 
   if (is.na(dens_2)[1]) {
     predicted_counts <- dens_1$estimated_counts
@@ -47,7 +67,7 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA,
 
     if (combined) {
 
-      return(ggpubr::ggarrange(plot_compare, plot_residual))
+      return(ggpubr::ggarrange(plot_compare, plot_residual, plot_arf, nrow = 1))
 
     } else {
 
@@ -91,7 +111,8 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA,
 
       return(list(plot_data = plot_data,
                   plot_compare = plot_compare,
-                  plot_residual = plot_residual))
+                  plot_residual = plot_residual,
+                  plot_arf = plot_arf))
 
     }
 
@@ -128,13 +149,14 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA,
 
     if (combined) {
 
-      return(ggpubr::ggarrange(plot_compare, plot_residual))
+      return(ggpubr::ggarrange(plot_compare, plot_residual, plot_arf, nrow = 1))
 
     } else {
 
       return(list(plot_data = plot_data,
                   plot_compare = plot_compare,
-                  plot_residual = plot_residual))
+                  plot_residual = plot_residual,
+                  plot_arf = plot_arf))
 
     }
 
