@@ -5,25 +5,28 @@
 #' @param dens_2 density 2 (if any). By default, `NA`.
 #' @param dens_3 density 3 (if any). By default, `NA`.
 #' @param time_unit x-axis label of the output
+#' @param color_actual name of the color for the actual density
+#' @param color_dens_1 name of the color for the predicted density
+#' @param color_dens_2 name of the color for another predicted density (usually for the out-of-sample prediction)
+#' @param color_dens_3 another color for an alternate density for out-of-sample prediction
 #' @param combined whether to combine the two plots. By default, TRUE. If TRUE,
 #' then the plot function produces one ggplot object. If FALSE, three objects (two ggplot and one dataframe) will be produced.
 #' @param lim limits of the scale for the average residual fields. By default, c(0, -1). To set limits manually, provide a vector of max and min
-#' @param window owin object to plot the average residual fields
 #'
 #' @export
-plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, lim = c(-1, 1), window,
-                      time_unit = NA, combined = TRUE) {
-
-  color_actual = "darkgrey"
-  color_dens_1 = "#f68f46ff"
-  color_dens_2 = "#593d9cff"
-  color_dens_3 = "#efe350ff"
+plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, lim = c(-1, 1),
+                      time_unit = NA, combined = TRUE,
+                      color_actual = "darkgrey",
+                      color_dens_1 = "#f68f46ff",
+                      color_dens_2 = "#593d9cff",
+                      color_dens_3 = "#efe350ff") {
 
   dens_1 <- x
 
   actual_counts <- dens_1$actual_counts
 
   # Average residual fields
+  window <- x$window
   window_sp <- conv_owin_into_sf(window)
   polygon_df <- window_sp[[2]] #Convert owin to DF
   res_df <- x$res_df

@@ -10,9 +10,12 @@
   dens_2 = NA,
   dens_3 = NA,
   lim = c(-1, 1),
-  window,
   time_unit = NA,
-  combined = TRUE
+  combined = TRUE,
+  color_actual = "darkgrey",
+  color_dens_1 = "#f68f46ff",
+  color_dens_2 = "#593d9cff",
+  color_dens_3 = "#efe350ff"
 )
 }
 \arguments{
@@ -26,12 +29,18 @@
 
 \item{lim}{limits of the scale for the average residual fields. By default, c(0, -1). To set limits manually, provide a vector of max and min}
 
-\item{window}{owin object to plot the average residual fields}
-
 \item{time_unit}{x-axis label of the output}
 
 \item{combined}{whether to combine the two plots. By default, TRUE. If TRUE,
 then the plot function produces one ggplot object. If FALSE, three objects (two ggplot and one dataframe) will be produced.}
+
+\item{color_actual}{name of the color for the actual density}
+
+\item{color_dens_1}{name of the color for the predicted density}
+
+\item{color_dens_2}{name of the color for another predicted density (usually for the out-of-sample prediction)}
+
+\item{color_dens_3}{another color for an alternate density for out-of-sample prediction}
 }
 \description{
 Plot observed densities
