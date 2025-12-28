@@ -76,7 +76,8 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, lim = c(-1, 1),
 
       return(list(plot_data = plot_data,
                   plot_compare = plot_compare,
-                  plot_residual = plot_residual))
+                  plot_residual = plot_residual,
+                  plot_arf = plot_arf))
 
     }
 
