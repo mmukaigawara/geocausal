@@ -12,7 +12,7 @@
 #' By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.
 #' @param window owin object
 #' @param rescale conversion as needed (namely when the unit of distance of the owin object is in meters).
-#' By default = 1000 (converting meters to km)
+#' By default = 1 (no conversion)
 #' @param max_r max distance in which the envelope tests are performed
 #' @param n_sample the number of points to sample. by default = 1000, if the number of points are smaller than this, no sampling is performed
 #' @param nsim the number of simulations to perform for the envelope tests
@@ -22,7 +22,7 @@
 #' and a window object for the entire window
 
 dx_supthin <- function(hfr, dep_var, indep_var, ngrid = 100, window,
-                       rescale = 1000, max_r = 50, n_sample = 1000,
+                       rescale = 1, max_r = 50, n_sample = 1000,
                        nsim = 1000, unit = "km") {
 
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))

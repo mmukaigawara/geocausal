@@ -14,7 +14,8 @@ get_base_dens(
   dep_var = NULL,
   indep_var = NULL,
   ratio = NULL,
-  input_crs = 4326
+  input_crs = 4326,
+  unit_scale = 1000
 )
 }
 \arguments{
@@ -36,7 +37,9 @@ get_base_dens(
 
 \item{ratio}{for random sampling of data (if using in-sample data)}
 
-\item{input_crs}{the CRS of the input \code{coordinates}. Defaults to \code{4326}
+\item{input_crs}{the CRS of the input \code{coordinates}. Defaults to \code{4326}}
+
+\item{unit_scale}{parameter to convert meters to kilometers
 (WGS84 decimal degrees). The function will transform these to match the \code{window} projection}
 }
 \value{

@@ -10,7 +10,7 @@ dx_supthin(
   indep_var,
   ngrid = 100,
   window,
-  rescale = 1000,
+  rescale = 1,
   max_r = 50,
   n_sample = 1000,
   nsim = 1000,
@@ -32,7 +32,7 @@ By default = 100. Notice that as you increase `ngrid`, the process gets computat
 \item{window}{owin object}
 
 \item{rescale}{conversion as needed (namely when the unit of distance of the owin object is in meters).
-By default = 1000 (converting meters to km)}
+By default = 1 (no conversion)}
 
 \item{max_r}{max distance in which the envelope tests are performed}
 

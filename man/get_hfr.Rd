@@ -12,7 +12,8 @@ get_hfr(
   time_range,
   coordinates = c("longitude", "latitude"),
   combine = TRUE,
-  input_crs = 4326
+  input_crs = 4326,
+  unit_scale = 1000
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ By default, `TRUE`, which means that a column of ppp objects with all subtypes c
 
 \item{input_crs}{the CRS of the input \code{coordinates}. Defaults to \code{4326}
 (WGS84 decimal degrees). The function will transform these to match the \code{window} projection}
+
+\item{unit_scale}{parameter to convert meters to kilometers}
 }
 \value{
 A hyperframe is generated with rows representing time and columns representing the following:

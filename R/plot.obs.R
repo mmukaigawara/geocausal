@@ -33,7 +33,7 @@ plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, lim = c(-1, 1),
 
   plot_arf <- ggplot(data = res_df, aes(x = x, y = y, fill = value)) +
     ggplot2::geom_tile() +
-    ggplot2::coord_quickmap() +
+    ggplot2::coord_fixed() +
     ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                           fill = NA, color = "darkgrey", linewidth = 0.2) +
     ggthemes::theme_map() +

@@ -15,6 +15,7 @@
 #' @param indep_var the names of time-invariant independent varaibles (if using in-sample data)
 #' @param ratio for random sampling of data (if using in-sample data)
 #' @param input_crs the CRS of the input \code{coordinates}. Defaults to \code{4326}
+#' @param unit_scale parameter to convert meters to kilometers
 #' (WGS84 decimal degrees). The function will transform these to match the \code{window} projection
 #'
 #' @returns an im object of baseline density
@@ -28,7 +29,8 @@ get_base_dens <- function(window,
                           dep_var = NULL,
                           indep_var = NULL,
                           ratio = NULL,
-                          input_crs = 4326) {
+                          input_crs = 4326,
+                          unit_scale = 1000) {
 
   # 1. Detect CRS from Window
   detected_crs <- attr(window, "crs")
@@ -45,7 +47,7 @@ get_base_dens <- function(window,
     # 2. Project out-of-sample data to match window
     out_sf <- sf::st_as_sf(out_data, coords = out_coordinates, crs = input_crs)
     out_proj <- sf::st_transform(out_sf, detected_crs)
-    out_coords_proj <- sf::st_coordinates(out_proj)
+    out_coords_proj <- sf::st_coordinates(out_proj) / unit_scale
 
     # Convert projected data to ppp
     baseline_ppp <- spatstat.geom::as.ppp(out_coords_proj, W = window)

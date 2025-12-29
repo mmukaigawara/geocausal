@@ -31,7 +31,7 @@ plot.ppplist <- function(x, ..., frame = 1, main = "ppp", combined = TRUE) {
 
     gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
       ggplot2::geom_point(shape = 1, size = 1.5) +
-      ggplot2::coord_quickmap() +
+      ggplot2::coord_fixed() +
       ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
       ggthemes::theme_map() +
       ggplot2::ggtitle(paste0(main, "\n(Time Period ", time_vis, ")")) +
@@ -53,7 +53,7 @@ plot.ppplist <- function(x, ..., frame = 1, main = "ppp", combined = TRUE) {
 
       gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
         ggplot2::geom_point(shape = 1, size = 1.5) +
-        ggplot2::coord_quickmap() +
+        ggplot2::coord_fixed() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
         ggplot2::ggtitle(paste0(main, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +
@@ -80,7 +80,7 @@ plot.ppplist <- function(x, ..., frame = 1, main = "ppp", combined = TRUE) {
 
       gg <- ggplot2::ggplot(data = df, aes(x = longitude, y = latitude)) +
         ggplot2::geom_point(shape = 1, size = 1.5) +
-        ggplot2::coord_quickmap() +
+        ggplot2::coord_fixed() +
         ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude), fill = NA, color = "black") +
         ggthemes::theme_map() +
         ggplot2::ggtitle(paste0(main, "\n(Time Periods ", time_vis[1], " - ", time_vis[length(time_vis)], ")")) +

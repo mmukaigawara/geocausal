@@ -9,8 +9,9 @@ get_dist_line(
   path_to_shapefile = NULL,
   line_data = NULL,
   mile = FALSE,
-  resolution = 1000,
-  preprocess = TRUE
+  resolution = 1,
+  preprocess = TRUE,
+  unit_scale = 1000
 )
 }
 \arguments{
@@ -22,10 +23,13 @@ get_dist_line(
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).}
 
-\item{resolution}{resolution of raster objects (in meters; by default = 1000)}
+\item{resolution}{resolution of raster objects (distance map) (in km; by default, 1)}
 
 \item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point.
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
+
+\item{unit_scale}{set to the same value as the parameter in `get_window()` function.
+This parameter converts the coordinate values so that they alingn with the unit (km) of the owin object}
 }
 \value{
 an im object

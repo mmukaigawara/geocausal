@@ -20,6 +20,7 @@
 #' (WGS84 decimal degrees). The function will transform these to match the \code{window} projection
 #' @param combine logical. `combine` tells whether to generate output for all subtypes of events combined.
 #' By default, `TRUE`, which means that a column of ppp objects with all subtypes combined is generated in the output.
+#' @param unit_scale parameter to convert meters to kilometers
 #'
 #' @importFrom data.table .BY .SD
 #'
@@ -49,28 +50,27 @@ get_hfr <- function(data, col,
                     time_range,
                     coordinates = c("longitude", "latitude"),
                     combine = TRUE,
-                    input_crs = 4326) {
+                    input_crs = 4326,
+                    unit_scale = 1000) {
 
   # 1. Automatic CRS Detection from Window
   detected_crs <- attr(window, "crs")
   if (is.null(detected_crs)) {
-    stop("The window object has no CRS. Please ensure get_window() was used with a target_crs.")
+    stop("The window object has no CRS. Ensure it matches your projected coordinate system.")
   }
 
   # 2. Project Input Data to match Window
-  # Convert the raw dataframe to an sf object, project it, and extract coordinates back
   data_sf <- sf::st_as_sf(data, coords = coordinates, crs = input_crs)
   data_proj <- sf::st_transform(data_sf, detected_crs)
   coords_proj <- sf::st_coordinates(data_proj)
 
-  # Update the data with projected coordinates
-  data$longitude <- coords_proj[, 1]
-  data$latitude <- coords_proj[, 2]
+  # 3. SCALE COORDINATES TO KM
+  # This is the critical change: divide meters by 1000
+  data$longitude <- coords_proj[, 1] / unit_scale
+  data$latitude <- coords_proj[, 2] / unit_scale
 
-  # 3. Getting the range of dates
+  # 4. Cleaning and Prep (Time range)
   all_time <- seq(time_range[1], time_range[2], by = 1)
-
-  # 4. Cleaning the data
   data <- data %>%
     dplyr::select(dplyr::all_of(time_col), dplyr::all_of(col), longitude, latitude)
   colnames(data) <- c("time", "type", "longitude", "latitude")
@@ -85,18 +85,17 @@ get_hfr <- function(data, col,
   # 5. Converting data to ppp
   message("Converting the data to ppp objects...\n")
 
-  ## Creating empty point process for imputation
+  # Empty ppp now automatically uses the KM window
   empty_ppp <- spatstat.geom::ppp(numeric(0), numeric(0), window = window, check = FALSE)
 
-  ## Converting data to point process
-  # Using the projected longitude/latitude now matches the window's scale (meters)
+  # Creating ppp objects with KM coordinates
   x_ppp <- data[, .(V1 = list(spatstat.geom::as.ppp(cbind(x = .SD$longitude, y = .SD$latitude),
                                                     W = window))),
                 by = list(time, type)]
 
+  # 6. Hyperframe Generation (Logic remains identical)
   message("Converting the data to a hyperframe...\n")
 
-  ## Identifying missing dates
   all_time_type <- expand.grid(time = all_time,
                                type = as.character(unique(data[, type])),
                                KEEP.OUT.ATTRS = FALSE)
@@ -106,14 +105,12 @@ get_hfr <- function(data, col,
   obs_time_type <- data.table::data.table(time = x_ppp$time, type = x_ppp$type)
   missing_time_type <- all_time_type[!obs_time_type, on = c("time", "type")]
 
-  ## Combining observed and missing data
   x_list <- c(x_ppp$V1, rep(list(empty_ppp), nrow(missing_time_type)))
   x_index <- rbind(obs_time_type, missing_time_type)
   data_types <- unique(data[, type])
 
   final_list <- lapply(data_types, function(tp) {
     idx <- which(x_index$type == tp)
-    # Order by time within each type
     x_list[idx][order(x_index$time[idx])]
   })
 
@@ -123,8 +120,5 @@ get_hfr <- function(data, col,
     x_hyperframe[, as.character(data_types[jj])] <- final_list[[jj]]
   }
 
-  message("Generating a hyperframe of point processes...\n")
   return(x_hyperframe)
-
 }
-
