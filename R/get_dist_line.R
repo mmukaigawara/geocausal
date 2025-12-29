@@ -6,10 +6,11 @@
 #' @param path_to_shapefile path to shapefile
 #' @param line_data sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)
 #' @param window owin object
-#' @param resolution resolution of raster objects (in meters; by default = 1000)
+#' @param resolution resolution of raster objects (in km; by default, 1)
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point.
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
+#' @param unit_scale parameter to convert meters to kilometers
 #'
 #' @details
 #' The function ensures spatial integrity by automatically projecting the
@@ -19,7 +20,8 @@
 #' @returns an im object
 
 get_dist_line <- function(window, path_to_shapefile = NULL, line_data = NULL,
-                          mile = FALSE, resolution = 1000, preprocess = TRUE) {
+                          mile = FALSE, resolution = 1, preprocess = TRUE,
+                          unit_scale = 1000) {
 
   window_sp <- conv_owin_into_sf(window)
   polygon_sf <- window_sp[[4]]
@@ -46,7 +48,7 @@ get_dist_line <- function(window, path_to_shapefile = NULL, line_data = NULL,
   r <- terra::rasterize(v, r, field = 1, background = NA)
 
   rast_points <- terra::crds(terra::as.points(r))
-  rast_points_sf <- sf::st_as_sf(as.data.frame(rast_points),
+  rast_points_sf <- sf::st_as_sf(as.data.frame(rast_points * unit_scale),
                                  coords = c("x", "y"), crs = detected_crs)
 
   # 4. Calculate Distance
