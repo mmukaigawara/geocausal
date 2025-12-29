@@ -22,7 +22,7 @@ get_dist_focus(
 
 \item{lat}{vector of latitudes}
 
-\item{resolution}{resolution of raster objects (in km; by default, 1)}
+\item{resolution}{resolution of raster (distance map) (in km; by default, 1)}
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).}
 
@@ -32,7 +32,8 @@ It is recommended to set `preprocess = TRUE` if users need to obtain distances f
 \item{input_crs}{the CRS of the focus points (defaults to 4326). These points are internally projected
 to match the window CRS to ensure isotropic distance calculations.}
 
-\item{unit_scale}{parameter to convert meters to kilometers}
+\item{unit_scale}{set to the same value as the parameter in `get_window()` function.
+This parameter converts the coordinate values so that they alingn with the unit (km) of the owin object}
 }
 \value{
 an im object

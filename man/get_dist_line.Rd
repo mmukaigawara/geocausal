@@ -23,12 +23,13 @@ get_dist_line(
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).}
 
-\item{resolution}{resolution of raster objects (in km; by default, 1)}
+\item{resolution}{resolution of raster objects (distance map) (in km; by default, 1)}
 
 \item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point.
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
 
-\item{unit_scale}{parameter to convert meters to kilometers}
+\item{unit_scale}{set to the same value as the parameter in `get_window()` function.
+This parameter converts the coordinate values so that they alingn with the unit (km) of the owin object}
 }
 \value{
 an im object

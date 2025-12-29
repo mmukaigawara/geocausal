@@ -6,11 +6,12 @@
 #' @param path_to_shapefile path to shapefile
 #' @param line_data sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)
 #' @param window owin object
-#' @param resolution resolution of raster objects (in km; by default, 1)
+#' @param resolution resolution of raster objects (distance map) (in km; by default, 1)
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point.
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
-#' @param unit_scale parameter to convert meters to kilometers
+#' @param unit_scale set to the same value as the parameter in `get_window()` function.
+#' This parameter converts the coordinate values so that they alingn with the unit (km) of the owin object
 #'
 #' @details
 #' The function ensures spatial integrity by automatically projecting the

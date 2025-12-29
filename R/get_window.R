@@ -5,7 +5,7 @@
 #'
 #' @param load_path path to the shp file
 #' @param target_crs target CRS (if users want to specify it; as an EPSG code)
-#' @param unit_scale parameter to convert meters to kilometers
+#' @param unit_scale parameter to convert meters to kilometers (by default = 1000 so that the unit is set to km)
 #'
 #' @returns owin object
 
