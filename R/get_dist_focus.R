@@ -12,13 +12,15 @@
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
 #' @param input_crs the CRS of the focus points (defaults to 4326). These points are internally projected
 #' to match the window CRS to ensure isotropic distance calculations.
+#' @param unit_scale parameter to convert meters to kilometers
 #'
 #' @returns an im object
 
 
 get_dist_focus <- function(window, lon, lat, resolution = 1,
                            mile = FALSE, preprocess = FALSE,
-                           input_crs = 4326) {
+                           input_crs = 4326,
+                           unit_scale = 1000) {
 
   # Convert owin into sp objects
   window_sp <- conv_owin_into_sf(window)
@@ -37,7 +39,7 @@ get_dist_focus <- function(window, lon, lat, resolution = 1,
   point_sf <- sf::st_as_sf(point_df, coords = c("longitude", "latitude"),
                            crs = input_crs)
   point_sf_proj <- sf::st_transform(point_sf, detected_crs)
-  point_coords_proj <- sf::st_coordinates(point_sf_proj)
+  point_coords_proj <- sf::st_coordinates(point_sf_proj) / unit_scale
 
   # 3. Align Raster/Terra Objects
   v <- terra::vect(polygon_sf)

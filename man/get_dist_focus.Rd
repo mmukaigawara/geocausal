@@ -11,7 +11,8 @@ get_dist_focus(
   resolution = 1,
   mile = FALSE,
   preprocess = FALSE,
-  input_crs = 4326
+  input_crs = 4326,
+  unit_scale = 1000
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ It is recommended to set `preprocess = TRUE` if users need to obtain distances f
 
 \item{input_crs}{the CRS of the focus points (defaults to 4326). These points are internally projected
 to match the window CRS to ensure isotropic distance calculations.}
+
+\item{unit_scale}{parameter to convert meters to kilometers}
 }
 \value{
 an im object
