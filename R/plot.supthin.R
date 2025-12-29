@@ -15,7 +15,8 @@ plot.supthin <- function(x, ...) {
     ggplot2::geom_line(aes(y = obs), color = "black", linewidth = 0.5) +
     theme_bw() +
     labs(x = "r", y = expression(K(r))) +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+          panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
   plot_l <- ggplot2::ggplot(env_l, aes(x = r)) +
     ggplot2::geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80", alpha = 0.5) +
@@ -23,7 +24,8 @@ plot.supthin <- function(x, ...) {
     ggplot2::geom_line(aes(y = obs), color = "black", linewidth = 0.5) +
     theme_bw() +
     labs(x = "r", y = expression(L(r)-r)) +
-    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+          panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
   return(list(plot_k = plot_k, plot_l = plot_l))
 }

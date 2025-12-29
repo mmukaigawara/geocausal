@@ -21,7 +21,7 @@ plot.est <- function(x, ..., surface = FALSE, lim = NA) {
 
   surf_plot <- ggplot(data = df_surf, aes(x = x, y = y, fill = value)) + #Plot
     ggplot2::geom_tile() +
-    ggplot2::coord_quickmap() +
+    ggplot2::coord_fixed() +
     ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                           fill = NA, color = "darkgrey", linewidth = 0.2) +
     ggthemes::theme_map() +
@@ -66,9 +66,8 @@ plot.est <- function(x, ..., surface = FALSE, lim = NA) {
     ggplot2::geom_linerange(aes(ymin = lower_90, ymax = upper_90), lwd = 1.1) +
     theme_bw() +
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
-    labs(y = "Expected outcome events", x = "Windows",
-         title = "Causal effects per time period",
-         color = "Effect types", fill = "Effect types") +
+    labs(y = "Expected outcome events", x = "",
+         title = "Causal effects per time period") +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"),
           plot.subtitle = element_text(hjust = 0.5),
           panel.grid.major = element_blank(), panel.grid.minor = element_blank())
