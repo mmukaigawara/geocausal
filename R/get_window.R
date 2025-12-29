@@ -62,9 +62,8 @@ get_window <- function(load_path, target_crs = NULL, unit_scale = 1000) {
                                                          y = temp_matrix[, 2]))
   }
 
-  attr(temp_window, "crs") <- sf::st_crs(temp) # Add crs information
-
   temp_window_km <- spatstat.geom::rescale(temp_window, s = unit_scale, unitname = "km")
+  attr(temp_window_km, "crs") <- sf::st_crs(temp) # Add crs information
 
   return(temp_window_km)
 
