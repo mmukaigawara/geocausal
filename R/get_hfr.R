@@ -127,4 +127,3 @@ get_hfr <- function(data, col,
   return(x_hyperframe)
 
 }
-

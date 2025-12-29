@@ -4,12 +4,14 @@
 \alias{get_window}
 \title{Generate a window}
 \usage{
-get_window(load_path, target_crs = NULL)
+get_window(load_path, target_crs = NULL, unit_scale = 1000)
 }
 \arguments{
 \item{load_path}{path to the shp file}
 
 \item{target_crs}{target CRS (if users want to specify it; as an EPSG code)}
+
+\item{unit_scale}{parameter to convert meters to kilometers}
 }
 \value{
 owin object

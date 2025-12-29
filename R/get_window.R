@@ -5,10 +5,11 @@
 #'
 #' @param load_path path to the shp file
 #' @param target_crs target CRS (if users want to specify it; as an EPSG code)
+#' @param unit_scale parameter to convert meters to kilometers
 #'
 #' @returns owin object
 
-get_window <- function(load_path, target_crs = NULL) {
+get_window <- function(load_path, target_crs = NULL, unit_scale = 1000) {
 
   # 1. Reading the data
   temp <- sf::st_read(load_path, quiet = TRUE)
@@ -63,6 +64,8 @@ get_window <- function(load_path, target_crs = NULL) {
 
   attr(temp_window, "crs") <- sf::st_crs(temp) # Add crs information
 
-  return(temp_window)
+  temp_window_km <- spatstat.geom::rescale(temp_window, s = unit_scale, unitname = "km")
+
+  return(temp_window_km)
 
 }
