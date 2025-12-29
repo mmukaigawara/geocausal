@@ -6,7 +6,7 @@
 #' @param lon vector of longitudes
 #' @param lat vector of latitudes
 #' @param window owin object
-#' @param resolution resolution of raster objects (in meters; by default, 1000)
+#' @param resolution resolution of raster objects (in km; by default, 1)
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point.
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
@@ -16,7 +16,7 @@
 #' @returns an im object
 
 
-get_dist_focus <- function(window, lon, lat, resolution = 1000,
+get_dist_focus <- function(window, lon, lat, resolution = 1,
                            mile = FALSE, preprocess = FALSE,
                            input_crs = 4326) {
 
@@ -91,9 +91,9 @@ get_dist_focus <- function(window, lon, lat, resolution = 1000,
   }
 
   if (mile) {
-    dist_val <- final_dists * 0.000621371 # meters to miles
+    dist_val <- final_dists * 0.621371 # km to miles
   } else {
-    dist_val <- final_dists / 1000        # meters to km
+    dist_val <- final_dists #/ 1000       # already in km
   }
 
   dist_df <- data.frame(longitude = rast_points[, 1],

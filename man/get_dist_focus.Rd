@@ -8,7 +8,7 @@ get_dist_focus(
   window,
   lon,
   lat,
-  resolution = 1000,
+  resolution = 1,
   mile = FALSE,
   preprocess = FALSE,
   input_crs = 4326
@@ -21,7 +21,7 @@ get_dist_focus(
 
 \item{lat}{vector of latitudes}
 
-\item{resolution}{resolution of raster objects (in meters; by default, 1000)}
+\item{resolution}{resolution of raster objects (in km; by default, 1)}
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).}
 
