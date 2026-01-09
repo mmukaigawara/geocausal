@@ -48,7 +48,7 @@ smooth_ppp <- function(data,
   } else if (!is.null(ndim)) {
     # Pixel mode: fixed dimensions
     dimyx <- c(ndim, ndim)
-    message("Using pixel mode: ", dim, "x", dim, " pixels\n")
+    message("Using pixel mode: ", ndim, "x", ndim, " pixels\n")
   } else {
     # Default: 128x128
     dimyx <- c(128, 128)
