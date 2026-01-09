@@ -41,9 +41,9 @@ smooth_ppp <- function(data,
     # Resolution mode: km per pixel
     x_extent <- diff(window$xrange)
     y_extent <- diff(window$yrange)
-    ncol <- ceiling(x_extent / resolution)
-    nrow <- ceiling(y_extent / resolution)
-    dimyx <- c(nrow, ncol)
+    nc <- ceiling(x_extent / resolution)
+    nr <- ceiling(y_extent / resolution)
+    dimyx <- c(nr, nc)
     message("Using resolution mode: ", resolution, " km per pixel -> ", nrow, "x", ncol, " pixels\n")
   } else if (!is.null(ndim)) {
     # Pixel mode: fixed dimensions
@@ -88,7 +88,7 @@ smooth_ppp <- function(data,
 
     smoothed_outcome <- furrr::future_map(data, spatstat.explore::density.ppp,
                                           diggle = TRUE, kernel = "gaussian", adjust = 1,
-                                          sigma = spat_sigma, edge = TRUE)
+                                          sigma = spat_sigma, edge = TRUE, dimyx = dimyx)
 
   }
 
@@ -103,7 +103,8 @@ smooth_ppp <- function(data,
     ## Use Scott's rule of thumb to obtain h0
     scott_bw <- spatstat.explore::bw.scott(X = all_points, isotropic = FALSE) # Two h0 for each coordinate
     use_h0 <- as.numeric(scott_bw)
-    pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian") # Density based on h0
+    pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian",
+                          dimyx = dimyx) # Density based on h0
 
     him_points <- spatstat.explore::bw.abram.ppp(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
     num_points <- as.numeric(purrr::map(as.list(data), 2, .default = NA) %>% unlist()) # Num of points for each time frame
@@ -124,7 +125,8 @@ smooth_ppp <- function(data,
     message("Smoothing ppps\n")
 
     smoothed_outcome <- furrr::future_map2(data, bw_pt, spatstat.univar::densityAdaptiveKernel,
-                                           diggle = TRUE, kernel = "gaussian", edge = TRUE)
+                                           diggle = TRUE, kernel = "gaussian", edge = TRUE,
+                                           dimyx = dimyx)
 
   }
 
