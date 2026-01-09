@@ -96,15 +96,18 @@ smooth_ppp <- function(data,
 
   if (method == "abramson") {
 
+    ## Create a consistent mask for the window
+    W_mask <- spatstat.geom::as.mask(window, dimyx = dimyx)
+
     ## Get h0 using CV on isotropic, spherical kernel smoothing
     all_points <- spatstat.geom::as.ppp(cbind(x = all_points_coords$x,
-                                              y = all_points_coords$y), W = window)
+                                              y = all_points_coords$y), W = W_mask)
 
     ## Use Scott's rule of thumb to obtain h0
     scott_bw <- spatstat.explore::bw.scott(X = all_points, isotropic = FALSE) # Two h0 for each coordinate
     use_h0 <- as.numeric(scott_bw)
     pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian",
-                          dimyx = dimyx) # Density based on h0
+                          xy = W_mask) # Density based on h0
 
     him_points <- spatstat.explore::bw.abram.ppp(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
     num_points <- as.numeric(purrr::map(as.list(data), 2, .default = NA) %>% unlist()) # Num of points for each time frame
@@ -126,7 +129,7 @@ smooth_ppp <- function(data,
 
     smoothed_outcome <- furrr::future_map2(data, bw_pt, spatstat.univar::densityAdaptiveKernel,
                                            diggle = TRUE, kernel = "gaussian", edge = TRUE,
-                                           dimyx = dimyx)
+                                           xy = W_mask)
 
   }
 
