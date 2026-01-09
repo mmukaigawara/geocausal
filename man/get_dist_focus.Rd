@@ -8,7 +8,8 @@ get_dist_focus(
   window,
   lon,
   lat,
-  resolution = 1,
+  resolution = NULL,
+  ndim = NULL,
   mile = FALSE,
   preprocess = FALSE,
   input_crs = 4326,
@@ -22,7 +23,9 @@ get_dist_focus(
 
 \item{lat}{vector of latitudes}
 
-\item{resolution}{resolution of raster (distance map) (in km; by default, 1)}
+\item{resolution}{resolution of raster (distance map) (in km; by default, 1). Ignored if npixel is set.}
+
+\item{ndim}{number of pixels for both dimensions (e.g., 256 for 256x256). If set, resolution is ignored.}
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).}
 

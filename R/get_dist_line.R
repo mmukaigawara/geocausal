@@ -6,7 +6,8 @@
 #' @param path_to_shapefile path to shapefile
 #' @param line_data sfc_MULTILINESTRING file (If available. If not, `get_dist_line()` creates it from a shapefile.)
 #' @param window owin object
-#' @param resolution resolution of raster objects (distance map) (in km; by default, 1)
+#' @param resolution resolution of raster objects (distance map) (in km; by default, 1). Ignored if ndim is set.
+#' @param ndim number of pixels for both dimensions (e.g., 256 for 256x256). If set, resolution is ignored.
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point.
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
@@ -21,8 +22,8 @@
 #' @returns an im object
 
 get_dist_line <- function(window, path_to_shapefile = NULL, line_data = NULL,
-                          mile = FALSE, resolution = 1, preprocess = TRUE,
-                          unit_scale = 1000) {
+                          mile = FALSE, resolution = NULL, ndim = NULL,
+                          preprocess = TRUE, unit_scale = 1000) {
 
   window_sp <- conv_owin_into_sf(window)
   polygon_sf <- window_sp[[4]]
@@ -44,7 +45,21 @@ get_dist_line <- function(window, path_to_shapefile = NULL, line_data = NULL,
 
   # 3. Create Raster
   v <- terra::vect(polygon_sf)
-  r <- terra::rast(terra::ext(v), res = resolution, crs = terra::crs(v))
+
+  # Determine raster dimensions based on ndim or resolution
+  if (!is.null(ndim)) {
+    # Pixel mode: fixed dimensions
+    r <- terra::rast(terra::ext(v), nrow = ndim, ncol = ndim, crs = terra::crs(v))
+    message("Using pixel mode: ", ndim, "x", ndim, " pixels\n")
+  } else if (!is.null(resolution)) {
+    # Resolution mode: km per pixel
+    r <- terra::rast(terra::ext(v), res = resolution, crs = terra::crs(v))
+    message("Using resolution mode: ", resolution, " km per pixel\n")
+  } else {
+    # Default: 1 km resolution
+    r <- terra::rast(terra::ext(v), res = 1, crs = terra::crs(v))
+    message("Using default resolution: 1 km per pixel\n")
+  }
 
   r <- terra::rasterize(v, r, field = 1, background = NA)
 

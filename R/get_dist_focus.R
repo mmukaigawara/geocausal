@@ -6,7 +6,8 @@
 #' @param lon vector of longitudes
 #' @param lat vector of latitudes
 #' @param window owin object
-#' @param resolution resolution of raster (distance map) (in km; by default, 1)
+#' @param resolution resolution of raster (distance map) (in km; by default, 1). Ignored if npixel is set.
+#' @param ndim number of pixels for both dimensions (e.g., 256 for 256x256). If set, resolution is ignored.
 #' @param mile logical. `mile` specifies whether to return the output in miles instead of kilometers (by default, FALSE).
 #' @param preprocess logical. `preprocess` specifies whether to first pick the potentially closest point.
 #' It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.
@@ -18,7 +19,7 @@
 #' @returns an im object
 
 
-get_dist_focus <- function(window, lon, lat, resolution = 1,
+get_dist_focus <- function(window, lon, lat, resolution = NULL, ndim = NULL,
                            mile = FALSE, preprocess = FALSE,
                            input_crs = 4326,
                            unit_scale = 1000) {
@@ -44,8 +45,21 @@ get_dist_focus <- function(window, lon, lat, resolution = 1,
 
   # 3. Align Raster/Terra Objects
   v <- terra::vect(polygon_sf)
-  # Ensure the raster 'r' inherits the exact CRS string from the vector 'v'
-  r <- terra::rast(terra::ext(v), res = resolution, crs = terra::crs(v))
+
+  # Determine raster dimensions based on ndim or resolution
+  if (!is.null(ndim)) {
+    # Pixel mode: fixed dimensions
+    r <- terra::rast(terra::ext(v), nrow = ndim, ncol = ndim, crs = terra::crs(v))
+    message("Using pixel mode: ", ndim, "x", ndim, " pixels\n")
+  } else if (!is.null(resolution)) {
+    # Resolution mode: km per pixel
+    r <- terra::rast(terra::ext(v), res = resolution, crs = terra::crs(v))
+    message("Using resolution mode: ", resolution, " km per pixel\n")
+  } else {
+    # Default: 1 km resolution
+    r <- terra::rast(terra::ext(v), res = 1, crs = terra::crs(v))
+    message("Using default resolution: 1 km per pixel\n")
+  }
 
   # Rasterize and Mask
   r <- terra::rasterize(v, r, field = 1)
@@ -106,4 +120,3 @@ get_dist_focus <- function(window, lon, lat, resolution = 1,
   return(spatstat.geom::as.im(dist_df, W = window))
 
 }
-

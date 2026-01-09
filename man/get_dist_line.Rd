@@ -9,7 +9,8 @@ get_dist_line(
   path_to_shapefile = NULL,
   line_data = NULL,
   mile = FALSE,
-  resolution = 1,
+  resolution = NULL,
+  ndim = NULL,
   preprocess = TRUE,
   unit_scale = 1000
 )
@@ -23,7 +24,9 @@ get_dist_line(
 
 \item{mile}{logical. `mile` specifies whether to return the output in miles instead of kilometers (by default,  FALSE).}
 
-\item{resolution}{resolution of raster objects (distance map) (in km; by default, 1)}
+\item{resolution}{resolution of raster objects (distance map) (in km; by default, 1). Ignored if ndim is set.}
+
+\item{ndim}{number of pixels for both dimensions (e.g., 256 for 256x256). If set, resolution is ignored.}
 
 \item{preprocess}{logical. `preprocess` specifies whether to first pick the potentially closest point.
 It is recommended to set `preprocess = TRUE` if users need to obtain distances from many points.}
