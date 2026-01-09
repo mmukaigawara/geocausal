@@ -44,7 +44,7 @@ smooth_ppp <- function(data,
     nc <- ceiling(x_extent / resolution)
     nr <- ceiling(y_extent / resolution)
     dimyx <- c(nr, nc)
-    message("Using resolution mode: ", resolution, " km per pixel -> ", nrow, "x", ncol, " pixels\n")
+    message("Using resolution mode: ", resolution, " km per pixel -> ", nr, "x", nc, " pixels\n")
   } else if (!is.null(ndim)) {
     # Pixel mode: fixed dimensions
     dimyx <- c(ndim, ndim)
