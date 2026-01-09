@@ -9,6 +9,8 @@
 #' Either `"mclust"` or `"abramson"`. See details.
 #' @param sampling numeric between 0 and 1. `sampling` determines the proportion of data
 #' to use for initialization. By default, NA (meaning that it uses all data without sampling).
+#' @param resolution resolution of raster (distance map) (in km)
+#' @param ndim the number of dimensions of grid cells (ndim^2). Users need to set either resolution or ndim.
 #'
 #' @returns im objects as a list
 #'
@@ -29,10 +31,30 @@
 
 smooth_ppp <- function(data,
                        method,
-                       sampling = NA) {
+                       sampling = NA,
+                       resolution = NULL,
+                       ndim = NULL) {
+
+  # Determine output dimensions -----
+  window <- data[[1]]$window
+  if (!is.null(resolution)) {
+    # Resolution mode: km per pixel
+    x_extent <- diff(window$xrange)
+    y_extent <- diff(window$yrange)
+    ncol <- ceiling(x_extent / resolution)
+    nrow <- ceiling(y_extent / resolution)
+    dimyx <- c(nrow, ncol)
+    message("Using resolution mode: ", resolution, " km per pixel -> ", nrow, "x", ncol, " pixels\n")
+  } else if (!is.null(ndim)) {
+    # Pixel mode: fixed dimensions
+    dimyx <- c(ndim, ndim)
+    message("Using pixel mode: ", dim, "x", dim, " pixels\n")
+  } else {
+    # Default: 128x128
+    dimyx <- c(128, 128)
+  }
 
   # Obtain coordinates of interest -----
-
   all_points_coords <- data.table::rbindlist(purrr::map(data, spatstat.geom::as.data.frame.ppp))
 
   # Fit the Gaussian mixture model (mclust) -----
@@ -43,14 +65,10 @@ smooth_ppp <- function(data,
     message("Fitting the Gaussian mixture model\n")
 
     if (is.na(sampling)) {
-
       ## Fit the model without initialization
       BIC <- mclust::mclustBIC(all_points_coords, modelNames = c("EII"))
       mod_mcl <- mclust::Mclust(all_points_coords, x = BIC, modelNames = "EII")
-
-
     } else {
-
       ## Prepare for initialization
       M <- round((nrow(all_points_coords)*sampling), digits = 0)
       init <- list(subset = sample(1:nrow(all_points_coords), size = M))
@@ -59,7 +77,6 @@ smooth_ppp <- function(data,
       BIC <- mclust::mclustBIC(all_points_coords, modelNames = c("EII"),
                                initialization = init)
       mod_mcl <- mclust::Mclust(all_points_coords, x = BIC, modelNames = "EII")
-
     }
 
     ## Get the value of sigma
@@ -80,7 +97,6 @@ smooth_ppp <- function(data,
   if (method == "abramson") {
 
     ## Get h0 using CV on isotropic, spherical kernel smoothing
-    window <- data[[1]]$window # Extract window
     all_points <- spatstat.geom::as.ppp(cbind(x = all_points_coords$x,
                                               y = all_points_coords$y), W = window)
 

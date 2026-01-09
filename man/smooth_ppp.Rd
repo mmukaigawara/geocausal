@@ -4,7 +4,7 @@
 \alias{smooth_ppp}
 \title{Smooth outcome events}
 \usage{
-smooth_ppp(data, method, sampling = NA)
+smooth_ppp(data, method, sampling = NA, resolution = NULL, ndim = NULL)
 }
 \arguments{
 \item{data}{the name of a hyperframe and column of interest.
@@ -15,6 +15,10 @@ Either `"mclust"` or `"abramson"`. See details.}
 
 \item{sampling}{numeric between 0 and 1. `sampling` determines the proportion of data
 to use for initialization. By default, NA (meaning that it uses all data without sampling).}
+
+\item{resolution}{resolution of raster (distance map) (in km)}
+
+\item{ndim}{the number of dimensions of grid cells (ndim^2). Users need to set either resolution or ndim.}
 }
 \value{
 im objects as a list
