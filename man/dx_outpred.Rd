@@ -4,7 +4,15 @@
 \alias{dx_outpred}
 \title{Perform out-of-sample prediction}
 \usage{
-dx_outpred(hfr, ratio, dep_var, indep_var, ndim = 128, window)
+dx_outpred(
+  hfr,
+  ratio,
+  dep_var,
+  indep_var,
+  ndim = 128,
+  resolution = NULL,
+  window
+)
 }
 \arguments{
 \item{hfr}{hyperframe}
@@ -16,6 +24,9 @@ dx_outpred(hfr, ratio, dep_var, indep_var, ndim = 128, window)
 \item{indep_var}{independent variables}
 
 \item{ndim}{the number of grids. By default, `128` (128 x 128).}
+
+\item{resolution}{the resolution in km per pixel. If specified, overrides `ndim`.
+For example, `resolution = 5` creates ~5km x 5km grid cells.}
 
 \item{window}{owin object}
 }

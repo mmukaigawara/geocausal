@@ -7,7 +7,9 @@
 #'
 #' @param window owin object
 #' @param option "in" (using in-sample data) or "out" (using out-of-sample data). "out" by default
-#' @param ndim the number of dimensions of grid cells (ndim^2). By default, ndim = 256.
+#' @param ndim the number of dimensions of grid cells (ndim^2). By default, ndim = 128.
+#' @param resolution the resolution in km per pixel. If specified, overrides `ndim`.
+#' For example, `resolution = 5` creates ~5km x 5km grid cells.
 #' @param out_data dataframe (if using out-of-sample data)
 #' @param out_coordinates vector of column names of longitudes and latitudes (in this order) (if using in-sample data)
 #' @param hfr hyperframe (if using in-sample data)
@@ -22,7 +24,8 @@
 
 get_base_dens <- function(window,
                           option = "out",
-                          ndim = 256,
+                          ndim = 128,
+                          resolution = NULL,
                           out_data = NULL,
                           out_coordinates = c("longitude", "latitude"),
                           hfr = NULL,
@@ -36,6 +39,16 @@ get_base_dens <- function(window,
   detected_crs <- attr(window, "crs")
   if (is.null(detected_crs)) {
     stop("The window object has no CRS. Please ensure get_window() was used with a target_crs.")
+  }
+
+  # Determine output dimensions
+  if (!is.null(resolution)) {
+    x_extent <- diff(window$xrange)
+    y_extent <- diff(window$yrange)
+    ngrid <- ceiling(max(ceiling(x_extent / resolution), ceiling(y_extent / resolution)))
+    message("Using resolution mode: ", resolution, " km per pixel -> ", ngrid, "x", ngrid, " grid\n")
+  } else {
+    ngrid <- ndim
   }
 
   # Option 1. Using out-of-sample data
@@ -55,7 +68,7 @@ get_base_dens <- function(window,
     # Apply Scott's rule of thumb (now accurate because coordinates are metric)
     scott_bandwidth <- spatstat.explore::bw.scott(baseline_ppp)
 
-    baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = ndim)
+    baseline_density <- stats::density(baseline_ppp, scott_bandwidth, dimyx = ngrid)
     baseline_density <- baseline_density / spatstat.univar::integral(baseline_density)
 
   } else if (option == "in") {
@@ -71,8 +84,8 @@ get_base_dens <- function(window,
     text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
 
     # mppm and predict will now work correctly on the projected hyperframe
-    mod <- spatstat.model::mppm(as.formula(text_form), data = hfr_subset, nd = ndim)
-    pred <- spatstat.model::predict.mppm(mod, ngrid = ndim, type = "cif")[1, ]
+    mod <- spatstat.model::mppm(as.formula(text_form), data = hfr_subset, nd = ngrid)
+    pred <- spatstat.model::predict.mppm(mod, ngrid = ngrid, type = "cif")[1, ]
     baseline_density <- pred[["cif"]] / spatstat.univar::integral(pred[["cif"]])
   }
 

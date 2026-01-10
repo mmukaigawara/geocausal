@@ -7,7 +7,8 @@
 get_base_dens(
   window,
   option = "out",
-  ndim = 256,
+  ndim = 128,
+  resolution = NULL,
   out_data = NULL,
   out_coordinates = c("longitude", "latitude"),
   hfr = NULL,
@@ -23,7 +24,10 @@ get_base_dens(
 
 \item{option}{"in" (using in-sample data) or "out" (using out-of-sample data). "out" by default}
 
-\item{ndim}{the number of dimensions of grid cells (ndim^2). By default, ndim = 256.}
+\item{ndim}{the number of dimensions of grid cells (ndim^2). By default, ndim = 128.}
+
+\item{resolution}{the resolution in km per pixel. If specified, overrides `ndim`.
+For example, `resolution = 5` creates ~5km x 5km grid cells.}
 
 \item{out_data}{dataframe (if using out-of-sample data)}
 

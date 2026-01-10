@@ -4,7 +4,7 @@
 \alias{get_obs_dens}
 \title{Generate observed densities}
 \usage{
-get_obs_dens(hfr, dep_var, indep_var, ndim = 128, window)
+get_obs_dens(hfr, dep_var, indep_var, ndim = 128, resolution = NULL, window)
 }
 \arguments{
 \item{hfr}{hyperframe}
@@ -17,6 +17,9 @@ Since we need to obtain the observed density of treatment events,
 
 \item{ndim}{the number of grid cells that is used to generate observed densities.
 By default = 128 (128 x 128). Notice that as you increase `ndim`, the process gets computationally demanding.}
+
+\item{resolution}{the resolution in km per pixel. If specified, overrides `ndim`.
+For example, `resolution = 5` creates ~5km x 5km grid cells.}
 
 \item{window}{owin object}
 }

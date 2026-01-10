@@ -11,6 +11,8 @@
 #' @param indep_var vector of names of independent variables (covariates)
 #' @param ndim the number of grid cells that is used to generate observed densities.
 #' By default = 128 (128 x 128). Notice that as you increase `ndim`, the process gets computationally demanding.
+#' @param resolution the resolution in km per pixel. If specified, overrides `ndim`.
+#' For example, `resolution = 5` creates ~5km x 5km grid cells.
 #' @param window owin object
 #'
 #' @returns list of the following:
@@ -31,13 +33,28 @@
 #' Users should note that the coefficients in the output are not directly interpretable,
 #' since they are the coefficients inside the exponential of the poisson model.
 
-get_obs_dens <- function(hfr, dep_var, indep_var, ndim = 128, window) {
+get_obs_dens <- function(hfr, dep_var, indep_var, ndim = 128, resolution = NULL, window) {
+
+  # Determine output grid dimensions
+  if (!is.null(resolution)) {
+    # Resolution mode: km per pixel
+    x_extent <- diff(window$xrange)
+    y_extent <- diff(window$yrange)
+    ngrid_x <- ceiling(x_extent / resolution)
+    ngrid_y <- ceiling(y_extent / resolution)
+    # predict.mppm uses ngrid as a single value, so we use the average or max
+    ngrid <- ceiling(max(ngrid_x, ngrid_y))
+    message("Using resolution mode: ", resolution, " km per pixel -> approx. ", ngrid, "x", ngrid, " grid\n")
+  } else {
+    # Pixel mode: fixed dimensions
+    ngrid <- ndim
+    message("Using pixel mode: ", ndim, "x", ndim, " grid\n")
+  }
 
   # Define function -----
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
   message("Fitting the model...\n")
   mod <- spatstat.model::mppm(as.formula(text_form), data = hfr) #Fit mppm
-  #coefficients <- as.numeric(spatstat.model::summary.mppm(mod)$coef) #Coefficients
   glm_summary <- summary(mod$Fit$FIT)
   coefficients <- glm_summary$coefficients # Coef
   out_deviance <- mod$Fit$FIT$deviance # Deviance
@@ -55,7 +72,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ndim = 128, window) {
 
   # Obtain fitted values of the propensity score -----
   message("Calculating the intensity...\n")
-  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", ngrid = ndim)$cif #Returns intensity (cif) over nxn grid cells
+  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", ngrid = ngrid)$cif #Returns intensity (cif) over nxn grid cells
   message("Integrating the intensity to obtain the propensity score...\n")
   estimated_counts <- sapply(intensity_grid_cells, function(x) integral(x, domain = window)) #Integrate intensity over the window (so, e_t(w) for each date)
   intensity_of_each_obs <- spatstat.model::fitted.mppm(mod, dataonly = TRUE) #Return fitted cif for each observation for each date
