@@ -35,9 +35,16 @@ smooth_ppp <- function(data,
                        resolution = NULL,
                        ndim = NULL) {
 
-  # Determine output dimensions -----
+  # Get window from first ppp object
+
   window <- data[[1]]$window
-  if (!is.null(resolution)) {
+
+  # Determine output dimensions based on parameters
+  if (!is.null(ndim)) {
+    # Pixel mode: fixed dimensions
+    dimyx <- c(ndim, ndim)
+    message("Using pixel mode: ", ndim, "x", ndim, " pixels\n")
+  } else if (!is.null(resolution)) {
     # Resolution mode: km per pixel
     x_extent <- diff(window$xrange)
     y_extent <- diff(window$yrange)
@@ -45,96 +52,78 @@ smooth_ppp <- function(data,
     nr <- ceiling(y_extent / resolution)
     dimyx <- c(nr, nc)
     message("Using resolution mode: ", resolution, " km per pixel -> ", nr, "x", nc, " pixels\n")
-  } else if (!is.null(ndim)) {
-    # Pixel mode: fixed dimensions
-    dimyx <- c(ndim, ndim)
-    message("Using pixel mode: ", ndim, "x", ndim, " pixels\n")
   } else {
     # Default: 128x128
     dimyx <- c(128, 128)
+    message("Using default dimensions: 128x128 pixels\n")
   }
 
-  # Obtain coordinates of interest -----
+  # Combine all point coordinates
   all_points_coords <- data.table::rbindlist(purrr::map(data, spatstat.geom::as.data.frame.ppp))
 
-  # Fit the Gaussian mixture model (mclust) -----
-
   if (method == "mclust") {
-
-    ## Identify the number of components (EII model)
     message("Fitting the Gaussian mixture model\n")
 
     if (is.na(sampling)) {
-      ## Fit the model without initialization
       BIC <- mclust::mclustBIC(all_points_coords, modelNames = c("EII"))
       mod_mcl <- mclust::Mclust(all_points_coords, x = BIC, modelNames = "EII")
     } else {
-      ## Prepare for initialization
-      M <- round((nrow(all_points_coords)*sampling), digits = 0)
+      M <- round((nrow(all_points_coords) * sampling), digits = 0)
       init <- list(subset = sample(1:nrow(all_points_coords), size = M))
-
-      ## Fit the mixture Gaussian model
       BIC <- mclust::mclustBIC(all_points_coords, modelNames = c("EII"),
                                initialization = init)
       mod_mcl <- mclust::Mclust(all_points_coords, x = BIC, modelNames = "EII")
     }
 
-    ## Get the value of sigma
     spat_sigma <- mod_mcl$parameters$variance
     spat_sigma <- sqrt(spat_sigma$sigmasq)
 
-    ## Obtain smoothed outcomes
     message("Smoothing ppps\n")
-
     smoothed_outcome <- furrr::future_map(data, spatstat.explore::density.ppp,
                                           diggle = TRUE, kernel = "gaussian", adjust = 1,
-                                          sigma = spat_sigma, edge = TRUE, dimyx = dimyx)
-
+                                          sigma = spat_sigma, edge = TRUE,
+                                          dimyx = dimyx)
   }
 
-  # Fit with Abramson -----
-
   if (method == "abramson") {
-
-    ## Create a consistent mask for the window
-    W_mask <- spatstat.geom::as.mask(window, dimyx = dimyx)
-
-    ## Get h0 using CV on isotropic, spherical kernel smoothing
+    # Create ppp object from combined coordinates
     all_points <- spatstat.geom::as.ppp(cbind(x = all_points_coords$x,
-                                              y = all_points_coords$y), W = W_mask)
+                                              y = all_points_coords$y), W = window)
 
-    ## Use Scott's rule of thumb to obtain h0
-    scott_bw <- spatstat.explore::bw.scott(X = all_points, isotropic = FALSE) # Two h0 for each coordinate
+    # Compute Scott bandwidth
+    scott_bw <- spatstat.explore::bw.scott(X = all_points, isotropic = FALSE)
     use_h0 <- as.numeric(scott_bw)
-    pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian",
-                          xy = W_mask) # Density based on h0
 
-    him_points <- spatstat.explore::bw.abram.ppp(all_points, h0 = mean(use_h0), at = "points", pilot = pilot_dens) # Bandwidth
-    num_points <- as.numeric(purrr::map(as.list(data), 2, .default = NA) %>% unlist()) # Num of points for each time frame
-    bw_pt <- split(him_points, rep(1 : length(data), num_points))
+    # Create pilot density at DEFAULT resolution
+    pilot_dens <- density(all_points, sigma = use_h0, kernel = "gaussian")
 
-    no_point_id <- which(num_points == 0) # IDs of time frames with the num of points = 0
+    # Compute per-point bandwidths using default-resolution pilot
+    him_points <- spatstat.explore::bw.abram.ppp(all_points, h0 = mean(use_h0),
+                                                 at = "points", pilot = pilot_dens)
+
+    # Split bandwidths by time period
+    num_points <- unlist(as.numeric(purrr::map(as.list(data), 2, .default = NA)))
+    bw_pt <- split(him_points, rep(1:length(data), num_points))
+
+    # Handle days with no points
+    no_point_id <- which(num_points == 0)
     if (length(no_point_id) != 0) {
       empty_elements <- vector("list", length(no_point_id))
       names(empty_elements) <- as.character(no_point_id)
       for (i in 1:length(no_point_id)) {
         bw_pt <- c(bw_pt[seq_along(bw_pt) < no_point_id[i]],
-                   empty_elements[i], bw_pt[seq_along(bw_pt) >=
-                                              no_point_id[i]])
+                   empty_elements[i], bw_pt[seq_along(bw_pt) >= no_point_id[i]])
       }
     }
 
-    ## Obtain smoothed outcomes
     message("Smoothing ppps\n")
-
+    # Apply densityAdaptiveKernel with CUSTOM dimyx (output resolution)
+    # The dimyx here controls the output image size, not bandwidth computation
     smoothed_outcome <- furrr::future_map2(data, bw_pt, spatstat.univar::densityAdaptiveKernel,
                                            diggle = TRUE, kernel = "gaussian", edge = TRUE,
-                                           xy = W_mask)
-
+                                           dimyx = dimyx)
   }
 
   class(smoothed_outcome) <- c("list", "imlist")
-
   return(smoothed_outcome)
-
 }
