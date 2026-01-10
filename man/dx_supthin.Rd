@@ -8,7 +8,6 @@ dx_supthin(
   hfr,
   dep_var,
   indep_var,
-  ngrid = 100,
   window,
   rescale = 1,
   max_r = 50,
@@ -25,9 +24,6 @@ Since we need to obtain the observed density of treatment events,
 `dep_var` should be the name of the treatment variable.}
 
 \item{indep_var}{vector of names of independent variables (covariates)}
-
-\item{ngrid}{the number of grid cells that is used to generate observed densities.
-By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.}
 
 \item{window}{owin object}
 

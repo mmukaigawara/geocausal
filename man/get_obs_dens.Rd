@@ -4,7 +4,7 @@
 \alias{get_obs_dens}
 \title{Generate observed densities}
 \usage{
-get_obs_dens(hfr, dep_var, indep_var, ngrid = 100, window)
+get_obs_dens(hfr, dep_var, indep_var, ndim = 128, window)
 }
 \arguments{
 \item{hfr}{hyperframe}
@@ -15,8 +15,8 @@ Since we need to obtain the observed density of treatment events,
 
 \item{indep_var}{vector of names of independent variables (covariates)}
 
-\item{ngrid}{the number of grid cells that is used to generate observed densities.
-By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.}
+\item{ndim}{the number of grid cells that is used to generate observed densities.
+By default = 128 (128 x 128). Notice that as you increase `ndim`, the process gets computationally demanding.}
 
 \item{window}{owin object}
 }

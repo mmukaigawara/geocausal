@@ -9,8 +9,8 @@
 #' Since we need to obtain the observed density of treatment events,
 #' `dep_var` should be the name of the treatment variable.
 #' @param indep_var vector of names of independent variables (covariates)
-#' @param ngrid the number of grid cells that is used to generate observed densities.
-#' By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.
+#' @param ndim the number of grid cells that is used to generate observed densities.
+#' By default = 128 (128 x 128). Notice that as you increase `ndim`, the process gets computationally demanding.
 #' @param window owin object
 #'
 #' @returns list of the following:
@@ -31,7 +31,7 @@
 #' Users should note that the coefficients in the output are not directly interpretable,
 #' since they are the coefficients inside the exponential of the poisson model.
 
-get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
+get_obs_dens <- function(hfr, dep_var, indep_var, ndim = 128, window) {
 
   # Define function -----
   text_form <- paste0(dep_var, " ~ ", paste(indep_var, collapse = " + "))
@@ -55,7 +55,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ngrid = 100, window) {
 
   # Obtain fitted values of the propensity score -----
   message("Calculating the intensity...\n")
-  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", ngrid = ngrid)$cif #Returns intensity (cif) over nxn grid cells
+  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", ngrid = ndim)$cif #Returns intensity (cif) over nxn grid cells
   message("Integrating the intensity to obtain the propensity score...\n")
   estimated_counts <- sapply(intensity_grid_cells, function(x) integral(x, domain = window)) #Integrate intensity over the window (so, e_t(w) for each date)
   intensity_of_each_obs <- spatstat.model::fitted.mppm(mod, dataonly = TRUE) #Return fitted cif for each observation for each date

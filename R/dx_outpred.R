@@ -9,7 +9,7 @@
 #' @param ratio numeric. ratio between training and test sets
 #' @param dep_var dependent variables
 #' @param indep_var independent variables
-#' @param ngrid the number of grids. By default, `100`.
+#' @param ndim the number of grids. By default, `128` (128 x 128).
 #' @param window owin object
 #'
 #' @returns list of the following:
@@ -20,7 +20,7 @@
 #'      * `sum_log_intens`: the sum of log intensities for each time period
 #'      * `training_row_max`: the max row ID of the training set
 
-dx_outpred <- function(hfr, ratio, dep_var, indep_var, ngrid = 100, window) {
+dx_outpred <- function(hfr, ratio, dep_var, indep_var, ndim = 128, window) {
 
   # Separate data into training and test sets
   training_row_max <- trunc(nrow(hfr)*ratio)
@@ -36,7 +36,7 @@ dx_outpred <- function(hfr, ratio, dep_var, indep_var, ngrid = 100, window) {
 
   # Obtain fitted values of the propensity score -----
   message("Calculating the intensity...\n")
-  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", newdata = hfr, ngrid = ngrid)$cif #Returns intensity (cif) over nxn grid cells
+  intensity_grid_cells <- spatstat.model::predict.mppm(mod, type = "cif", newdata = hfr, ngrid = ndim)$cif #Returns intensity (cif) over nxn grid cells
   message("Integrating the intensity to obtain the propensity score...\n")
   estimated_counts <- sapply(intensity_grid_cells, function(x) integral(x, domain = window)) #Integrate intensity over the window (so, e_t(w) for each date)
   intensity_of_each_obs <- spatstat.model::fitted.mppm(mod, dataonly = TRUE) #Return fitted cif for each observation for each date

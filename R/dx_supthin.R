@@ -8,8 +8,6 @@
 #' Since we need to obtain the observed density of treatment events,
 #' `dep_var` should be the name of the treatment variable.
 #' @param indep_var vector of names of independent variables (covariates)
-#' @param ngrid the number of grid cells that is used to generate observed densities.
-#' By default = 100. Notice that as you increase `ngrid`, the process gets computationally demanding.
 #' @param window owin object
 #' @param rescale conversion as needed (namely when the unit of distance of the owin object is in meters).
 #' By default = 1 (no conversion)
@@ -21,7 +19,7 @@
 #' @returns A list of resulting dataframe (`result_data`), windows (`window_list`), data for distance quantiles,
 #' and a window object for the entire window
 
-dx_supthin <- function(hfr, dep_var, indep_var, ngrid = 100, window,
+dx_supthin <- function(hfr, dep_var, indep_var, window,
                        rescale = 1, max_r = 50, n_sample = 1000,
                        nsim = 1000, unit = "km") {
 
