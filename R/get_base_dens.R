@@ -7,8 +7,8 @@
 #' @param ndim the number of dimensions of grid cells (ndim^2). By default, ndim = 128.
 #' @param resolution the resolution in km per pixel. If specified, overrides `ndim`.
 #' For example, `resolution = 5` creates ~5km x 5km grid cells.
-#' @param out_data dataframe (if using out-of-sample data)
-#' @param out_coordinates vector of column names of longitudes and latitudes (in this order) (if using in-sample data)
+#' @param out_data dataframe
+#' @param out_coordinates vector of column names of longitudes and latitudes (in this order)
 #' @param input_crs the CRS of the input \code{coordinates}. Defaults to \code{4326}
 #' @param unit_scale parameter to convert meters to kilometers
 #' (WGS84 decimal degrees). The function will transform these to match the \code{window} projection
