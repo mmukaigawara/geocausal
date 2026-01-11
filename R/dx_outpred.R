@@ -31,11 +31,11 @@ dx_outpred <- function(hfr, ratio, dep_var, indep_var, ndim = 128, resolution = 
     y_extent <- diff(window$yrange)
     ngrid_x <- ceiling(x_extent / resolution)
     ngrid_y <- ceiling(y_extent / resolution)
-    ngrid <- ceiling(max(ngrid_x, ngrid_y))
-    message("Using resolution mode: ", resolution, " km per pixel -> ", ngrid, "x", ngrid, " grid\n")
+    ngrid <- c(ngrid_y, ngrid_x)
+    message("Using resolution mode: ", resolution, " km per pixel -> approx. ", ngrid_y, "x", ngrid_x, " grid\n")
   } else {
     # Pixel mode: fixed dimensions
-    ngrid <- ndim
+    ngrid <- c(ndim, ndim)
     message("Using pixel mode: ", ndim, "x", ndim, " grid\n")
   }
 

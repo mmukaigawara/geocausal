@@ -42,9 +42,7 @@ get_obs_dens <- function(hfr, dep_var, indep_var, ndim = 128, resolution = NULL,
     y_extent <- diff(window$yrange)
     ngrid_x <- ceiling(x_extent / resolution)
     ngrid_y <- ceiling(y_extent / resolution)
-    # predict.mppm uses ngrid as a single value, so we use the average or max
     ngrid <- c(ngrid_y, ngrid_x)
-    #ngrid <- ceiling(max(ngrid_x, ngrid_y))
     message("Using resolution mode: ", resolution, " km per pixel -> approx. ", ngrid_y, "x", ngrid_x, " grid\n")
   } else {
     # Pixel mode: fixed dimensions
