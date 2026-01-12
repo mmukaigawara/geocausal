@@ -22,9 +22,9 @@ get_base_dens(
 \item{resolution}{the resolution in km per pixel. If specified, overrides `ndim`.
 For example, `resolution = 5` creates ~5km x 5km grid cells.}
 
-\item{out_data}{dataframe (if using out-of-sample data)}
+\item{out_data}{dataframe}
 
-\item{out_coordinates}{vector of column names of longitudes and latitudes (in this order) (if using in-sample data)}
+\item{out_coordinates}{vector of column names of longitudes and latitudes (in this order)}
 
 \item{input_crs}{the CRS of the input \code{coordinates}. Defaults to \code{4326}}
 

@@ -47,7 +47,10 @@ plot.cflist <- function(x, ...,
                           tidyterra::geom_spatraster(data = terra::rast(counterfactual_density_list[[a]])) +
                           ggplot2::geom_polygon(data = polygon_df, aes(x = longitude, y = latitude),
                                                 fill = NA, color = "darkgrey", linewidth = 0.2) +
-                          ggplot2::scale_fill_gradientn(colors = color, na.value = NA) +
+                          ggplot2::scale_fill_gradientn(colors = color, na.value = NA,
+                                                        limits = c(0, max_val),
+                                                        breaks = c(0, max_val),
+                                                        labels = function(x) signif(x, 3)) +
                           ggthemes::theme_map() +
                           ggplot2::ggtitle(bquote(alpha[focus] == .(powers[a]))) +
                           labs(fill = "Density") +

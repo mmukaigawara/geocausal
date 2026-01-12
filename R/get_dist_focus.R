@@ -18,7 +18,6 @@
 #'
 #' @returns an im object
 
-
 get_dist_focus <- function(window, lon, lat, resolution = NULL, ndim = NULL,
                            mile = FALSE, preprocess = FALSE,
                            input_crs = 4326,
