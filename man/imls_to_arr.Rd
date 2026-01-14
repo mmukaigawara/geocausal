@@ -4,7 +4,7 @@
 \alias{imls_to_arr}
 \title{convert a list of im objects to a three-dimensional array}
 \usage{
-imls_to_arr(imls, start = 1, end = NULL, entire_window = NULL, ngrid = NULL)
+imls_to_arr(imls, start = 1, end = NULL, entire_window = NULL, ...)
 }
 \arguments{
 \item{imls}{a list of im objects (imlist)}
@@ -13,9 +13,9 @@ imls_to_arr(imls, start = 1, end = NULL, entire_window = NULL, ngrid = NULL)
 
 \item{end}{the index of the last im to be converted. If not provided, then it will be set to the length of the list.}
 
-\item{entire_window}{a owin object. If given, then the values outside the region will be set to `NA`}
+\item{entire_window}{a owin object. If given, then the values outside the region will be set to `NA`.}
 
-\item{ngrid}{an optional arugument that takes one integer or  vector of two integers specifying the dimensions of the `im` objects. If provided, the dimensions of the objects will be adjusted to `ngrid` before the conversion to the array.}
+\item{...}{Additional arguments passed to spatstat conversion functions.}
 }
 \description{
 `imls_to_arr()` convert a list of im object to a 3D array
