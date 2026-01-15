@@ -6,7 +6,8 @@
 #' @param data the name of a hyperframe and column of interest.
 #' @param W Optional window mask (object of class `"owin"`) determining the pixel raster.
 #' `data` should be in the form of `"hyperframe$column"`.
-#' @param ngrid a number or a vector of two numbers specifying the pixel array dimensions. A single integer, or an integer vector of length 2 giving dimensions in the y and x directions.Default is `c(128,128)`.
+#' @param resolution resolution of raster (distance map) (in km)
+#' @param ndim the number of dimensions of grid cells (ndim^2). Users need to set either resolution or ndim.
 #' @param weights Optional vector of weights associated with the points.
 #' @param DivideByPixelArea Logical value determining whether the resulting pixel values should be devided by the pixel area. Default value is `False`.
 #' @param ... parameters passed on to the function.
@@ -31,11 +32,42 @@
 #' # Get the number of events for each pixel
 #' pixel_count_ppp(data = dat_hfr$all_combined)
 
-pixel_count_ppp <- function(data,ngrid = c(128,128), W=NULL, weights = NULL,DivideByPixelArea = FALSE,...) {
-  if(length(ngrid)==1){
-    ngrid <- rep(ngrid,2)
+pixel_count_ppp <- function(data, resolution = NULL,
+                            ndim = NULL, W=NULL, weights = NULL,DivideByPixelArea = FALSE,...) {
+  
+  # Get window from first ppp object
+  window <- if (!is.null(W)) W else data[[1]]$window
+  
+  
+  # Determine output dimensions based on parameters
+  if (!is.null(ndim)) {
+    # Pixel mode: fixed dimensions
+    dimyx <- c(ndim, ndim)
+    message("Using pixel mode: ", ndim, "x", ndim, " pixels\n")
+  } else if (!is.null(resolution)) {
+    # Resolution mode: km per pixel
+    x_extent <- diff(window$xrange)
+    y_extent <- diff(window$yrange)
+    nc <- ceiling(x_extent / resolution)
+    nr <- ceiling(y_extent / resolution)
+    dimyx <- c(nr, nc)
+    message("Using resolution mode: ", resolution, " km per pixel -> ", nr, "x", nc, " pixels\n")
+  } else {
+    # Default: 128x128
+    dimyx <- c(128, 128)
+    message("Using default dimensions: 128x128 pixels\n")
   }
-  pixel_count <- furrr::future_map(data, spatstat.geom::pixellate.ppp,dimyx = ngrid,W = W, weights = weights, DivideByPixelArea = DivideByPixelArea,...)
+  
+  # avoid passing W twice if user included it in ...
+  dots <- list(...)
+  if ("W" %in% names(dots)) {
+    stop("Do not pass `W` via `...`; use the explicit `W =` argument.")
+  }
+  if ("dimyx" %in% names(dots)) {
+    stop("Do not pass `dimyx` via `...`; use `resolution`/`ndim` instead.")
+  }
+  
+  pixel_count <- furrr::future_map(data, spatstat.geom::pixellate.ppp,dimyx = dimyx,W = W, weights = weights, DivideByPixelArea = DivideByPixelArea,...)
   
   return(pixel_count)
   

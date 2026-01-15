@@ -6,7 +6,8 @@
 \usage{
 pixel_count_ppp(
   data,
-  ngrid = c(128, 128),
+  resolution = NULL,
+  ndim = NULL,
   W = NULL,
   weights = NULL,
   DivideByPixelArea = FALSE,
@@ -16,7 +17,9 @@ pixel_count_ppp(
 \arguments{
 \item{data}{the name of a hyperframe and column of interest.}
 
-\item{ngrid}{a number or a vector of two numbers specifying the pixel array dimensions. A single integer, or an integer vector of length 2 giving dimensions in the y and x directions.Default is `c(128,128)`.}
+\item{resolution}{resolution of raster (distance map) (in km)}
+
+\item{ndim}{the number of dimensions of grid cells (ndim^2). Users need to set either resolution or ndim.}
 
 \item{W}{Optional window mask (object of class `"owin"`) determining the pixel raster.
 `data` should be in the form of `"hyperframe$column"`.}
