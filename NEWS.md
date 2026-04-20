@@ -1,3 +1,7 @@
+# geocausal 0.4.1
+
+* Incorporated `get_sens()` for sensitivity analysis of causal contrasts 
+
 # geocausal 0.4.0
 
 * Updated the package throughout to accommodate projection of location information
