@@ -15,7 +15,10 @@ get_sens(
   window,
   gamma_vals = seq(1, 1.2, by = 0.01),
   time_after = TRUE,
-  trunc_level = NA
+  trunc_level = NA,
+  tol_slack = 1e-06,
+  grid_init = 15,
+  max_refine = 5
 )
 }
 \arguments{
@@ -40,12 +43,20 @@ get_sens(
 \item{time_after}{whether to include one unit time difference between treatment and outcome. By default = TRUE}
 
 \item{trunc_level}{the level of truncation for the weights (0-1)}
+
+\item{tol_slack}{numeric tolerance used to determine whether zero is attainable. Default is `1e-6`.}
+
+\item{grid_init}{number of grid points used in each adaptive lambda search step. Default is 15.}
+
+\item{max_refine}{maximum number of adaptive lambda refinement steps. Default is 5.}
 }
 \value{
 a tibble with columns:
      * `gamma`: the sensitivity parameter
      * `lb`: lower bound on the causal contrast at `gamma`
      * `ub`: upper bound on the causal contrast at `gamma`
+     * `zero_attainable`: whether zero is attainable at `gamma`
+     * `robust_gamma`: the largest gamma at which zero is not attainable
 }
 \description{
 `get_sens()` computes bounds on the causal contrast between two
@@ -59,5 +70,10 @@ violations of the no-unmeasured-confounding assumption.
 `gamma = 1` corresponds to no unmeasured confounding and recovers
 point estimates analogous to those of `get_est()`. As `gamma` increases, the
 bounds widen, reflecting greater allowance for unobserved confounding.
-The underlying linear program is solved with `Rglpk::Rglpk_solve_LP()`.
+The `lb` and `ub` columns retain the conservative bounds from the original
+implementation. The `zero_attainable` column indicates whether the result is
+no longer robust under the current value of `gamma`, or equivalently under
+the current allowance for unmeasured confounding. The underlying linear
+programs are solved with
+`Rglpk::Rglpk_solve_LP()`.
 }

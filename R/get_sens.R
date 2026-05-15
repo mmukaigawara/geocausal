@@ -214,16 +214,26 @@ get_linear_prog <- function(wto, this_gamma) {
 #' @param gamma_vals numeric vector of sensitivity parameters (>= 1) at which to compute bounds. By default, `seq(1, 1.2, by = 0.01)`.
 #' @param time_after whether to include one unit time difference between treatment and outcome. By default = TRUE
 #' @param trunc_level the level of truncation for the weights (0-1)
+#' @param tol_slack numeric tolerance used to determine whether zero is attainable. Default is `1e-6`.
+#' @param grid_init number of grid points used in each adaptive lambda search step. Default is 15.
+#' @param max_refine maximum number of adaptive lambda refinement steps. Default is 5.
 #'
 #' @returns a tibble with columns:
 #'      * `gamma`: the sensitivity parameter
 #'      * `lb`: lower bound on the causal contrast at `gamma`
 #'      * `ub`: upper bound on the causal contrast at `gamma`
+#'      * `zero_attainable`: whether zero is attainable at `gamma`
+#'      * `robust_gamma`: the largest gamma at which zero is not attainable
 #'
 #' @details `gamma = 1` corresponds to no unmeasured confounding and recovers
 #' point estimates analogous to those of `get_est()`. As `gamma` increases, the
 #' bounds widen, reflecting greater allowance for unobserved confounding.
-#' The underlying linear program is solved with `Rglpk::Rglpk_solve_LP()`.
+#' The `lb` and `ub` columns retain the conservative bounds from the original
+#' implementation. The `zero_attainable` column indicates whether the result is
+#' no longer robust under the current value of `gamma`, or equivalently under
+#' the current allowance for unmeasured confounding. The underlying linear
+#' programs are solved with
+#' `Rglpk::Rglpk_solve_LP()`.
 #'
 #' @export
 
@@ -235,7 +245,10 @@ get_sens <- function(obs, cf1, cf2,
                      window,
                      gamma_vals = seq(1, 1.2, by = 0.01),
                      time_after = TRUE,
-                     trunc_level = NA) {
+                     trunc_level = NA,
+                     tol_slack = 1e-6,
+                     grid_init = 15,
+                     max_refine = 5) {
 
   sens1 <- sens_weighted_surf(obs_dens = obs, cf_dens = cf1,
                               treatment_data = treat, smoothed_outcome = sm_out,
@@ -249,7 +262,11 @@ get_sens <- function(obs, cf1, cf2,
                               window = window, time_after = time_after,
                               truncation_level = trunc_level)
 
-  bounds <- tibble::tibble(gamma = gamma_vals, lb = NA, ub = NA)
+  bounds <- tibble::tibble(gamma = gamma_vals,
+                           lb = NA_real_,
+                           ub = NA_real_,
+                           zero_attainable = FALSE,
+                           robust_gamma = NA_real_)
 
   for (gg in 1 : length(gamma_vals)) {
 
@@ -263,6 +280,33 @@ get_sens <- function(obs, cf1, cf2,
     bounds[gg, "lb"] <- lb
     bounds[gg, "ub"] <- ub
 
+    lambda_lo <- max(bounds_cf1$low, bounds_cf2$low)
+    lambda_hi <- min(bounds_cf1$high, bounds_cf2$high)
+
+    if (lambda_lo <= lambda_hi) {
+      lower_rho <- rep(1 / this_gamma, length(sens1[[1]]))
+      upper_rho <- rep(this_gamma, length(sens1[[1]]))
+
+      out <- sens_zero_attainability_search(lambda_lo = lambda_lo,
+                                            lambda_hi = lambda_hi,
+                                            A = sens1[[1]],
+                                            B = sens1[[2]],
+                                            C = sens2[[1]],
+                                            D = sens2[[2]],
+                                            lower_rho = lower_rho,
+                                            upper_rho = upper_rho,
+                                            tol_slack = tol_slack,
+                                            grid_init = grid_init,
+                                            max_refine = max_refine)
+
+      bounds[gg, "zero_attainable"] <- out$attainable
+    }
+
+  }
+
+  not_zero <- which(!bounds$zero_attainable)
+  if (length(not_zero) > 0) {
+    bounds$robust_gamma <- bounds$gamma[max(not_zero)]
   }
 
   bounds
