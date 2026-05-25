@@ -1,7 +1,7 @@
 Package: geocausal
 Type: Package
 Title: Causal Inference with Spatio-Temporal Data
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person(given = "Mitsuru", family = "Mukaigawara", 
            email = "mitsuru_mukaigawara@g.harvard.edu", 
@@ -50,6 +50,7 @@ Imports:
     mclust,
     progressr,
     purrr,
+    Rglpk,
     sf,
     spatstat.explore,
     spatstat.geom,
@@ -57,6 +58,7 @@ Imports:
     spatstat.univar,
     spatstat.random,
     terra,
+    tibble,
     tidyr,
     tidyselect,
     tidyterra
