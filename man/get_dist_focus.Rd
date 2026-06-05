@@ -44,3 +44,17 @@ an im object
 \description{
 `get_dist_focus()` generates a distance map from focus locations.
 }
+\details{
+This function performs its computation using the `future` framework
+(via `furrr`); to run it in parallel, set `future::plan(future::multisession)`
+before calling this function. The results are identical regardless of the plan.
+}
+\seealso{
+Other spatial utility functions:
+\code{\link[=conv_owin_into_sf]{conv_owin_into_sf()}},
+\code{\link[=get_dist_line]{get_dist_line()}},
+\code{\link[=get_distexp]{get_distexp()}},
+\code{\link[=get_elev]{get_elev()}},
+\code{\link[=get_window]{get_window()}}
+}
+\concept{spatial utility functions}

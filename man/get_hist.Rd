@@ -44,3 +44,12 @@ lapply(1:nrow(dat_hfr), get_hist,
        Xt = dat_hfr$all_outcome,
        lag = 1, window = iraq_window)
 }
+\seealso{
+Other data preparation functions:
+\code{\link[=get_em_vec]{get_em_vec()}},
+\code{\link[=get_hfr]{get_hfr()}},
+\code{\link[=imls_to_arr]{imls_to_arr()}},
+\code{\link[=pixel_count_ppp]{pixel_count_ppp()}},
+\code{\link[=smooth_ppp]{smooth_ppp()}}
+}
+\concept{data preparation functions}

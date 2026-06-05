@@ -17,6 +17,12 @@ imls_to_arr(imls, start = 1, end = NULL, entire_window = NULL, ...)
 
 \item{...}{Additional arguments passed to spatstat conversion functions.}
 }
+\value{
+a three-dimensional array of dimension \eqn{n} by \eqn{m} by \eqn{l},
+where \eqn{n} and \eqn{m} are the pixel dimensions of the `im` objects and
+\eqn{l} is the number of selected list elements. When `entire_window` is
+supplied, cells outside that window are set to `NA`.
+}
 \description{
 `imls_to_arr()` convert a list of im object to a 3D array
 }
@@ -24,3 +30,12 @@ imls_to_arr(imls, start = 1, end = NULL, entire_window = NULL, ...)
 `imls_to_arr()` is a internal function for `imls_to_vec()`. By default, it returns a three-dimensional array of dimension \eqn{n} by \eqn{m} by\eqn{l} where \eqn{n} and \eqn{m}
 are the dimensions of the im objects, and \eqn{l} is the length of the list. All the im objects in the list need to have the same dimensions.
 }
+\seealso{
+Other data preparation functions:
+\code{\link[=get_em_vec]{get_em_vec()}},
+\code{\link[=get_hfr]{get_hfr()}},
+\code{\link[=get_hist]{get_hist()}},
+\code{\link[=pixel_count_ppp]{pixel_count_ppp()}},
+\code{\link[=smooth_ppp]{smooth_ppp()}}
+}
+\concept{data preparation functions}

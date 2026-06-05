@@ -1,0 +1,47 @@
+#' geocausal: Causal Inference with Spatio-Temporal Data
+#'
+#' @description
+#' The geocausal package implements causal inference analytic methods based on
+#' spatio-temporal data. Users provide the raw data of locations and timings of
+#' treatment and outcome events, specify counterfactual scenarios, and the
+#' package estimates causal effects over specified spatial and temporal windows.
+#'
+#' @details
+#' A typical workflow proceeds as follows:
+#'
+#' 1. **Prepare spatial objects**: define the analysis window with
+#'    [get_window()] and, if needed, covariate surfaces such as distances from
+#'    foci ([get_dist_focus()]), distances from lines ([get_dist_line()]), and
+#'    elevation ([get_elev()]).
+#' 2. **Prepare the data**: convert the raw event data into a hyperframe of
+#'    point patterns with [get_hfr()], smooth the outcomes with [smooth_ppp()]
+#'    or count them by pixel with [pixel_count_ppp()].
+#' 3. **Estimate densities**: model the observed treatment intensity with
+#'    [get_obs_dens()] (the propensity score), and construct counterfactual
+#'    densities from a baseline density ([get_base_dens()]) and, optionally,
+#'    power densities ([get_power_dens()]) using [get_cf_dens()].
+#' 4. **Estimate causal effects**: compare counterfactual scenarios with
+#'    [get_est()] for average treatment effects, [get_cate()] for heterogeneous
+#'    effects, and [get_sens()] and [get_cate_sens()] for sensitivity analyses.
+#' 5. **Check the model**: assess model validity with out-of-sample prediction
+#'    ([dx_outpred()]) and superthinning tests ([dx_supthin()]).
+#'
+#' The package ships with example data from the Iraq war (`insurgencies`,
+#' `airstrikes`, their 2006 subsets, and `iraq_window`).
+#'
+#' @references Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022).
+#' Causal inference with spatio-temporal data: estimating the effects of
+#' airstrikes on insurgent violence in Iraq.
+#' \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999.
+#' \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025).
+#' Spatiotemporal causal inference with arbitrary spillover and carryover effects.
+#' arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' Mukaigawara, M., Zhou, L., Papadogeorgou, G., Lyall, J. and Imai, K. (2024).
+#' geocausal: An R package for spatio-temporal causal inference.
+#' OSF preprint. \doi{10.31219/osf.io/5kc6f}
+#'
+#' @keywords internal
+"_PACKAGE"

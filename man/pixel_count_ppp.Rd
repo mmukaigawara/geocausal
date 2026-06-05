@@ -36,6 +36,11 @@ im objects
 \description{
 `pixel_count_ppp()` takes a column of hyperframes (ppp objects) and gets the number of events in each pixel.
 }
+\details{
+This function performs its computation using the `future` framework
+(via `furrr`); to run it in parallel, set `future::plan(future::multisession)`
+before calling this function. The results are identical regardless of the plan.
+}
 \examples{
 # Time variable
 dat_out <- insurgencies[1:100, ]
@@ -53,3 +58,12 @@ dat_hfr <- get_hfr(data = dat_out,
 # Get the number of events for each pixel
 pixel_count_ppp(data = dat_hfr$all_combined)
 }
+\seealso{
+Other data preparation functions:
+\code{\link[=get_em_vec]{get_em_vec()}},
+\code{\link[=get_hfr]{get_hfr()}},
+\code{\link[=get_hist]{get_hist()}},
+\code{\link[=imls_to_arr]{imls_to_arr()}},
+\code{\link[=smooth_ppp]{smooth_ppp()}}
+}
+\concept{data preparation functions}

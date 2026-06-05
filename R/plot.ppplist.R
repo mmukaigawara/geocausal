@@ -1,12 +1,19 @@
-#' Plot point pattern (list)
+#' Plot a list of point patterns
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `ppplist` (a list of spatstat
+#' point patterns, such as observed events across time periods). Plots the points
+#' over the observation window, either combining multiple time periods into one
+#' plot or faceting them.
+#'
+#' @param x an object of class `ppplist` (a list of spatstat point patterns).
+#' @param ... additional arguments. Currently ignored.
 #' @param main title
 #' @param frame the element number of the list object (by default, 1)
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot.
 #' This argument applies only to the case when users specify one column with multiple time periods.
 #' By default = TRUE
+#'
+#' @returns A `ggplot` object plotting the selected point pattern(s).
 #'
 #' @export
 plot.ppplist <- function(x, ..., frame = 1, main = "ppp", combined = TRUE) {

@@ -16,3 +16,20 @@ list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame object
 `conv_owin_into_sf` takes an owin object and converts it to sf-related objects. 
 This function is mostly an internal function of other functions.
 }
+\details{
+`conv_owin_into_sf()` converts the window to a polygonal object,
+extracts its boundary coordinates (closing the ring if necessary), and returns
+the same boundary in several representations: an `sf` `POLYGON`, a coordinate
+data frame, an `sfc_POLYGON`, an `sf` object, and a `SpatialPolygonsDataFrame`.
+It is mostly used internally by other functions that need different spatial
+object classes.
+}
+\seealso{
+Other spatial utility functions:
+\code{\link[=get_dist_focus]{get_dist_focus()}},
+\code{\link[=get_dist_line]{get_dist_line()}},
+\code{\link[=get_distexp]{get_distexp()}},
+\code{\link[=get_elev]{get_elev()}},
+\code{\link[=get_window]{get_window()}}
+}
+\concept{spatial utility functions}

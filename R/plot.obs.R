@@ -1,7 +1,12 @@
 #' Plot observed densities
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `obs`, returned by
+#' [get_obs_dens()]. Compares actual versus predicted event counts over time,
+#' shows the corresponding residuals, and maps the average residual field. Up to
+#' three fitted densities can be overlaid for comparison.
+#'
+#' @param x an object of class `obs`, typically the output of [get_obs_dens()].
+#' @param ... additional arguments. Currently ignored.
 #' @param dens_2 density 2 (if any). By default, `NA`.
 #' @param dens_3 density 3 (if any). By default, `NA`.
 #' @param time_unit x-axis label of the output
@@ -12,6 +17,14 @@
 #' @param combined whether to combine the two plots. By default, TRUE. If TRUE,
 #' then the plot function produces one ggplot object. If FALSE, three objects (two ggplot and one dataframe) will be produced.
 #' @param lim limits of the scale for the average residual fields. By default, c(0, -1). To set limits manually, provide a vector of max and min
+#'
+#' @returns If `combined = TRUE` (the default), a single arranged `ggplot` object
+#' combining the comparison, residual, and (when applicable) average-residual-field
+#' panels. If `combined = FALSE`, a named list with the underlying data frame
+#' (`plot_data`) and the individual `ggplot` objects (`plot_compare`,
+#' `plot_residual`, `plot_arf`).
+#'
+#' @seealso [get_obs_dens()]
 #'
 #' @export
 plot.obs <- function (x, ..., dens_2 = NA, dens_3 = NA, lim = c(-1, 1),

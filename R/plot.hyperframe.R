@@ -1,7 +1,12 @@
-#' Plot estimates
+#' Plot a hyperframe
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `hyperframe` (as created by
+#' [get_hfr()]). Visualizes the selected point pattern (`ppp`) or pixel image
+#' (`im`) column(s) over the specified time period(s), arranging multiple time
+#' periods and/or columns by faceting or combining them.
+#'
+#' @param x an object of class `hyperframe`, typically the output of [get_hfr()].
+#' @param ... additional arguments. Currently ignored.
 #' @param col the name/s of a column of interest.
 #' @param main title
 #' To specify multiple columns, users should list column names as a character vector.
@@ -13,6 +18,10 @@
 #' By default = TRUE
 #' @param scalename the name of the scale (for images only)
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
+#'
+#' @returns A `ggplot` object visualizing the selected column(s) and time period(s).
+#'
+#' @seealso [get_hfr()]
 #'
 #' @export
 plot.hyperframe <- function(x, ..., col, time_col = "time", range, lim = NA, main = "Image object",

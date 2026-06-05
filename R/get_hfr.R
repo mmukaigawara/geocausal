@@ -28,6 +28,19 @@
 #'     * The first column: time variable
 #'     * The middle columns: ppp objects (see `spatstat.geom::ppp()`) generated for each subtype of events of interest
 #'     * The last column (if `combine = TRUE`): ppp objects with all subtypes combined. This column is named as `all_combined`.
+#'
+#' @details Event data often contain multiple events at identical coordinates
+#' (e.g., several events recorded at the same location within one time period).
+#' Such duplicated points are legitimate observations and are retained as they are;
+#' each point contributes separately to subsequent intensity estimation.
+#' For this reason, `get_hfr()` (and other functions in this package that pool
+#' points across time periods) skip `spatstat`'s duplicate-point check, and the
+#' warning "data contain duplicated points" is not issued.
+#'
+#' @seealso [get_window()], [smooth_ppp()]
+#'
+#' @family data preparation functions
+#'
 #' @examples
 #' # Data
 #' dat <- data.frame(time = c(1, 1, 2, 2),
@@ -89,8 +102,10 @@ get_hfr <- function(data, col,
   empty_ppp <- spatstat.geom::ppp(numeric(0), numeric(0), window = window, check = FALSE)
 
   # Creating ppp objects with KM coordinates
+  # checkdup = FALSE: multiple events at identical coordinates are legitimate
+  # in event data, so the duplicate-point check (and its warning) is skipped
   x_ppp <- data[, .(V1 = list(spatstat.geom::as.ppp(cbind(x = .SD$longitude, y = .SD$latitude),
-                                                    W = window))),
+                                                    W = window, checkdup = FALSE))),
                 by = list(time, type)]
 
   # 6. Hyperframe Generation (Logic remains identical)

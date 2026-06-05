@@ -32,6 +32,36 @@
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`.
 #' Users should note that the coefficients in the output are not directly interpretable,
 #' since they are the coefficients inside the exponential of the poisson model.
+#'
+#' @references
+#' Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @seealso [get_cf_dens()], [get_est()]
+#'
+#' @family density estimation functions
+#'
+#' @examples
+#' \donttest{
+#' # Prepare data: airstrikes (treatment) and insurgencies (outcome), Iraq 2006
+#' dat <- rbind(airstrikes_2006[airstrikes_2006$type == "Airstrike", ],
+#'              insurgencies_2006)
+#' dat$type <- ifelse(dat$type == "Airstrike", "airstrike", "insurgency")
+#' dat$time <- as.numeric(dat$date - min(dat$date) + 1)
+#' dat <- dat[dat$time <= 60, ]
+#' hfr <- get_hfr(data = dat, col = "type", window = iraq_window,
+#'                time_col = "time", time_range = c(1, 60),
+#'                coordinates = c("longitude", "latitude"), combine = FALSE)
+#'
+#' # Covariate surface: distance from Baghdad
+#' hfr$dist_bag <- rep(list(get_dist_focus(window = iraq_window, lon = 44.366,
+#'                                         lat = 33.315, ndim = 64)), nrow(hfr))
+#'
+#' # Observed density of the treatment (propensity score)
+#' obs <- get_obs_dens(hfr, dep_var = "airstrike", indep_var = "dist_bag",
+#'                     ndim = 64, window = iraq_window)
+#' }
 
 get_obs_dens <- function(hfr, dep_var, indep_var, ndim = 128, resolution = NULL, window) {
 

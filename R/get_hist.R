@@ -13,6 +13,8 @@
 #'
 #' @returns list of treatment and outcome histories
 #'
+#' @family data preparation functions
+#'
 #' @examples
 #' dat_out <- insurgencies[1:100, ]
 #' dat_out$time <- as.numeric(dat_out$date - min(dat_out$date) + 1)
@@ -51,8 +53,10 @@ get_hist <- function(tt, Xt, Yt = NA, lag, window, x_only = TRUE) {
 
   } else if (start_time > up_to_time[1]) {
 
-    Xt_hist <- do.call(eval(parse(text = "spatstat.geom::superimpose")),
-                       Xt[start_time : up_to_time[1]])
+    # check = FALSE: the same location recurring across time periods is a
+    # legitimate duplicate, so the duplicate-point check (and its warning) is skipped
+    Xt_hist <- do.call(spatstat.geom::superimpose,
+                       c(Xt[start_time : up_to_time[1]], list(check = FALSE)))
     Xt_hist$marks <- NULL # Change the shapes of points
 
   }
@@ -72,8 +76,8 @@ get_hist <- function(tt, Xt, Yt = NA, lag, window, x_only = TRUE) {
 
       if (start_time > up_to_time[2]) {
 
-        Yt_hist <- do.call(eval(parse(text = "spatstat.geom::superimpose")),
-                           Yt[start_time : up_to_time[2]])
+        Yt_hist <- do.call(spatstat.geom::superimpose,
+                           c(Yt[start_time : up_to_time[2]], list(check = FALSE)))
         Yt_hist$marks <- NULL
 
       }

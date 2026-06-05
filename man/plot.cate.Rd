@@ -17,9 +17,9 @@
 )
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `cate`, typically the output of [get_cate()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{result}{specify which values will be used for plot. Default is "cate"
 - If `result` is "cate", then estimated cate values will be used
@@ -40,6 +40,16 @@
 
 \item{ylim}{an optional vector of two values specifying the limits of y}
 }
+\value{
+A `ggplot` object showing the estimated CATE (or regression
+coefficients) with confidence intervals.
+}
 \description{
-Plot estimated CATE
+Plot method for objects of class `cate`, returned by [get_cate()].
+Visualizes the estimated conditional average treatment effects (CATE) across
+the chosen evaluation values, or the estimated regression coefficients, with
+confidence intervals.
+}
+\seealso{
+[get_cate()]
 }

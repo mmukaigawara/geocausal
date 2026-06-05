@@ -235,6 +235,17 @@ get_linear_prog <- function(wto, this_gamma) {
 #' programs are solved with
 #' `Rglpk::Rglpk_solve_LP()`.
 #'
+#' This function performs its computation using the `future` framework
+#' (via `furrr`); to run it in parallel, set `future::plan(future::multisession)`
+#' before calling this function. The results are identical regardless of the plan.
+#'
+#' @references
+#' Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @family sensitivity analysis functions
+#'
 #' @export
 
 get_sens <- function(obs, cf1, cf2,

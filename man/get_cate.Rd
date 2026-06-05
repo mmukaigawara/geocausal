@@ -88,3 +88,49 @@ the column for intercept. The function `get_cate()` will conduct a hypothesis te
 of the chosen beta. The coefficients (except the intercept) are indexed by `1,2,...,nbase-intercept`. By default, it test whether all the coefficients(except the intercept) are 0, and this is testing the
 the heterogeneity effect of the effect modifier.
 }
+\examples{
+\donttest{
+# Prepare data: airstrikes (treatment) and insurgencies (outcome), Iraq 2006
+dat <- rbind(airstrikes_2006[airstrikes_2006$type == "Airstrike", ],
+             insurgencies_2006)
+dat$type <- ifelse(dat$type == "Airstrike", "airstrike", "insurgency")
+dat$time <- as.numeric(dat$date - min(dat$date) + 1)
+dat <- dat[dat$time <= 60, ]
+hfr <- get_hfr(data = dat, col = "type", window = iraq_window,
+               time_col = "time", time_range = c(1, 60),
+               coordinates = c("longitude", "latitude"), combine = FALSE)
+hfr$dist_bag <- rep(list(get_dist_focus(window = iraq_window, lon = 44.366,
+                                        lat = 33.315, ndim = 64)), nrow(hfr))
+
+# Observed density (propensity score) and counterfactual densities
+obs <- get_obs_dens(hfr, dep_var = "airstrike", indep_var = "dist_bag",
+                    ndim = 64, window = iraq_window)
+base <- get_base_dens(window = iraq_window, ndim = 64,
+                      out_data = insurgencies,
+                      out_coordinates = c("longitude", "latitude"))
+cf1 <- get_cf_dens(expected_number = 2, base_dens = base, window = iraq_window)
+cf2 <- get_cf_dens(expected_number = 4, base_dens = base, window = iraq_window)
+
+# Outcome counts by pixel, and CATE over the distance-from-Baghdad modifier
+hfr$pc_insurgency <- pixel_count_ppp(hfr$insurgency, ndim = 64)
+cate <- get_cate(obs = obs, cf1 = cf1, cf2 = cf2,
+                 treat = hfr$airstrike, pixel_count_out = hfr$pc_insurgency,
+                 lag = 1, entire_window = iraq_window,
+                 em = hfr$dist_bag, nbase = 4)
+}
+}
+\references{
+Zhou, L., Imai, K., Lyall, J. and Papadogeorgou, G. (2024). Estimating heterogeneous treatment effects for spatio-temporal causal inference: how economic assistance moderates the effects of airstrikes on insurgent violence. arXiv preprint. \doi{10.48550/arXiv.2412.15128}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+[get_cate_sens()], [get_em_vec()], [pixel_count_ppp()]
+
+Other causal effect estimation functions:
+\code{\link[=get_est]{get_est()}},
+\code{\link[=get_estimates]{get_estimates()}},
+\code{\link[=get_var_bound]{get_var_bound()}},
+\code{\link[=get_weighted_surf]{get_weighted_surf()}}
+}
+\concept{causal effect estimation functions}

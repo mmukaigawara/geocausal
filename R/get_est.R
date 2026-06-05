@@ -32,6 +32,50 @@
 #'
 #' @details The level of truncation indicates the quantile of weights at which weights are truncated.
 #' That is, if `trunc_level = 0.95`, then all weights are truncated at the 95 percentile of the weights.
+#'
+#' @references
+#' Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @seealso [get_obs_dens()], [get_cf_dens()], [get_sens()]
+#'
+#' @family causal effect estimation functions
+#'
+#' @examples
+#' \donttest{
+#' # Prepare data: airstrikes (treatment) and insurgencies (outcome), Iraq 2006
+#' dat <- rbind(airstrikes_2006[airstrikes_2006$type == "Airstrike", ],
+#'              insurgencies_2006)
+#' dat$type <- ifelse(dat$type == "Airstrike", "airstrike", "insurgency")
+#' dat$time <- as.numeric(dat$date - min(dat$date) + 1)
+#' dat <- dat[dat$time <= 60, ]
+#' hfr <- get_hfr(data = dat, col = "type", window = iraq_window,
+#'                time_col = "time", time_range = c(1, 60),
+#'                coordinates = c("longitude", "latitude"), combine = FALSE)
+#' dist_baghdad <- get_dist_focus(window = iraq_window, lon = 44.366,
+#'                                lat = 33.315, ndim = 64)
+#' hfr$dist_bag <- rep(list(dist_baghdad), nrow(hfr))
+#'
+#' # Observed density (propensity score) and counterfactual densities
+#' obs <- get_obs_dens(hfr, dep_var = "airstrike", indep_var = "dist_bag",
+#'                     ndim = 64, window = iraq_window)
+#' base <- get_base_dens(window = iraq_window, ndim = 64,
+#'                       out_data = insurgencies,
+#'                       out_coordinates = c("longitude", "latitude"))
+#' cf1 <- get_cf_dens(expected_number = 2, base_dens = base, window = iraq_window)
+#' cf2 <- get_cf_dens(expected_number = 4, base_dens = base, window = iraq_window)
+#'
+#' # Smoothed outcomes
+#' hfr$sm_insurgency <- smooth_ppp(hfr$insurgency, method = "abramson", ndim = 64)
+#'
+#' # Causal estimates comparing the two scenarios
+#' est <- get_est(obs = obs, cf1 = cf1, cf2 = cf2,
+#'                treat = hfr$airstrike, sm_out = hfr$sm_insurgency,
+#'                lag = 1, entire_window = iraq_window,
+#'                use_dist = TRUE, dist_map = dist_baghdad,
+#'                dist = c(100, 200, 300), trunc_level = 0.95)
+#' }
 
 get_est <- function(obs, cf1, cf2, treat, sm_out,
                     mediation = FALSE,

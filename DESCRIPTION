@@ -1,7 +1,7 @@
 Package: geocausal
 Type: Package
 Title: Causal Inference with Spatio-Temporal Data
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: c(
     person(given = "Mitsuru", family = "Mukaigawara", 
            email = "mitsuru_mukaigawara@g.harvard.edu", 
@@ -62,6 +62,6 @@ Imports:
     tidyr,
     tidyselect,
     tidyterra
-RoxygenNote: 7.3.3
 Depends: 
     R (>= 3.5.0)
+Config/roxygen2/version: 8.0.0

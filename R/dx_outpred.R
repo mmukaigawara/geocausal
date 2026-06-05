@@ -21,6 +21,42 @@
 #'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
 #'      * `sum_log_intens`: the sum of log intensities for each time period
 #'      * `training_row_max`: the max row ID of the training set
+#'
+#' @details `dx_outpred()` splits the hyperframe chronologically into a training
+#' set (the first `ratio` fraction of rows) and an implied test set, fits a
+#' Poisson point process model to the training data with `spatstat.model::mppm()`,
+#' and predicts the conditional intensity over the full hyperframe. It returns the
+#' predicted intensity images together with the integrated (estimated) event
+#' counts and the per-period sums of log intensities, which can be compared
+#' against observed counts to assess out-of-sample fit. Training and test sets are
+#' assumed to share the same window.
+#'
+#' @references
+#' Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @seealso [get_obs_dens()]
+#'
+#' @family diagnostic functions
+#'
+#' @examples
+#' \donttest{
+#' # Prepare data: airstrikes (treatment) in Iraq, 2006 (first 60 days)
+#' dat <- airstrikes_2006[airstrikes_2006$type == "Airstrike", ]
+#' dat$type <- "airstrike"
+#' dat$time <- as.numeric(dat$date - min(dat$date) + 1)
+#' dat <- dat[dat$time <= 60, ]
+#' hfr <- get_hfr(data = dat, col = "type", window = iraq_window,
+#'                time_col = "time", time_range = c(1, 60),
+#'                coordinates = c("longitude", "latitude"), combine = FALSE)
+#' hfr$dist_bag <- rep(list(get_dist_focus(window = iraq_window, lon = 44.366,
+#'                                         lat = 33.315, ndim = 64)), nrow(hfr))
+#'
+#' # Out-of-sample prediction with an 80/20 split
+#' pred <- dx_outpred(hfr, ratio = 0.8, dep_var = "airstrike",
+#'                    indep_var = "dist_bag", ndim = 64, window = iraq_window)
+#' }
 
 dx_outpred <- function(hfr, ratio, dep_var, indep_var, ndim = 128, resolution = NULL, window) {
 

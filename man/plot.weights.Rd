@@ -7,9 +7,9 @@
 \method{plot}{weights}(x, ..., type_weights = "standardized", binwidth = NULL)
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `weights`, derived from the output of [get_est()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{type_weights}{the type of weights to plot.
 - If 'plot_weights' is `standardized`, histogram of standardized weights will be generated.
@@ -18,6 +18,15 @@ Default is `standardized`.}
 
 \item{binwidth}{bin width of the histogram. Default is NULL}
 }
+\value{
+A `ggplot` object showing histograms of the weights, faceted by
+intervention.
+}
 \description{
-Plot weights
+Plot method for objects of class `weights`, derived from the
+estimation produced by [get_est()]. Displays histograms of the (standardized
+or unstandardized) inverse-probability weights, faceted by intervention.
+}
+\seealso{
+[get_est()]
 }

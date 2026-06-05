@@ -26,6 +26,8 @@
 #' calculates observed densities for each time period. It depends on `spatstat.model::mppm()`.
 #' Users should note that the coefficients in the output are not directly interpretable,
 #' since they are the coefficients inside the exponential of the poisson model.
+#'
+#' @family density estimation functions
 
 
 

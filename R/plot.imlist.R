@@ -1,7 +1,13 @@
-#' Plot im objects (list)
+#' Plot a list of pixel images
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `imlist` (a list of spatstat
+#' pixel images, such as a sequence of density images over time periods). Renders
+#' one or more images as filled rasters over their observation window, arranging
+#' multiple frames into a common-legend grid.
+#'
+#' @param x an object of class `imlist` (a list of spatstat pixel images), for
+#' example a sequence of density images produced by a `get_*_dens()` function.
+#' @param ... additional arguments. Currently ignored.
 #' @param main title
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param scalename the name of the scale
@@ -11,6 +17,9 @@
 #' @param nrow the number of rows (if plotting multiple images at once)
 #' @param transf a function to transform the pixel values (by default, NULL)
 #' @param frame the element number of the list object (by default, 1)
+#'
+#' @returns A `ggplot` object. For a single frame, the rendered image; for
+#' multiple frames, an arranged grid of images with a common legend.
 #'
 #' @export
 plot.imlist <- function(x, ..., main = "image", lim = NA,

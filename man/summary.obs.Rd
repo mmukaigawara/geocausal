@@ -7,13 +7,23 @@
 \method{summary}{obs}(object, ...)
 }
 \arguments{
-\item{object}{an output object}
+\item{object}{an object of class `obs`, typically the output of [get_obs_dens()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
+}
+\value{
+The estimated model coefficients (`object$coef`), returned alongside
+the printed model summary.
 }
 \description{
-`summary` functions take the output and summarize it.
+Summary method for objects of class `obs`, returned by
+[get_obs_dens()]. Prints a short summary of the fitted observed-density model
+(dispersion parameter, deviance, and null deviance) and returns the estimated
+model coefficients.
 }
 \details{
 Currently, observed densities (class: obs) and estimates (class: est) are supported by this function.
+}
+\seealso{
+[get_obs_dens()]
 }

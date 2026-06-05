@@ -53,6 +53,15 @@ A hyperframe is generated with rows representing time and columns representing t
 `get_hfr()` takes a dataframe with time and location variables
 and generates a hyperframe with point patterns.
 }
+\details{
+Event data often contain multiple events at identical coordinates
+(e.g., several events recorded at the same location within one time period).
+Such duplicated points are legitimate observations and are retained as they are;
+each point contributes separately to subsequent intensity estimation.
+For this reason, `get_hfr()` (and other functions in this package that pool
+points across time periods) skip `spatstat`'s duplicate-point check, and the
+warning "data contain duplicated points" is not issued.
+}
 \examples{
 # Data
 dat <- data.frame(time = c(1, 1, 2, 2),
@@ -69,3 +78,14 @@ get_hfr(data = dat,
         coordinates = c("longitude", "latitude"),
         combine = FALSE)
 }
+\seealso{
+[get_window()], [smooth_ppp()]
+
+Other data preparation functions:
+\code{\link[=get_em_vec]{get_em_vec()}},
+\code{\link[=get_hist]{get_hist()}},
+\code{\link[=imls_to_arr]{imls_to_arr()}},
+\code{\link[=pixel_count_ppp]{pixel_count_ppp()}},
+\code{\link[=smooth_ppp]{smooth_ppp()}}
+}
+\concept{data preparation functions}

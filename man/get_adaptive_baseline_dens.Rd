@@ -48,3 +48,15 @@ calculates observed densities for each time period. It depends on `spatstat.mode
 Users should note that the coefficients in the output are not directly interpretable,
 since they are the coefficients inside the exponential of the poisson model.
 }
+\seealso{
+Other density estimation functions:
+\code{\link[=get_base_dens]{get_base_dens()}},
+\code{\link[=get_cf_dens]{get_cf_dens()}},
+\code{\link[=get_cf_dens_adaptive]{get_cf_dens_adaptive()}},
+\code{\link[=get_cf_sum_log_intens]{get_cf_sum_log_intens()}},
+\code{\link[=get_obs_dens]{get_obs_dens()}},
+\code{\link[=get_power_dens]{get_power_dens()}},
+\code{\link[=sim_cf_dens]{sim_cf_dens()}},
+\code{\link[=sim_power_dens]{sim_power_dens()}}
+}
+\concept{density estimation functions}

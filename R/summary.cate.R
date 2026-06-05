@@ -1,12 +1,24 @@
-#' Summarize results 
-#' 
-#' @description `summary` functions take the output and summarize it.
-#' 
-#' @param object an output object
-#' @param ... arguments passed on to the function
+#' Summarize results
+#'
+#' @description Summary method for objects of class `cate`, returned by [get_cate()].
+#' Summarizes the estimated regression coefficients, the CATE evaluated at the
+#' chosen values (both with 90% and 95% confidence intervals), and a chi-square
+#' test of whether at least one non-intercept coefficient differs from zero.
+#'
+#' @param object an object of class `cate`, typically the output of [get_cate()].
+#' @param ... additional arguments. Currently ignored.
 #' @param significance_level Numeric scalar between 0 and 1, inclusive, representing the significance level for the chi-square test. The test is used to determine whether at least one of the coefficients (except the intercept) is not equal to 0. Default is 0.05
-#' 
+#'
 #' @details Currently, observed densities (class: obs), estimates (class: est) and heterogeneity estimates (class: cate) are supported by this function.
+#'
+#' @returns A named list with three elements: `result_betas`, a data frame of the
+#' estimated regression coefficients with 90%/95% confidence intervals;
+#' `result_values`, a data frame of the CATE evaluated at the chosen values with
+#' 90%/95% confidence intervals; and `chisq_test`, a data frame with the
+#' chi-square statistic, its p-value, the significance level, and the test
+#' decision.
+#'
+#' @seealso [get_cate()]
 #'
 #' @export
 summary.cate <- function(object,..., significance_level = 0.05) {

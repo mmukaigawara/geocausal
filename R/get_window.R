@@ -8,6 +8,23 @@
 #' @param unit_scale parameter to convert meters to kilometers (by default = 1000 so that the unit is set to km)
 #'
 #' @returns owin object
+#'
+#' @details `get_window()` reads a shapefile and converts its boundary into a
+#' `spatstat.geom::owin` object. When `target_crs` is not supplied and the data
+#' are in longitude/latitude, a Cartesian CRS is suggested automatically via
+#' `crsuggest::suggest_crs()` and the geometry is projected accordingly. Polygon
+#' vertices are reordered to anti-clockwise as required by `owin`, the window is
+#' rescaled by `unit_scale` (so the default unit becomes kilometers), and the CRS
+#' is stored as an attribute for downstream functions.
+#'
+#' @seealso [get_hfr()]
+#'
+#' @family spatial utility functions
+#'
+#' @examples
+#' # An example window from the shapefile shipped with the sf package
+#' win <- get_window(load_path = system.file("shape/nc.shp", package = "sf"),
+#'                   target_crs = 32119)
 
 get_window <- function(load_path, target_crs = NULL, unit_scale = 1000) {
 

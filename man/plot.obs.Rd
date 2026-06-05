@@ -19,9 +19,9 @@
 )
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `obs`, typically the output of [get_obs_dens()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{dens_2}{density 2 (if any). By default, `NA`.}
 
@@ -42,6 +42,19 @@ then the plot function produces one ggplot object. If FALSE, three objects (two 
 
 \item{color_dens_3}{another color for an alternate density for out-of-sample prediction}
 }
+\value{
+If `combined = TRUE` (the default), a single arranged `ggplot` object
+combining the comparison, residual, and (when applicable) average-residual-field
+panels. If `combined = FALSE`, a named list with the underlying data frame
+(`plot_data`) and the individual `ggplot` objects (`plot_compare`,
+`plot_residual`, `plot_arf`).
+}
 \description{
-Plot observed densities
+Plot method for objects of class `obs`, returned by
+[get_obs_dens()]. Compares actual versus predicted event counts over time,
+shows the corresponding residuals, and maps the average residual field. Up to
+three fitted densities can be overlaid for comparison.
+}
+\seealso{
+[get_obs_dens()]
 }

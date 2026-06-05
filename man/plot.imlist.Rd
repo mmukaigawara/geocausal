@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.imlist.R
 \name{plot.imlist}
 \alias{plot.imlist}
-\title{Plot im objects (list)}
+\title{Plot a list of pixel images}
 \usage{
 \method{plot}{imlist}(
   x,
@@ -19,9 +19,10 @@
 )
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `imlist` (a list of spatstat pixel images), for
+example a sequence of density images produced by a `get_*_dens()` function.}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{main}{title}
 
@@ -41,6 +42,13 @@
 
 \item{nrow}{the number of rows (if plotting multiple images at once)}
 }
+\value{
+A `ggplot` object. For a single frame, the rendered image; for
+multiple frames, an arranged grid of images with a common legend.
+}
 \description{
-Plot im objects (list)
+Plot method for objects of class `imlist` (a list of spatstat
+pixel images, such as a sequence of density images over time periods). Renders
+one or more images as filled rasters over their observation window, arranging
+multiple frames into a common-legend grid.
 }

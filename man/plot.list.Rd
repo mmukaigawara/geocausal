@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.list.R
 \name{plot.list}
 \alias{plot.list}
-\title{Plot lists}
+\title{Plot a list of pixel images or point patterns}
 \usage{
 \method{plot}{list}(
   x,
@@ -20,21 +20,20 @@
 )
 }
 \arguments{
-\item{x}{input}
+\item{x}{a `list` of spatstat pixel images (`im`) or point patterns (`ppp`).}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{main}{title}
 
 \item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 
-\item{transf}{a function to transform the pixel values (by default, NULL)
-This argument applies only to the case when users specify one column with multiple time periods.
-By default = TRUE}
+\item{transf}{a function to transform the pixel values (by default, NULL)}
 
 \item{frame}{the element number of the list object (by default, 1)}
 
-\item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot.}
+\item{combined}{logical. `combined` specifies whether to combine all the point processes to one plot.
+This argument applies only to point-pattern lists with multiple time periods. By default = TRUE}
 
 \item{scalename}{the name of the scale}
 
@@ -46,6 +45,13 @@ By default = TRUE}
 
 \item{nrow}{the number of rows (if plotting multiple images at once)}
 }
+\value{
+A `ggplot` object visualizing the images or point patterns in the list.
+}
 \description{
-Plot lists
+Plot method for objects of class `list`. If the list contains
+spatstat pixel images (`im`), they are rendered as filled rasters; if it
+contains point patterns (`ppp`), the points are plotted over the observation
+window. Multiple frames are arranged into a grid (images) or combined/faceted
+(point patterns).
 }

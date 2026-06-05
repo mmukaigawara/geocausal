@@ -19,7 +19,13 @@
 #' \code{line_data} or shapefile to match the Coordinate Reference System (CRS)
 #' of the \code{window}.
 #'
+#' This function performs its computation using the `future` framework
+#' (via `furrr`); to run it in parallel, set `future::plan(future::multisession)`
+#' before calling this function. The results are identical regardless of the plan.
+#'
 #' @returns an im object
+#'
+#' @family spatial utility functions
 
 get_dist_line <- function(window, path_to_shapefile = NULL, line_data = NULL,
                           mile = FALSE, resolution = NULL, ndim = NULL,

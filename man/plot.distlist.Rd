@@ -14,9 +14,9 @@
 )
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `distlist`, typically the output of [get_distexp()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{dist_map_unit}{either `"km"` or `"mile"`}
 
@@ -27,6 +27,16 @@
 \item{use_raw}{logical. `use_raw` specifies whether to use the raw value of expectations or percentiles.
 By default, `FALSE`.}
 }
+\value{
+A `ggplot` object. If `win_plot = TRUE`, the arranged window plots;
+otherwise the expectation-versus-distance plot.
+}
 \description{
-Plot distance-based expectations
+Plot method for objects of class `distlist`, returned by
+[get_distexp()]. Visualizes the expected number (or proportion) of treatment
+events covered as a function of distance from the focus, and optionally the
+windows defined by distance quantiles.
+}
+\seealso{
+[get_distexp()]
 }
