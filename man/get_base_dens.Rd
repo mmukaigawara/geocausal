@@ -38,3 +38,40 @@ an im object of baseline density
 `get_base_dens()` takes a dataframe and
 returns the baseline densities using Scott's rule of thumb (out-of-sample data).
 }
+\details{
+`get_base_dens()` estimates a baseline (out-of-sample) density from
+point data supplied in `out_data`. The points are projected to match the CRS
+attached to `window`, converted to a `ppp` object, and smoothed by a kernel
+density estimate whose bandwidth is chosen by Scott's rule of thumb
+(`spatstat.explore::bw.scott()`). The result is normalized to integrate to one.
+The output grid is controlled either by `ndim` or, if supplied, by `resolution`
+(in km per pixel), which overrides `ndim`. The window must carry a CRS
+attribute (e.g., created via `get_window()` with a `target_crs`).
+}
+\examples{
+\donttest{
+# Baseline density from out-of-sample (2007--2008) insurgency data
+base <- get_base_dens(window = iraq_window, ndim = 64,
+                      out_data = insurgencies,
+                      out_coordinates = c("longitude", "latitude"))
+}
+}
+\references{
+Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+[get_cf_dens()]
+
+Other density estimation functions:
+\code{\link[=get_adaptive_baseline_dens]{get_adaptive_baseline_dens()}},
+\code{\link[=get_cf_dens]{get_cf_dens()}},
+\code{\link[=get_cf_dens_adaptive]{get_cf_dens_adaptive()}},
+\code{\link[=get_cf_sum_log_intens]{get_cf_sum_log_intens()}},
+\code{\link[=get_obs_dens]{get_obs_dens()}},
+\code{\link[=get_power_dens]{get_power_dens()}},
+\code{\link[=sim_cf_dens]{sim_cf_dens()}},
+\code{\link[=sim_power_dens]{sim_power_dens()}}
+}
+\concept{density estimation functions}

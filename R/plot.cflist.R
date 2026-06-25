@@ -1,14 +1,21 @@
 #' Plot simulated counterfactual densities
 #'
-#' @description A function that takes the simulated counterfactual densities and their priorities
-#' and returns a counterfactual density image over a range of parameters
+#' @description Plot method for objects of class `cflist`, returned by
+#' [sim_cf_dens()]. Takes the simulated counterfactual densities and their
+#' powers and returns a faceted counterfactual density image over the range of
+#' parameters.
 #'
-#' @param x input (should be the output of the `sim_power_dens()` function)
-#' @param ... arguments passed on to the function
+#' @param x an object of class `cflist`, typically the output of [sim_cf_dens()].
+#' @param ... additional arguments. Currently ignored.
 #' @param grayscale logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
 #'
-#' @returns ggplot object
+#' @returns A `ggplot` object (a faceted arrangement of counterfactual density
+#' images, one per power).
+#'
+#' @seealso [sim_cf_dens()]
+#'
+#' @export
 
 plot.cflist <- function(x, ...,
                         color = c("white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", "#771F59FF"),

@@ -45,3 +45,44 @@ and a window object for the entire window
 \description{
 `dx_supthin()` performs superthinning tests to examine model validity.
 }
+\details{
+`dx_supthin()` assesses model validity through superthinning. It fits
+a Poisson point process model with `spatstat.model::mppm()`, then for each time
+period thins the observed points and superposes simulated points so that, under
+a correctly specified model, the combined pattern is approximately homogeneous
+Poisson at the constant rate `cval`. Global envelope tests on the L- and
+K-functions (`spatstat.explore::envelope()`) are computed on the pooled,
+optionally subsampled (`n_sample`), pattern using `nsim` simulations out to
+`max_r`. The returned `supthin` data frame stacks the L- and K-function
+envelopes for plotting.
+}
+\examples{
+\donttest{
+# Prepare data: airstrikes (treatment) in Iraq, 2006 (first 60 days)
+dat <- airstrikes_2006[airstrikes_2006$type == "Airstrike", ]
+dat$type <- "airstrike"
+dat$time <- as.numeric(dat$date - min(dat$date) + 1)
+dat <- dat[dat$time <= 60, ]
+hfr <- get_hfr(data = dat, col = "type", window = iraq_window,
+               time_col = "time", time_range = c(1, 60),
+               coordinates = c("longitude", "latitude"), combine = FALSE)
+hfr$dist_bag <- rep(list(get_dist_focus(window = iraq_window, lon = 44.366,
+                                        lat = 33.315, ndim = 64)), nrow(hfr))
+
+# Superthinning test (use a larger nsim in real applications)
+supthin <- dx_supthin(hfr, dep_var = "airstrike", indep_var = "dist_bag",
+                      window = iraq_window, nsim = 19)
+}
+}
+\references{
+Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+[get_obs_dens()]
+
+Other diagnostic functions:
+\code{\link[=dx_outpred]{dx_outpred()}}
+}
+\concept{diagnostic functions}

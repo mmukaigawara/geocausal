@@ -7,13 +7,23 @@
 \method{summary}{est}(object, ...)
 }
 \arguments{
-\item{object}{an output object}
+\item{object}{an object of class `est`, typically the output of [get_est()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
+}
+\value{
+A named list with two elements: `result`, a data frame of the point
+estimates and 90%/95% confidence intervals per window, and `windows`, the list
+of windows used in estimation.
 }
 \description{
-`summary` functions take the output and summarize it.
+Summary method for objects of class `est`, returned by [get_est()].
+Summarizes the estimated causal effects per time period (with 90% and 95%
+confidence intervals) together with the associated windows.
 }
 \details{
 Currently, observed densities (class: obs) and estimates (class: est) are supported by this function.
+}
+\seealso{
+[get_est()]
 }

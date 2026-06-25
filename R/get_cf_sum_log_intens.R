@@ -7,6 +7,21 @@
 #' @param treatment_data In the form of hyperframe$column
 #'
 #' @returns A numeric vector of sums of log densities for each time period
+#'
+#' @details `get_cf_sum_log_intens()` evaluates a counterfactual density at the
+#' observed treatment locations for each time period using bilinear interpolation
+#' (`spatstat.geom::interp.im()`), and returns the sum of the log intensities per
+#' period. `cf_dens` may be a single `im` object reused across all periods or a
+#' list of `im` objects with one per period. Points falling on the boundary, where
+#' the intensity cannot be interpolated, are dropped; a period with no usable
+#' points contributes a sum of zero.
+#'
+#' @references
+#' Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @family density estimation functions
 
 get_cf_sum_log_intens <- function(cf_dens,
                                   treatment_data) {

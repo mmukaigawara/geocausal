@@ -44,4 +44,17 @@ an im object
 The function ensures spatial integrity by automatically projecting the
 \code{line_data} or shapefile to match the Coordinate Reference System (CRS)
 of the \code{window}.
+
+This function performs its computation using the `future` framework
+(via `furrr`); to run it in parallel, set `future::plan(future::multisession)`
+before calling this function. The results are identical regardless of the plan.
 }
+\seealso{
+Other spatial utility functions:
+\code{\link[=conv_owin_into_sf]{conv_owin_into_sf()}},
+\code{\link[=get_dist_focus]{get_dist_focus()}},
+\code{\link[=get_distexp]{get_distexp()}},
+\code{\link[=get_elev]{get_elev()}},
+\code{\link[=get_window]{get_window()}}
+}
+\concept{spatial utility functions}

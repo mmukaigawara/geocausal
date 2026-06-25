@@ -1,12 +1,22 @@
 #' Plot distance-based expectations
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `distlist`, returned by
+#' [get_distexp()]. Visualizes the expected number (or proportion) of treatment
+#' events covered as a function of distance from the focus, and optionally the
+#' windows defined by distance quantiles.
+#'
+#' @param x an object of class `distlist`, typically the output of [get_distexp()].
+#' @param ... additional arguments. Currently ignored.
 #' @param grayscale grayscale or not. By default, FALSE.
 #' @param dist_map_unit either `"km"` or `"mile"`
 #' @param win_plot whether to plot windows as well. By default, FALSE
 #' @param use_raw logical. `use_raw` specifies whether to use the raw value of expectations or percentiles.
 #' By default, `FALSE`.
+#'
+#' @returns A `ggplot` object. If `win_plot = TRUE`, the arranged window plots;
+#' otherwise the expectation-versus-distance plot.
+#'
+#' @seealso [get_distexp()]
 #'
 #' @export
 plot.distlist <- function(x, ..., dist_map_unit = "km",

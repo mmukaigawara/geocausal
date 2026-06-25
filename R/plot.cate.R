@@ -1,7 +1,12 @@
 #' Plot estimated CATE
-#' 
-#' @param x input
-#' @param ... arguments passed on to the function
+#'
+#' @description Plot method for objects of class `cate`, returned by [get_cate()].
+#' Visualizes the estimated conditional average treatment effects (CATE) across
+#' the chosen evaluation values, or the estimated regression coefficients, with
+#' confidence intervals.
+#'
+#' @param x an object of class `cate`, typically the output of [get_cate()].
+#' @param ... additional arguments. Currently ignored.
 #' @param result specify which values will be used for plot. Default is "cate"
 #'   - If `result` is "cate", then estimated cate values will be used
 #'   - If `result` is "beta", then the estimated regression coefficients will be used
@@ -14,8 +19,13 @@
 #' @param main title
 #' @param xlab label of x-axis
 #' @param scale a positive number specifying the scale by which the estimates will be scaled. If provided, the estimates will be scaled by this value. Default is NULL, which means no scaling is applied.
-#' 
-#' @export 
+#'
+#' @returns A `ggplot` object showing the estimated CATE (or regression
+#' coefficients) with confidence intervals.
+#'
+#' @seealso [get_cate()]
+#'
+#' @export
 plot.cate <- function(x,...,result = "cate", type = "l",scale = 1,xrange = NULL,main = "",xlab = "",ylim = NULL) {
   cate <- x
   

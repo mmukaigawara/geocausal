@@ -14,6 +14,32 @@
 #' (WGS84 decimal degrees). The function will transform these to match the \code{window} projection
 #'
 #' @returns an im object of baseline density
+#'
+#' @details `get_base_dens()` estimates a baseline (out-of-sample) density from
+#' point data supplied in `out_data`. The points are projected to match the CRS
+#' attached to `window`, converted to a `ppp` object, and smoothed by a kernel
+#' density estimate whose bandwidth is chosen by Scott's rule of thumb
+#' (`spatstat.explore::bw.scott()`). The result is normalized to integrate to one.
+#' The output grid is controlled either by `ndim` or, if supplied, by `resolution`
+#' (in km per pixel), which overrides `ndim`. The window must carry a CRS
+#' attribute (e.g., created via `get_window()` with a `target_crs`).
+#'
+#' @references
+#' Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @seealso [get_cf_dens()]
+#'
+#' @family density estimation functions
+#'
+#' @examples
+#' \donttest{
+#' # Baseline density from out-of-sample (2007--2008) insurgency data
+#' base <- get_base_dens(window = iraq_window, ndim = 64,
+#'                       out_data = insurgencies,
+#'                       out_coordinates = c("longitude", "latitude"))
+#' }
 
 get_base_dens <- function(window,
                           ndim = 128,
@@ -53,7 +79,9 @@ get_base_dens <- function(window,
     out_coords_proj <- sf::st_coordinates(out_proj) / unit_scale
 
     # Convert projected data to ppp
-    baseline_ppp <- spatstat.geom::as.ppp(out_coords_proj, W = window)
+    # checkdup = FALSE: multiple events at identical coordinates are legitimate
+    # in event data, so the duplicate-point check (and its warning) is skipped
+    baseline_ppp <- spatstat.geom::as.ppp(out_coords_proj, W = window, checkdup = FALSE)
 
     # Apply Scott's rule of thumb (now accurate because coordinates are metric)
     scott_bandwidth <- spatstat.explore::bw.scott(baseline_ppp)

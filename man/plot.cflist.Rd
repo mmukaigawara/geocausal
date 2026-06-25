@@ -12,18 +12,24 @@
 )
 }
 \arguments{
-\item{x}{input (should be the output of the `sim_power_dens()` function)}
+\item{x}{an object of class `cflist`, typically the output of [sim_cf_dens()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{color}{the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".}
 
 \item{grayscale}{logical. `grayscale` specifies whether to convert plot to grayscale (by default, FALSE).}
 }
 \value{
-ggplot object
+A `ggplot` object (a faceted arrangement of counterfactual density
+images, one per power).
 }
 \description{
-A function that takes the simulated counterfactual densities and their priorities
-and returns a counterfactual density image over a range of parameters
+Plot method for objects of class `cflist`, returned by
+[sim_cf_dens()]. Takes the simulated counterfactual densities and their
+powers and returns a faceted counterfactual density image over the range of
+parameters.
+}
+\seealso{
+[sim_cf_dens()]
 }

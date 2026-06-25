@@ -20,3 +20,28 @@ owin object
 `get_window()` takes a directory that hosts a shapefile
 and returns an owin object.
 }
+\details{
+`get_window()` reads a shapefile and converts its boundary into a
+`spatstat.geom::owin` object. When `target_crs` is not supplied and the data
+are in longitude/latitude, a Cartesian CRS is suggested automatically via
+`crsuggest::suggest_crs()` and the geometry is projected accordingly. Polygon
+vertices are reordered to anti-clockwise as required by `owin`, the window is
+rescaled by `unit_scale` (so the default unit becomes kilometers), and the CRS
+is stored as an attribute for downstream functions.
+}
+\examples{
+# An example window from the shapefile shipped with the sf package
+win <- get_window(load_path = system.file("shape/nc.shp", package = "sf"),
+                  target_crs = 32119)
+}
+\seealso{
+[get_hfr()]
+
+Other spatial utility functions:
+\code{\link[=conv_owin_into_sf]{conv_owin_into_sf()}},
+\code{\link[=get_dist_focus]{get_dist_focus()}},
+\code{\link[=get_dist_line]{get_dist_line()}},
+\code{\link[=get_distexp]{get_distexp()}},
+\code{\link[=get_elev]{get_elev()}}
+}
+\concept{spatial utility functions}

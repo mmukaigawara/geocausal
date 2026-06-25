@@ -103,3 +103,13 @@ solved with `Rglpk::Rglpk_solve_LP()`.
 `gamma = 1` corresponds to no unmeasured confounding. Larger values allow
 more deviation from the observed treatment process.
 }
+\references{
+Zhou, L., Imai, K., Lyall, J. and Papadogeorgou, G. (2024). Estimating heterogeneous treatment effects for spatio-temporal causal inference: how economic assistance moderates the effects of airstrikes on insurgent violence. arXiv preprint. \doi{10.48550/arXiv.2412.15128}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+Other sensitivity analysis functions:
+\code{\link[=get_sens]{get_sens()}}
+}
+\concept{sensitivity analysis functions}

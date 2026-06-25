@@ -9,8 +9,16 @@
 #' @param entire_window a owin object. If given, then the values outside the region will be set to `NA`.
 #' @param ... Additional arguments passed to spatstat conversion functions.
 #' 
+#' @returns a three-dimensional array of dimension \eqn{n} by \eqn{m} by \eqn{l},
+#' where \eqn{n} and \eqn{m} are the pixel dimensions of the `im` objects and
+#' \eqn{l} is the number of selected list elements. When `entire_window` is
+#' supplied, cells outside that window are set to `NA`.
+#'
 #' @details `imls_to_arr()` is a internal function for `imls_to_vec()`. By default, it returns a three-dimensional array of dimension \eqn{n} by \eqn{m} by\eqn{l} where \eqn{n} and \eqn{m}
 #' are the dimensions of the im objects, and \eqn{l} is the length of the list. All the im objects in the list need to have the same dimensions.
+#'
+#' @family data preparation functions
+
 imls_to_arr <- function(imls,
                         start = 1,
                         end = NULL,

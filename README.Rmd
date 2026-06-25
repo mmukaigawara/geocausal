@@ -38,6 +38,16 @@ and [CRAN](https://cran.r-project.org/package=geocausal) with:
 install.packages("geocausal")
 ```
 
+## Parallel computation
+
+Several computationally intensive functions (e.g., `smooth_ppp()`, `get_dist_focus()`, `get_dist_line()`) are implemented with the [future](https://cran.r-project.org/package=future) framework and run sequentially by default. To run them in parallel, register a parallel backend before calling them:
+
+```r
+future::plan(future::multisession)
+```
+
+The results are identical regardless of the plan.
+
 ## Key publications
 
 <div style="text-align: center;">

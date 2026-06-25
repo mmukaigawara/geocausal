@@ -7,14 +7,26 @@
 \method{plot}{est}(x, ..., surface = FALSE, lim = NA)
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `est`, typically the output of [get_est()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{surface}{whether to produce the surface plot. By default, FALSE}
 
 \item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector of max and min}
 }
+\value{
+If `surface = FALSE` (the default), a single `ggplot` object showing
+the causal effects per time period. If `surface = TRUE`, a named list with two
+`ggplot` objects, `surface` (the difference in average weighted surfaces) and
+`expectation` (the causal effects per time period).
+}
 \description{
-Plot estimates
+Plot method for objects of class `est`, returned by [get_est()].
+Visualizes the estimated causal effects per time period (point estimates with
+90% and 95% confidence intervals) and, optionally, the difference in average
+weighted counterfactual density surfaces.
+}
+\seealso{
+[get_est()]
 }

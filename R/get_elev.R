@@ -7,6 +7,14 @@
 #' @param ... other parameters passed to `elevatr::get_elev_raster()`. The resolution argument z must be specified.
 #'
 #' @returns an im object (unit: meters)
+#'
+#' @details `get_elev()` reads a shapefile and downloads elevation data clipped
+#' to that region via `elevatr::get_elev_raster()` (the resolution argument `z`
+#' must be passed through `...`). The raster is then converted into a
+#' `spatstat.geom::im` object, flipping the matrix vertically so that the raster
+#' (top-left origin) aligns with the `spatstat` (bottom-left origin) convention.
+#'
+#' @family spatial utility functions
 
 get_elev <- function(load_path, ...) {
 

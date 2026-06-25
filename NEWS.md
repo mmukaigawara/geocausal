@@ -1,3 +1,8 @@
+# geocausal 0.4.2
+
+* Improved the computational efficiency of `smooth_ppp()` (parallel computation via `future`, a new `ngroups` option) and modified the duplicated-points warning settings
+* Overhauled the documentation: details, examples, references, and cross-references throughout, plus a package-level help page
+
 # geocausal 0.4.1
 
 * Incorporated `get_sens()` for sensitivity analysis of causal contrasts 

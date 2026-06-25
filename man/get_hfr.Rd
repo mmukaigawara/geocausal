@@ -13,7 +13,8 @@ get_hfr(
   coordinates = c("longitude", "latitude"),
   combine = TRUE,
   input_crs = 4326,
-  unit_scale = 1000
+  unit_scale = 1000,
+  check_duplicates = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,14 @@ By default, `TRUE`, which means that a column of ppp objects with all subtypes c
 (WGS84 decimal degrees). The function will transform these to match the \code{window} projection}
 
 \item{unit_scale}{parameter to convert meters to kilometers}
+
+\item{check_duplicates}{logical. `check_duplicates` specifies whether to run
+`spatstat`'s duplicate-point check when constructing the point pattern of each
+time period. By default, `FALSE`, so the check (and the warning
+"data contain duplicated points") is skipped, because coincident events are
+legitimate in event data. Set to `TRUE` to re-enable the check as a diagnostic
+for possible data-recording issues; the constructed point patterns are identical
+either way.}
 }
 \value{
 A hyperframe is generated with rows representing time and columns representing the following:
@@ -52,6 +61,18 @@ A hyperframe is generated with rows representing time and columns representing t
 \description{
 `get_hfr()` takes a dataframe with time and location variables
 and generates a hyperframe with point patterns.
+}
+\details{
+Event data often contain multiple events at identical coordinates
+(e.g., several events recorded at the same location within one time period).
+Such duplicated points are legitimate observations and are retained as they are;
+each point contributes separately to subsequent intensity estimation.
+For this reason, `get_hfr()` skips `spatstat`'s duplicate-point check by default
+(`check_duplicates = FALSE`), so the warning "data contain duplicated points" is
+not issued. Set `check_duplicates = TRUE` to re-enable the check as a diagnostic
+for potential data-recording issues. Downstream functions that pool points across
+time periods (e.g., `get_hist()`, `smooth_ppp()`, `get_base_dens()`, `dx_supthin()`)
+always skip the check, since duplicates are unavoidable there.
 }
 \examples{
 # Data
@@ -69,3 +90,14 @@ get_hfr(data = dat,
         coordinates = c("longitude", "latitude"),
         combine = FALSE)
 }
+\seealso{
+[get_window()], [smooth_ppp()]
+
+Other data preparation functions:
+\code{\link[=get_em_vec]{get_em_vec()}},
+\code{\link[=get_hist]{get_hist()}},
+\code{\link[=imls_to_arr]{imls_to_arr()}},
+\code{\link[=pixel_count_ppp]{pixel_count_ppp()}},
+\code{\link[=smooth_ppp]{smooth_ppp()}}
+}
+\concept{data preparation functions}

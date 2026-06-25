@@ -2,14 +2,14 @@
 % Please edit documentation in R/plot.ppplist.R
 \name{plot.ppplist}
 \alias{plot.ppplist}
-\title{Plot point pattern (list)}
+\title{Plot a list of point patterns}
 \usage{
 \method{plot}{ppplist}(x, ..., frame = 1, main = "ppp", combined = TRUE)
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `ppplist` (a list of spatstat point patterns).}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{frame}{the element number of the list object (by default, 1)}
 
@@ -19,6 +19,12 @@
 This argument applies only to the case when users specify one column with multiple time periods.
 By default = TRUE}
 }
+\value{
+A `ggplot` object plotting the selected point pattern(s).
+}
 \description{
-Plot point pattern (list)
+Plot method for objects of class `ppplist` (a list of spatstat
+point patterns, such as observed events across time periods). Plots the points
+over the observation window, either combining multiple time periods into one
+plot or faceting them.
 }

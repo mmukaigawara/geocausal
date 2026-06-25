@@ -1,11 +1,19 @@
-#' Summarize results 
-#' 
-#' @description `summary` functions take the output and summarize it.
-#' 
-#' @param object an output object
-#' @param ... arguments passed on to the function
-#' 
+#' Summarize results
+#'
+#' @description Summary method for objects of class `est`, returned by [get_est()].
+#' Summarizes the estimated causal effects per time period (with 90% and 95%
+#' confidence intervals) together with the associated windows.
+#'
+#' @param object an object of class `est`, typically the output of [get_est()].
+#' @param ... additional arguments. Currently ignored.
+#'
 #' @details Currently, observed densities (class: obs) and estimates (class: est) are supported by this function.
+#'
+#' @returns A named list with two elements: `result`, a data frame of the point
+#' estimates and 90%/95% confidence intervals per window, and `windows`, the list
+#' of windows used in estimation.
+#'
+#' @seealso [get_est()]
 #'
 #' @export
 summary.est <- function(object, ...) {

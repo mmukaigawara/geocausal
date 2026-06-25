@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.im.R
 \name{plot.im}
 \alias{plot.im}
-\title{Plot im}
+\title{Plot a pixel image}
 \usage{
 \method{plot}{im}(
   x,
@@ -16,9 +16,10 @@
 )
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `im` (a spatstat pixel image), for example a
+density image produced by a `get_*_dens()` function.}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{main}{title}
 
@@ -32,6 +33,12 @@
 
 \item{lim}{limits of the scale. By default, NA. To set limits manually, provide a vector or max and min}
 }
+\value{
+A `ggplot` object rendering the pixel image.
+}
 \description{
-Plot im
+Plot method for objects of class `im` (spatstat pixel images,
+such as the density images produced by the package's density functions).
+Renders the image as a filled raster over its observation window, with
+optional value transformation and grayscale rendering.
 }

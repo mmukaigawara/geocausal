@@ -20,3 +20,38 @@ an im object of power densities
 `get_power_dens()` takes the target densities and their priorities
 and returns a power density.
 }
+\details{
+`get_power_dens()` raises each target density to the power given by
+the corresponding entry of `priorities`, multiplies the results together, and
+normalizes the product to integrate to one over `window`. The resulting power
+density is used to shift the locations of counterfactual events relative to
+the baseline density.
+}
+\examples{
+\donttest{
+# A target density: proportional to the distance from Baghdad
+dist_baghdad <- get_dist_focus(window = iraq_window,
+                               lon = 44.366, lat = 33.315, ndim = 64)
+power <- get_power_dens(target_dens = list(dist_baghdad / sum(dist_baghdad)),
+                        priorities = 1, window = iraq_window)
+}
+}
+\references{
+Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+[get_cf_dens()], [sim_power_dens()]
+
+Other density estimation functions:
+\code{\link[=get_adaptive_baseline_dens]{get_adaptive_baseline_dens()}},
+\code{\link[=get_base_dens]{get_base_dens()}},
+\code{\link[=get_cf_dens]{get_cf_dens()}},
+\code{\link[=get_cf_dens_adaptive]{get_cf_dens_adaptive()}},
+\code{\link[=get_cf_sum_log_intens]{get_cf_sum_log_intens()}},
+\code{\link[=get_obs_dens]{get_obs_dens()}},
+\code{\link[=sim_cf_dens]{sim_cf_dens()}},
+\code{\link[=sim_power_dens]{sim_power_dens()}}
+}
+\concept{density estimation functions}

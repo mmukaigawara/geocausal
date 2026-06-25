@@ -1,9 +1,21 @@
 #' Plot estimates
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `est`, returned by [get_est()].
+#' Visualizes the estimated causal effects per time period (point estimates with
+#' 90% and 95% confidence intervals) and, optionally, the difference in average
+#' weighted counterfactual density surfaces.
+#'
+#' @param x an object of class `est`, typically the output of [get_est()].
+#' @param ... additional arguments. Currently ignored.
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector of max and min
 #' @param surface whether to produce the surface plot. By default, FALSE
+#'
+#' @returns If `surface = FALSE` (the default), a single `ggplot` object showing
+#' the causal effects per time period. If `surface = TRUE`, a named list with two
+#' `ggplot` objects, `surface` (the difference in average weighted surfaces) and
+#' `expectation` (the causal effects per time period).
+#'
+#' @seealso [get_est()]
 #'
 #' @export
 plot.est <- function(x, ..., surface = FALSE, lim = NA) {

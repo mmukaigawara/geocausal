@@ -14,6 +14,11 @@
 #'
 #' @returns im objects
 #'
+#' @details This function performs its computation using the `future` framework
+#' (via `furrr`); to run it in parallel, set `future::plan(future::multisession)`
+#' before calling this function. The results are identical regardless of the plan.
+#'
+#' @family data preparation functions
 #'
 #' @examples
 #' # Time variable

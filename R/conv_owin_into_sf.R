@@ -6,6 +6,15 @@
 #' @param window owin object
 #' 
 #' @returns list of polygon, dataframe, sfc_POLYGON, sf, and SpatialPolygonsDataFrame objects
+#'
+#' @details `conv_owin_into_sf()` converts the window to a polygonal object,
+#' extracts its boundary coordinates (closing the ring if necessary), and returns
+#' the same boundary in several representations: an `sf` `POLYGON`, a coordinate
+#' data frame, an `sfc_POLYGON`, an `sf` object, and a `SpatialPolygonsDataFrame`.
+#' It is mostly used internally by other functions that need different spatial
+#' object classes.
+#'
+#' @family spatial utility functions
 
 conv_owin_into_sf <- function(window) {
   

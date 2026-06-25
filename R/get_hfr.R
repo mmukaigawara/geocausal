@@ -21,6 +21,13 @@
 #' @param combine logical. `combine` tells whether to generate output for all subtypes of events combined.
 #' By default, `TRUE`, which means that a column of ppp objects with all subtypes combined is generated in the output.
 #' @param unit_scale parameter to convert meters to kilometers
+#' @param check_duplicates logical. `check_duplicates` specifies whether to run
+#' `spatstat`'s duplicate-point check when constructing the point pattern of each
+#' time period. By default, `FALSE`, so the check (and the warning
+#' "data contain duplicated points") is skipped, because coincident events are
+#' legitimate in event data. Set to `TRUE` to re-enable the check as a diagnostic
+#' for possible data-recording issues; the constructed point patterns are identical
+#' either way.
 #'
 #' @importFrom data.table .BY .SD
 #'
@@ -28,6 +35,22 @@
 #'     * The first column: time variable
 #'     * The middle columns: ppp objects (see `spatstat.geom::ppp()`) generated for each subtype of events of interest
 #'     * The last column (if `combine = TRUE`): ppp objects with all subtypes combined. This column is named as `all_combined`.
+#'
+#' @details Event data often contain multiple events at identical coordinates
+#' (e.g., several events recorded at the same location within one time period).
+#' Such duplicated points are legitimate observations and are retained as they are;
+#' each point contributes separately to subsequent intensity estimation.
+#' For this reason, `get_hfr()` skips `spatstat`'s duplicate-point check by default
+#' (`check_duplicates = FALSE`), so the warning "data contain duplicated points" is
+#' not issued. Set `check_duplicates = TRUE` to re-enable the check as a diagnostic
+#' for potential data-recording issues. Downstream functions that pool points across
+#' time periods (e.g., `get_hist()`, `smooth_ppp()`, `get_base_dens()`, `dx_supthin()`)
+#' always skip the check, since duplicates are unavoidable there.
+#'
+#' @seealso [get_window()], [smooth_ppp()]
+#'
+#' @family data preparation functions
+#'
 #' @examples
 #' # Data
 #' dat <- data.frame(time = c(1, 1, 2, 2),
@@ -51,7 +74,8 @@ get_hfr <- function(data, col,
                     coordinates = c("longitude", "latitude"),
                     combine = TRUE,
                     input_crs = 4326,
-                    unit_scale = 1000) {
+                    unit_scale = 1000,
+                    check_duplicates = FALSE) {
 
   # 1. Automatic CRS Detection from Window
   detected_crs <- attr(window, "crs")
@@ -89,8 +113,12 @@ get_hfr <- function(data, col,
   empty_ppp <- spatstat.geom::ppp(numeric(0), numeric(0), window = window, check = FALSE)
 
   # Creating ppp objects with KM coordinates
+  # By default (check_duplicates = FALSE) spatstat's duplicate-point check is
+  # skipped, because multiple events at identical coordinates are legitimate in
+  # event data. Setting check_duplicates = TRUE re-enables the check so that the
+  # "data contain duplicated points" warning can be used to diagnose the data.
   x_ppp <- data[, .(V1 = list(spatstat.geom::as.ppp(cbind(x = .SD$longitude, y = .SD$latitude),
-                                                    W = window))),
+                                                    W = window, checkdup = check_duplicates))),
                 by = list(time, type)]
 
   # 6. Hyperframe Generation (Logic remains identical)

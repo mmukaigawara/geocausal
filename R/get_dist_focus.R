@@ -17,6 +17,12 @@
 #' This parameter converts the coordinate values so that they alingn with the unit (km) of the owin object
 #'
 #' @returns an im object
+#'
+#' @details This function performs its computation using the `future` framework
+#' (via `furrr`); to run it in parallel, set `future::plan(future::multisession)`
+#' before calling this function. The results are identical regardless of the plan.
+#'
+#' @family spatial utility functions
 
 get_dist_focus <- function(window, lon, lat, resolution = NULL, ndim = NULL,
                            mile = FALSE, preprocess = FALSE,

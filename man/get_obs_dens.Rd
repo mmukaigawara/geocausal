@@ -47,3 +47,43 @@ calculates observed densities for each time period. It depends on `spatstat.mode
 Users should note that the coefficients in the output are not directly interpretable,
 since they are the coefficients inside the exponential of the poisson model.
 }
+\examples{
+\donttest{
+# Prepare data: airstrikes (treatment) and insurgencies (outcome), Iraq 2006
+dat <- rbind(airstrikes_2006[airstrikes_2006$type == "Airstrike", ],
+             insurgencies_2006)
+dat$type <- ifelse(dat$type == "Airstrike", "airstrike", "insurgency")
+dat$time <- as.numeric(dat$date - min(dat$date) + 1)
+dat <- dat[dat$time <= 60, ]
+hfr <- get_hfr(data = dat, col = "type", window = iraq_window,
+               time_col = "time", time_range = c(1, 60),
+               coordinates = c("longitude", "latitude"), combine = FALSE)
+
+# Covariate surface: distance from Baghdad
+hfr$dist_bag <- rep(list(get_dist_focus(window = iraq_window, lon = 44.366,
+                                        lat = 33.315, ndim = 64)), nrow(hfr))
+
+# Observed density of the treatment (propensity score)
+obs <- get_obs_dens(hfr, dep_var = "airstrike", indep_var = "dist_bag",
+                    ndim = 64, window = iraq_window)
+}
+}
+\references{
+Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+[get_cf_dens()], [get_est()]
+
+Other density estimation functions:
+\code{\link[=get_adaptive_baseline_dens]{get_adaptive_baseline_dens()}},
+\code{\link[=get_base_dens]{get_base_dens()}},
+\code{\link[=get_cf_dens]{get_cf_dens()}},
+\code{\link[=get_cf_dens_adaptive]{get_cf_dens_adaptive()}},
+\code{\link[=get_cf_sum_log_intens]{get_cf_sum_log_intens()}},
+\code{\link[=get_power_dens]{get_power_dens()}},
+\code{\link[=sim_cf_dens]{sim_cf_dens()}},
+\code{\link[=sim_power_dens]{sim_power_dens()}}
+}
+\concept{density estimation functions}

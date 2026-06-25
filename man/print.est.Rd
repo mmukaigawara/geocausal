@@ -7,13 +7,22 @@
 \method{print}{est}(x, ...)
 }
 \arguments{
-\item{x}{an output object}
+\item{x}{an object of class `est`, typically the output of [get_est()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
+}
+\value{
+A data frame with one row per window, containing the point estimate
+and the lower/upper bounds of the 90% and 95% confidence intervals.
 }
 \description{
-`print` functions take the output and print the summary of it.
+Print method for objects of class `est`, returned by [get_est()].
+Builds and returns a data frame of the estimated causal effects per time
+period, together with their 90% and 95% confidence intervals.
 }
 \details{
 Currently, observed densities (class: obs) and estimates (class: est) are supported by this function.
+}
+\seealso{
+[get_est()]
 }

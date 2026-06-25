@@ -33,3 +33,21 @@ and a window object for the entire window
 and returns the expected number of treatment events based on distances
 from a user-specified focus.
 }
+\details{
+`get_distexp()` builds a sequence of nested sub-windows defined by
+percentiles of the distance map `dist_map`, then integrates each simulated
+counterfactual density over those sub-windows to obtain the expected number of
+treatment events within each distance band. By default the expectations are
+standardized by the total integral of the first counterfactual density; set
+`use_raw = TRUE` to return raw expected counts instead. The output is a
+`distlist` object suitable for plotting.
+}
+\seealso{
+Other spatial utility functions:
+\code{\link[=conv_owin_into_sf]{conv_owin_into_sf()}},
+\code{\link[=get_dist_focus]{get_dist_focus()}},
+\code{\link[=get_dist_line]{get_dist_line()}},
+\code{\link[=get_elev]{get_elev()}},
+\code{\link[=get_window]{get_window()}}
+}
+\concept{spatial utility functions}

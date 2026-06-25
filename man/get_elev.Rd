@@ -17,3 +17,19 @@ an im object (unit: meters)
 \description{
 `get_elev()` takes a directory that hosts shapefile and returns an owin object of altitudes.
 }
+\details{
+`get_elev()` reads a shapefile and downloads elevation data clipped
+to that region via `elevatr::get_elev_raster()` (the resolution argument `z`
+must be passed through `...`). The raster is then converted into a
+`spatstat.geom::im` object, flipping the matrix vertically so that the raster
+(top-left origin) aligns with the `spatstat` (bottom-left origin) convention.
+}
+\seealso{
+Other spatial utility functions:
+\code{\link[=conv_owin_into_sf]{conv_owin_into_sf()}},
+\code{\link[=get_dist_focus]{get_dist_focus()}},
+\code{\link[=get_dist_line]{get_dist_line()}},
+\code{\link[=get_distexp]{get_distexp()}},
+\code{\link[=get_window]{get_window()}}
+}
+\concept{spatial utility functions}

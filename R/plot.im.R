@@ -1,13 +1,21 @@
-#' Plot im
+#' Plot a pixel image
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `im` (spatstat pixel images,
+#' such as the density images produced by the package's density functions).
+#' Renders the image as a filled raster over its observation window, with
+#' optional value transformation and grayscale rendering.
+#'
+#' @param x an object of class `im` (a spatstat pixel image), for example a
+#' density image produced by a `get_*_dens()` function.
+#' @param ... additional arguments. Currently ignored.
 #' @param main title
 #' @param scalename the name of the scale (for images only)
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param grayscale whether to use grayscale. By default, FALSE.
 #' @param transf a function to transform the pixel values (by default, NULL)
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
+#'
+#' @returns A `ggplot` object rendering the pixel image.
 #'
 #' @export
 plot.im <- function(x, ...,  main = "Image object",

@@ -11,8 +11,20 @@
 #' @param lag integer that specifies lags to calculate causal estimates
 #' @param entire_window owin object (the entire region of interest). If given, then the values outside the region will be set to `NA`.
 #'
+#' @returns a numeric vector giving the effect modifier values, flattened across
+#' pixels and time periods, with values outside `entire_window` (if supplied) set
+#' to `NA`.
+#'
 #' @details The function `get_em_vec()` get the vector form of the effect modifier in the heterogeneity analysis. It is useful
 #' if you want to construct the variance matrix `E_mat` that is passed to the function `get_cate()`
+#'
+#' @references
+#' Zhou, L., Imai, K., Lyall, J. and Papadogeorgou, G. (2024). Estimating heterogeneous treatment effects for spatio-temporal causal inference: how economic assistance moderates the effects of airstrikes on insurgent violence. arXiv preprint. \doi{10.48550/arXiv.2412.15128}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @family data preparation functions
+
 get_em_vec <- function(em,
                        outcome_pixel_count = NULL,
                        time_after = TRUE,

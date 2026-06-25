@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.hyperframe.R
 \name{plot.hyperframe}
 \alias{plot.hyperframe}
-\title{Plot estimates}
+\title{Plot a hyperframe}
 \usage{
 \method{plot}{hyperframe}(
   x,
@@ -18,9 +18,9 @@
 )
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `hyperframe`, typically the output of [get_hfr()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
 
 \item{col}{the name/s of a column of interest.}
 
@@ -41,6 +41,15 @@ To specify multiple columns, users should list column names as a character vecto
 This argument applies only to the case when users specify one column with multiple time periods.
 By default = TRUE}
 }
+\value{
+A `ggplot` object visualizing the selected column(s) and time period(s).
+}
 \description{
-Plot estimates
+Plot method for objects of class `hyperframe` (as created by
+[get_hfr()]). Visualizes the selected point pattern (`ppp`) or pixel image
+(`im`) column(s) over the specified time period(s), arranging multiple time
+periods and/or columns by faceting or combining them.
+}
+\seealso{
+[get_hfr()]
 }

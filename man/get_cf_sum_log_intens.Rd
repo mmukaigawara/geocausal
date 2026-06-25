@@ -18,3 +18,29 @@ A numeric vector of sums of log densities for each time period
 A function that takes a hyperframe and returns the log counterfactual densities
 ie, the numerator of the equation
 }
+\details{
+`get_cf_sum_log_intens()` evaluates a counterfactual density at the
+observed treatment locations for each time period using bilinear interpolation
+(`spatstat.geom::interp.im()`), and returns the sum of the log intensities per
+period. `cf_dens` may be a single `im` object reused across all periods or a
+list of `im` objects with one per period. Points falling on the boundary, where
+the intensity cannot be interpolated, are dropped; a period with no usable
+points contributes a sum of zero.
+}
+\references{
+Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+Other density estimation functions:
+\code{\link[=get_adaptive_baseline_dens]{get_adaptive_baseline_dens()}},
+\code{\link[=get_base_dens]{get_base_dens()}},
+\code{\link[=get_cf_dens]{get_cf_dens()}},
+\code{\link[=get_cf_dens_adaptive]{get_cf_dens_adaptive()}},
+\code{\link[=get_obs_dens]{get_obs_dens()}},
+\code{\link[=get_power_dens]{get_power_dens()}},
+\code{\link[=sim_cf_dens]{sim_cf_dens()}},
+\code{\link[=sim_power_dens]{sim_power_dens()}}
+}
+\concept{density estimation functions}

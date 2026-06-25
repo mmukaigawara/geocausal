@@ -1,7 +1,18 @@
 #' Plot the results of superthinning tests
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `supthin`, returned by
+#' [dx_supthin()]. Visualizes the observed and simulated-envelope summary
+#' functions (the K-function and the centered L-function) used to diagnose
+#' departures from complete spatial randomness after superthinning.
+#'
+#' @param x an object of class `supthin`, typically the output of [dx_supthin()].
+#' @param ... additional arguments. Currently ignored.
+#'
+#' @returns A named list with two `ggplot` objects, `plot_k` (the K-function with
+#' simulation envelope) and `plot_l` (the centered L-function with simulation
+#' envelope).
+#'
+#' @seealso [dx_supthin()]
 #'
 #' @export
 plot.supthin <- function(x, ...) {

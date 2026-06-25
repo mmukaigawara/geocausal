@@ -1,11 +1,18 @@
 #' Print results
 #'
-#' @description `print` functions take the output and print the summary of it.
+#' @description Print method for objects of class `est`, returned by [get_est()].
+#' Builds and returns a data frame of the estimated causal effects per time
+#' period, together with their 90% and 95% confidence intervals.
 #'
-#' @param x an output object
-#' @param ... arguments passed on to the function
+#' @param x an object of class `est`, typically the output of [get_est()].
+#' @param ... additional arguments. Currently ignored.
 #'
 #' @details Currently, observed densities (class: obs) and estimates (class: est) are supported by this function.
+#'
+#' @returns A data frame with one row per window, containing the point estimate
+#' and the lower/upper bounds of the 90% and 95% confidence intervals.
+#'
+#' @seealso [get_est()]
 #'
 #' @export
 print.est <- function(x, ...) {

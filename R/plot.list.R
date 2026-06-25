@@ -1,10 +1,17 @@
-#' Plot lists
+#' Plot a list of pixel images or point patterns
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `list`. If the list contains
+#' spatstat pixel images (`im`), they are rendered as filled rasters; if it
+#' contains point patterns (`ppp`), the points are plotted over the observation
+#' window. Multiple frames are arranged into a grid (images) or combined/faceted
+#' (point patterns).
+#'
+#' @param x a `list` of spatstat pixel images (`im`) or point patterns (`ppp`).
+#' @param ... additional arguments. Currently ignored.
 #' @param main title
 #' @param frame the element number of the list object (by default, 1)
 #' @param combined logical. `combined` specifies whether to combine all the point processes to one plot.
+#' This argument applies only to point-pattern lists with multiple time periods. By default = TRUE
 #' @param lim limits of the scale. By default, NA. To set limits manually, provide a vector or max and min
 #' @param scalename the name of the scale
 #' @param color the color scale. By default, "white", "#F8DAC5FF", "#F4825AFF", "#D2204CFF", and "#771F59FF".
@@ -12,8 +19,8 @@
 #' @param ncol the number of columns (if plotitng multiple images at once)
 #' @param nrow the number of rows (if plotting multiple images at once)
 #' @param transf a function to transform the pixel values (by default, NULL)
-#' This argument applies only to the case when users specify one column with multiple time periods.
-#' By default = TRUE
+#'
+#' @returns A `ggplot` object visualizing the images or point patterns in the list.
 #'
 #' @export
 plot.list <- function(x, ..., main = "list", lim = NA,

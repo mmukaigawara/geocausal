@@ -7,10 +7,21 @@
 \method{plot}{supthin}(x, ...)
 }
 \arguments{
-\item{x}{input}
+\item{x}{an object of class `supthin`, typically the output of [dx_supthin()].}
 
-\item{...}{arguments passed on to the function}
+\item{...}{additional arguments. Currently ignored.}
+}
+\value{
+A named list with two `ggplot` objects, `plot_k` (the K-function with
+simulation envelope) and `plot_l` (the centered L-function with simulation
+envelope).
 }
 \description{
-Plot the results of superthinning tests
+Plot method for objects of class `supthin`, returned by
+[dx_supthin()]. Visualizes the observed and simulated-envelope summary
+functions (the K-function and the centered L-function) used to diagnose
+departures from complete spatial randomness after superthinning.
+}
+\seealso{
+[dx_supthin()]
 }

@@ -1,14 +1,23 @@
 #' Plot weights
 #'
-#' @param x input
-#' @param ... arguments passed on to the function
+#' @description Plot method for objects of class `weights`, derived from the
+#' estimation produced by [get_est()]. Displays histograms of the (standardized
+#' or unstandardized) inverse-probability weights, faceted by intervention.
+#'
+#' @param x an object of class `weights`, derived from the output of [get_est()].
+#' @param ... additional arguments. Currently ignored.
 #' @param type_weights the type of weights to plot.
 #'   - If 'plot_weights' is `standardized`, histogram of standardized weights will be generated.
 #'   - If 'plot_weights' is `unstandardized`, histogram of unstandardized weights will be generated.
 #'   Default is `standardized`. 
 #' @param binwidth bin width of the histogram. Default is NULL
-#' 
-#' @export 
+#'
+#' @returns A `ggplot` object showing histograms of the weights, faceted by
+#' intervention.
+#'
+#' @seealso [get_est()]
+#'
+#' @export
 plot.weights <- function(x,...,type_weights = "standardized",binwidth = NULL){
   
   if(type_weights == "standardized"){

@@ -29,3 +29,35 @@ In this case, users do not have to set `power_dens` and simply modify `expected_
 Alternatively, users can shift the locations as well. In this case, `power_dens` must be specified.
 To obtain power densities, refer to [get_power_dens()].
 }
+\examples{
+\donttest{
+# Baseline density from out-of-sample (2007--2008) insurgency data
+base <- get_base_dens(window = iraq_window, ndim = 64,
+                      out_data = insurgencies,
+                      out_coordinates = c("longitude", "latitude"))
+
+# Counterfactual scenario: two airstrikes per day on average,
+# distributed proportionally to the baseline density
+cf <- get_cf_dens(expected_number = 2, base_dens = base,
+                  window = iraq_window)
+}
+}
+\references{
+Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+[get_obs_dens()], [get_est()]
+
+Other density estimation functions:
+\code{\link[=get_adaptive_baseline_dens]{get_adaptive_baseline_dens()}},
+\code{\link[=get_base_dens]{get_base_dens()}},
+\code{\link[=get_cf_dens_adaptive]{get_cf_dens_adaptive()}},
+\code{\link[=get_cf_sum_log_intens]{get_cf_sum_log_intens()}},
+\code{\link[=get_obs_dens]{get_obs_dens()}},
+\code{\link[=get_power_dens]{get_power_dens()}},
+\code{\link[=sim_cf_dens]{sim_cf_dens()}},
+\code{\link[=sim_power_dens]{sim_power_dens()}}
+}
+\concept{density estimation functions}

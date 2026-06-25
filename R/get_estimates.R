@@ -17,6 +17,13 @@
 #'  
 #' @details `get_estimates()` is an internal function to `get_est()` function, 
 #' performing the estimation analysis after `get_weighted_surf()` function
+#'
+#' @references
+#' Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+#'
+#' Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+#'
+#' @family causal effect estimation functions
 
 get_estimates <- function(weighted_surf_1,
                           weighted_surf_2,

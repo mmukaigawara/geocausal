@@ -14,6 +14,16 @@
 #'
 #' @returns A list of resulting dataframe (`result_data`), windows (`window_list`), data for distance quantiles,
 #' and a window object for the entire window
+#'
+#' @details `get_distexp()` builds a sequence of nested sub-windows defined by
+#' percentiles of the distance map `dist_map`, then integrates each simulated
+#' counterfactual density over those sub-windows to obtain the expected number of
+#' treatment events within each distance band. By default the expectations are
+#' standardized by the total integral of the first counterfactual density; set
+#' `use_raw = TRUE` to return raw expected counts instead. The output is a
+#' `distlist` object suitable for plotting.
+#'
+#' @family spatial utility functions
 
 get_distexp <- function(cf_sim_results,
                         entire_window,

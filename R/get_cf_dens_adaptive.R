@@ -9,6 +9,8 @@
 #'      * `intens_grid_cells`: im object of counterfactural intensities for each time period
 #'      * `estimated_counts`: the number of events that is estimated by the poisson point process model for each time period
 #'      * `sum_log_intens`: the sum of log intensities for each time period
+#'
+#' @family density estimation functions
 
 
 

@@ -24,3 +24,28 @@ list of densities and priorities
 A function that takes the target densities and their priorities
 and returns a power density image over a range of parameters
 }
+\details{
+`sim_power_dens()` generates a sequence of power densities by holding
+the priorities of the fixed target densities at `priorities` while varying the
+priority of `dens_manip` across the values in `priorities_manip`. For each such
+value, the product of the powered target densities is normalized over `window`.
+The result is a `powerlist` object containing the list of power densities and
+the manipulated priorities, and is typically passed to `sim_cf_dens()`.
+}
+\references{
+Papadogeorgou, G., Imai, K., Lyall, J. and Li, F. (2022). Causal inference with spatio-temporal data: estimating the effects of airstrikes on insurgent violence in Iraq. \emph{Journal of the Royal Statistical Society Series B}, 84(5), 1969--1999. \doi{10.1111/rssb.12548}
+
+Mukaigawara, M., Imai, K., Lyall, J. and Papadogeorgou, G. (2025). Spatiotemporal causal inference with arbitrary spillover and carryover effects. arXiv preprint. \doi{10.48550/arXiv.2504.03464}
+}
+\seealso{
+Other density estimation functions:
+\code{\link[=get_adaptive_baseline_dens]{get_adaptive_baseline_dens()}},
+\code{\link[=get_base_dens]{get_base_dens()}},
+\code{\link[=get_cf_dens]{get_cf_dens()}},
+\code{\link[=get_cf_dens_adaptive]{get_cf_dens_adaptive()}},
+\code{\link[=get_cf_sum_log_intens]{get_cf_sum_log_intens()}},
+\code{\link[=get_obs_dens]{get_obs_dens()}},
+\code{\link[=get_power_dens]{get_power_dens()}},
+\code{\link[=sim_cf_dens]{sim_cf_dens()}}
+}
+\concept{density estimation functions}
