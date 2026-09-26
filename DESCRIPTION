@@ -23,10 +23,11 @@ Authors@R: c(
            role = "aut",
            comment = c(ORCID = "0000-0002-2748-1022")))
 Maintainer: Mitsuru Mukaigawara <mitsuru_mukaigawara@g.harvard.edu>
-Description: Spatio-temporal causal inference based on point process data. 
-    You provide the raw data of locations and timings of treatment and 
-    outcome events, specify counterfactual scenarios, and the package 
-    estimates causal effects over specified spatial and temporal windows.
+Description: Methods for causal inference with spatio-temporal data. Point
+    process tools estimate causal effects over specified spatial and temporal
+    windows from treatment and outcome events. Unit-level longitudinal tools estimate
+    propensity scores and evaluate or learn stochastic treatment policies for
+    discrete spatial or administrative units.
     See Papadogeorgou, et  al. (2022) <doi:10.1111/rssb.12548> and
     Mukaigawara, et al. (2024) <doi:10.31219/osf.io/5kc6f>.
 License: MIT + file LICENSE
@@ -35,10 +36,12 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     elevatr,
+    geepack,
     gridExtra,
     knitr,
     readr,
-    gridGraphics
+    gridGraphics,
+    testthat (>= 3.0.0)
 Imports:
     crsuggest,
     ggthemes,
@@ -65,3 +68,5 @@ Imports:
 Depends: 
     R (>= 3.5.0)
 Config/roxygen2/version: 8.0.0
+Config/testthat/edition: 3
+RoxygenNote: 7.3.1
