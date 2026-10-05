@@ -1,5 +1,10 @@
 # geocausal 0.4.2
 
+* Added unit-level propensity-score estimation, stochastic policy evaluation,
+  and sequential policy learning for complete time-by-unit data, with first- and
+  second-order linearized inverse-probability weights
+* Added print and summary methods for unit-level policy analyses, propensity
+  overlap and balance plots, and automated tests
 * Improved the computational efficiency of `smooth_ppp()` (parallel computation via `future`, a new `ngroups` option) and modified the duplicated-points warning settings
 * Overhauled the documentation: details, examples, references, and cross-references throughout, plus a package-level help page
 

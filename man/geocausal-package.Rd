@@ -6,10 +6,9 @@
 \alias{geocausal-package}
 \title{geocausal: Causal Inference with Spatio-Temporal Data}
 \description{
-The geocausal package implements causal inference analytic methods based on
-spatio-temporal data. Users provide the raw data of locations and timings of
-treatment and outcome events, specify counterfactual scenarios, and the
-package estimates causal effects over specified spatial and temporal windows.
+The geocausal package implements causal inference methods for spatio-temporal
+data. It supports point-process analyses of treatment and outcome events and
+stochastic policy evaluation and learning for discrete unit-by-time data.
 }
 \details{
 A typical workflow proceeds as follows:
@@ -30,6 +29,11 @@ A typical workflow proceeds as follows:
    effects, and [get_sens()] and [get_cate_sens()] for sensitivity analyses.
 5. **Check the model**: assess model validity with out-of-sample prediction
    ([dx_outpred()]) and superthinning tests ([dx_supthin()]).
+
+For a complete time-by-unit data frame, use [get_unit_ps()] to estimate and
+diagnose treatment probabilities, [get_policy_value()] to evaluate a
+specified stochastic policy, and [get_policy()] to learn a policy. Unit-level
+policy formulas use history or lagged variables prepared by the user.
 
 The package ships with example data from the Iraq war (`insurgencies`,
 `airstrikes`, their 2006 subsets, and `iraq_window`).
