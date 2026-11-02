@@ -219,30 +219,57 @@
   first + second + 1
 }
 
-.stabilize_ipw <- function(weight, method, mix_center = 1, mix_scale = 0.1) {
-  means <- apply(weight, 1L, mean)
+.smooth_unit_interval <- function(x, eps) {
+  out <- pmin(pmax(x, 0), 1)
+  lower <- x > 0 & x < eps
+  t <- x[lower] / eps
+  out[lower] <- eps * t^2 * (2 - t)
+  upper <- x > 1 - eps & x < 1
+  t <- (1 - x[upper]) / eps
+  out[upper] <- 1 - eps * t^2 * (2 - t)
+  out
+}
+
+.stabilize_ipw <- function(weight, method, outcome = NULL) {
+  means <- rowMeans(weight)
   if (method == "none") {
     return(list(weight = weight, mixing = rep(NA_real_, nrow(weight)),
                 raw_mean = means))
   }
-  if (any(abs(means) < .Machine$double.eps)) {
-    stop("A time-weight mean is zero, so it cannot be stabilized.", call. = FALSE)
-  }
-  normalized <- t(vapply(seq_along(means), function(stage) {
-    weight[stage, ] / means[[stage]]
-  }, numeric(ncol(weight))))
   if (method == "normalize") {
+    if (any(abs(means) < .Machine$double.eps)) {
+      stop("A time-weight mean is zero, so it cannot be stabilized.", call. = FALSE)
+    }
+    normalized <- t(vapply(seq_along(means), function(stage) {
+      weight[stage, ] / means[[stage]]
+    }, numeric(ncol(weight))))
     return(list(weight = normalized, mixing = rep(1, nrow(weight)),
                 raw_mean = means))
   }
-  mixing <- (1 + exp(-(means^2 - mix_center) / mix_scale))^(-1)
-  recentered <- t(vapply(seq_along(means), function(stage) {
-    weight[stage, ] + 1 - means[[stage]]
-  }, numeric(ncol(weight))))
-  mixed <- t(vapply(seq_along(means), function(stage) {
-    mixing[[stage]] * normalized[stage, ] +
-      (1 - mixing[[stage]]) * recentered[stage, ]
-  }, numeric(ncol(weight))))
+  mixing <- numeric(nrow(weight))
+  mixed <- weight
+  for (stage in seq_len(nrow(weight))) {
+    rho <- weight[stage, ]
+    y <- outcome[stage, ]
+    y_mean <- mean(y)
+    recentered <- rho + 1 - means[[stage]]
+    if (abs(means[[stage]]) < .Machine$double.eps) {
+      # Use recentered weights when normalization is undefined.
+      mixed[stage, ] <- recentered
+      next
+    }
+    normalized <- rho / means[[stage]]
+    value_h <- mean(normalized * y)
+    value_ipw <- mean(rho * y)
+    numerator <- -mean(rho * (y - value_h) * (rho - 1))
+    denominator <- (value_ipw - y_mean) * mean((rho - 1)^2)
+    lambda <- if (denominator == 0) 0 else numerator / denominator
+    lambda <- .smooth_unit_interval(lambda, 0.01)
+    lambda <- 1 - lambda
+    mixing[[stage]] <- lambda
+    mixed[stage, ] <- mixing[[stage]] * normalized +
+      (1 - mixing[[stage]]) * recentered
+  }
   list(weight = mixed, mixing = mixing, raw_mean = means)
 }
 

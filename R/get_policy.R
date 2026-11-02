@@ -16,7 +16,7 @@
 #'   period must contain at least one observed outcome.
 #' @param treatment a character string giving the name of the treatment column
 #'   in `data`. The column must contain only 0 and 1.
-#' @param propensity the probability of each observed treatment assignment.
+#' @param propensity the conditional probability of treatment (`treatment = 1`).
 #'   Supply either the name of a numeric column in `data`, a numeric vector in
 #'   the original row order of `data`, a matrix with one row per time period and
 #'   one column per unit, or an object returned by [get_unit_ps()]. Every
@@ -51,13 +51,30 @@
 #'   constraints are imposed.
 #' @param conf_level confidence level used for the normal approximation
 #'   intervals returned with each fitted policy value.
-#' @param value_lower optional lower bound for every stage-specific value. A
-#'   candidate below the bound receives a quadratic optimization penalty.
-#' @param optimizer_control list passed to [stats::optim()].
+#' @param optimizer_control list passed to [stats::optim()] without hard
+#'   constraints. With `mean_lower`, these are options for
+#'   [nloptr::nloptr()].
+#'   L-BFGS-B uses `maxit = 10000` unless overridden.
+#'   The defaults use `maxeval = 0` (no evaluation cap), `xtol_rel = 1e-7`,
+#'   `ftol_rel = 1e-8`, and `ftol_abs = 1e-8`. The absolute tolerance is useful
+#'   when the objective is close to zero. A positive `maxeval` sets a cap.
+#'   Set `algorithm = "NLOPT_LD_SLSQP"` to use SLSQP with numerical derivatives.
 #' @param test_control list controlling `order = "auto"`: `total_points` is the
 #'   number of coefficient vectors used to compare the orders, `B` is the number
 #'   of multiplier-bootstrap draws, `alpha` is the test level, and `seed`
 #'   controls reproducibility.
+#' @param mean_lower optional finite hard lower bound for every stage-specific
+#'   estimated mean at each fitted horizon. The default `NULL` imposes no
+#'   mean constraint. Set `mean_lower = 0` to require nonnegative stage means.
+#'   Earlier stages are also checked when evaluated at the current horizon.
+#'   Requires the suggested package `nloptr`.
+#' @param n_starts positive integer giving the number of complete optimization
+#'   paths. The default `1` uses only `initial`. Additional paths start from
+#'   bounded random perturbations of `initial`.
+#' @param start_control list controlling additional starts. `scale` gives the
+#'   perturbation size (default `1`) and `seed` controls the generated starts
+#'   (default `NULL`). Perturbations are scaled by the columns of the policy
+#'   design matrix.
 #'
 #' @returns An object of class `policy_fit`, containing:
 #' * `coefficients`: learned coefficient matrix.
@@ -67,6 +84,8 @@
 #' * `probability_summary`: policy-probability summaries. Expected treatment
 #'   rates by stage and unit are stored in each element of `value`.
 #' * `specification` and `call`: the fitted policy specification.
+#' * `multistart`: when `n_starts > 1`, the initial matrices, results for every
+#'   path, and the selected start.
 #'
 #' @details
 #' At horizon `m`, coefficients learned for stages `1, ..., m - 1` remain fixed
@@ -75,11 +94,33 @@
 #' Lagged treatments, outcomes, or covariates required by `policy` should be
 #' created before calling the function.
 #'
+#' With `n_starts > 1`, each start fits the complete sequence from horizon one
+#' through `horizon`. The first path uses the supplied or default initial
+#' coefficients. Among finite paths with optimizer code zero at every horizon,
+#' the path with the best final-horizon value is returned. Errors and unsuccessful
+#' paths are recorded in `multistart$results`. If none qualifies, the function
+#' raises an error. Earlier coefficients remain fixed within each path.
+#' Set `test_control$seed` as well for reproducible automatic order tests.
+#'
 #' The automatic order test evaluates both approximations at randomly selected
 #' coefficient vectors and uses time-level influence contributions to construct
 #' an integrated squared multiplier-bootstrap statistic. Increase
 #' `total_points` and `B` for final analyses. Small values are useful for quick
 #' checks.
+#'
+#' With a hard bound, NLopt replaces L-BFGS-B.
+#' COBYLA is the default; SLSQP can be selected through `optimizer_control`.
+#' The objective is the estimated overall policy value.
+#' The `mean_lower` constraint applies separately to every element of
+#' `horizon_estimate`. It does not constrain individual units or weight signs.
+#' During optimization, the hard bound includes a numerical
+#' margin of `1e-6 * max(1, abs(bound))`. This margin is internal and has no argument.
+#' The returned values are checked against the requested bounds; a violating
+#' result raises an error. Failure does not prove the policy class is infeasible.
+#' The intervals do not account for learning the policy on the same data.
+#' For NLopt, optimizer code 0 means an NLopt
+#' success or tolerance criterion was reached; code 1 means its evaluation or
+#' time limit was reached, and code 52 reports an NLopt failure.
 #'
 #' @seealso [get_policy_value()], [get_unit_ps()]
 #' @family unit-level policy functions
@@ -106,10 +147,11 @@ get_policy <- function(data, outcome, treatment, propensity, time, unit, policy,
                        lower = -100, upper = 100, initial = NULL,
                        stabilize = c("mixed", "normalize", "none"),
                        fixed_prob = NULL, conf_level = 0.95,
-                       value_lower = -Inf,
                        optimizer_control = list(),
                        test_control = list(total_points = 100L, B = 1000L,
-                                           alpha = 0.05, seed = NULL)) {
+                                           alpha = 0.05, seed = NULL),
+                       mean_lower = NULL,
+                       n_starts = 1L, start_control = list()) {
   direction <- match.arg(direction)
   stabilize <- match.arg(stabilize)
   if (!is.numeric(horizon) || length(horizon) != 1L || !is.finite(horizon) ||
@@ -117,13 +159,24 @@ get_policy <- function(data, outcome, treatment, propensity, time, unit, policy,
     stop("`horizon` must be a positive integer.", call. = FALSE)
   }
   horizon <- as.integer(horizon)
+  if (!is.numeric(n_starts) || length(n_starts) != 1L || !is.finite(n_starts) ||
+      n_starts < 1 || n_starts > .Machine$integer.max || n_starts != floor(n_starts)) {
+    stop("`n_starts` must be a positive integer.", call. = FALSE)
+  }
+  n_starts <- as.integer(n_starts)
+  start_control <- .policy_start_control(start_control)
   automatic <- is.character(order) && length(order) == 1L && order == "auto"
   if (!automatic && (length(order) != 1L || !order %in% c(1, 2))) {
     stop("`order` must be 1, 2, or \"auto\".", call. = FALSE)
   }
-  if (!is.numeric(value_lower) || length(value_lower) != 1L ||
-      is.na(value_lower)) {
-    stop("`value_lower` must be numeric.", call. = FALSE)
+  if (!is.null(mean_lower) &&
+      (!is.numeric(mean_lower) || length(mean_lower) != 1L || !is.finite(mean_lower))) {
+    stop("`mean_lower` must be NULL or a finite number.", call. = FALSE)
+  }
+  use_nlopt <- !is.null(mean_lower)
+  if (use_nlopt && !requireNamespace("nloptr", quietly = TRUE)) {
+    stop("Package `nloptr` is required for hard bounds.",
+         call. = FALSE)
   }
 
   data_info <- .prepare_unit_data(data, time, unit)
@@ -140,6 +193,81 @@ get_policy <- function(data, outcome, treatment, propensity, time, unit, policy,
          call. = FALSE)
   }
   initial <- .policy_initial(initial, horizon, coefficient_names, lower, upper)
+  if (n_starts > 1L) {
+    # Keep the original start. Scale perturbations without changing the policy.
+    predictor_scale <- pmax(1, sqrt(colMeans(design^2)))
+    starts <- .with_local_seed(start_control$seed, {
+      out <- list(initial)
+      for (start in 2:n_starts) {
+        noise <- matrix(stats::rnorm(horizon * n_coef), nrow = horizon)
+        candidate <- initial + sweep(noise, 2, predictor_scale, "/") * start_control$scale
+        out[[start]] <- sweep(sweep(candidate, 2, lower, pmax), 2, upper, pmin)
+      }
+      out
+    })
+    results <- data.frame(start = seq_len(n_starts), estimate = NA_real_,
+      successful = FALSE, selected = FALSE, codes = NA_character_, message = NA_character_,
+      stringsAsFactors = FALSE)
+    best <- NULL
+    selected <- NA_integer_
+    for (start in seq_len(n_starts)) {
+      fit <- tryCatch(get_policy(
+        data, outcome, treatment, propensity, time, unit, policy,
+        horizon = horizon, order = order, direction = direction,
+        lower = lower, upper = upper, initial = starts[[start]],
+        stabilize = stabilize, fixed_prob = fixed_prob, conf_level = conf_level,
+        optimizer_control = optimizer_control, test_control = test_control,
+        mean_lower = mean_lower
+      ), error = function(error) error)
+      if (inherits(fit, "error")) {
+        results$message[start] <- conditionMessage(fit)
+        next
+      }
+      estimates <- vapply(fit$value, `[[`, numeric(1), "estimate")
+      results$estimate[start] <- estimates[horizon]
+      results$codes[start] <- paste(fit$convergence$code, collapse = ", ")
+      finite <- all(vapply(fit$value, function(value) {
+        all(is.finite(c(value$estimate, value$std_error, value$conf_int)))
+      }, logical(1)))
+      results$successful[start] <- finite && all(fit$convergence$code == 0L)
+      if (!results$successful[start]) {
+        results$message[start] <- if (!finite) "Nonfinite policy values or intervals." else
+          paste("Optimizer codes:", results$codes[start])
+        next
+      }
+      better <- is.null(best)
+      if (!better) {
+        better <- if (direction == "minimize")
+          estimates[horizon] < results$estimate[selected] else
+          estimates[horizon] > results$estimate[selected]
+      }
+      if (better) {
+        best <- fit
+        selected <- start
+      }
+    }
+    if (is.null(best)) {
+      stop(paste0("No successful optimization path was returned from ", n_starts,
+        " starts. ", paste(unique(results$message), collapse = "; ")),
+        call. = FALSE)
+    }
+    results$selected[selected] <- TRUE
+    best$multistart <- list(selected_start = selected, results = results, initial = starts)
+    best$specification$n_starts <- n_starts
+    best$specification$start_control <- start_control
+    best$call <- match.call()
+    return(best)
+  }
+  # Validate once and reuse the data matrices during optimization.
+  get_policy_value(data, outcome, treatment, propensity, time, unit, policy,
+                   initial[1, ], stabilize = stabilize, fixed_prob = fixed_prob,
+                   conf_level = conf_level)
+  treatment_matrix <- .data_matrix(data_info$data[[treatment]], data_info,
+                                   treatment, binary = TRUE)
+  outcome_matrix <- .data_matrix(data_info$data[[outcome]], data_info,
+                                 outcome, allow_na = TRUE)
+  propensity_matrix <- .resolve_propensity(propensity, data_info)
+  fixed <- .fixed_policy_prob(fixed_prob, data_info$unit_levels)
   test_control <- .policy_test_control(test_control)
   if (automatic && (any(!is.finite(lower)) || any(!is.finite(upper)))) {
     stop("Automatic order selection requires finite coefficient bounds.",
@@ -177,28 +305,63 @@ get_policy <- function(data, outcome, treatment, propensity, time, unit, policy,
       order_test[[stage]] <- NULL
     }
 
-    objective <- function(theta) {
+    last_theta <- last_value <- NULL
+    evaluate_candidate <- function(theta) {
+      if (identical(theta, last_theta)) return(last_value)
       candidate <- rbind(previous, theta)
       colnames(candidate) <- coefficient_names
-      value <- get_policy_value(
-        data = data, outcome = outcome, treatment = treatment,
-        propensity = propensity, time = time, unit = unit, policy = policy,
-        policy_coef = candidate, order = selected_order[stage],
-        stabilize = stabilize, fixed_prob = fixed_prob,
-        conf_level = conf_level, keep = "standard"
+      evaluated <- .evaluate_unit_policy(
+        data_info, outcome_matrix, treatment_matrix, propensity_matrix, design,
+        candidate, selected_order[stage], stabilize, fixed,
+        seq_len(data_info$n_unit), unit_summary = FALSE
       )
-      target <- if (direction == "maximize") -value$estimate else value$estimate
-      if (is.finite(value_lower)) {
-        deficit <- pmin(value$horizon_estimate - value_lower, 0)
-        target <- target + 1e5 * sum(deficit^2)
-      }
-      target
+      estimate <- sum(evaluated$horizon_estimate)
+      last_theta <<- theta
+      last_value <<- list(estimate = estimate,
+        horizon_estimate = evaluated$horizon_estimate)
+      last_value
+    }
+    optimize_objective <- function(theta) {
+      value <- evaluate_candidate(theta)
+      if (direction == "maximize") -value$estimate else value$estimate
     }
 
-    optimized <- stats::optim(
-      par = unname(initial[stage, ]), fn = objective, method = "L-BFGS-B",
-      lower = lower, upper = upper, control = optimizer_control
-    )
+    if (!use_nlopt) {
+      optimized <- stats::optim(
+        par = unname(initial[stage, ]), fn = optimize_objective, method = "L-BFGS-B",
+        lower = lower, upper = upper,
+        control = utils::modifyList(list(maxit = 10000), optimizer_control)
+      )
+    } else {
+      # NLopt uses g(theta) <= 0. Leave a margin for numerical tolerance.
+      constraint <- function(theta) {
+        value <- evaluate_candidate(theta)
+        mean_lower + 1e-6 * max(1, abs(mean_lower)) - value$horizon_estimate
+      }
+      control <- utils::modifyList(
+        list(algorithm = "NLOPT_LN_COBYLA", maxeval = 0,
+             xtol_rel = 1e-7, ftol_rel = 1e-8, ftol_abs = 1e-8,
+             tol_constraints_ineq = rep(1e-8, stage)),
+        optimizer_control
+      )
+      gradient <- jacobian <- NULL
+      if (control$algorithm == "NLOPT_LD_SLSQP") {
+        gradient <- function(theta) nloptr::nl.grad(theta, optimize_objective)
+        jacobian <- function(theta) nloptr::nl.jacobian(theta, constraint)
+      }
+      constrained <- nloptr::nloptr(
+        x0 = unname(initial[stage, ]), eval_f = optimize_objective,
+        eval_grad_f = gradient, eval_jac_g_ineq = jacobian,
+        eval_g_ineq = constraint,
+        lb = lower, ub = upper, opts = control
+      )
+      optimized <- list(
+        par = constrained$solution,
+        convergence = if (constrained$status %in% 1:4) 0L else
+          if (constrained$status %in% 5:6) 1L else 52L,
+        message = constrained$message
+      )
+    }
     coefficient[stage, ] <- optimized$par
     current <- coefficient[seq_len(stage), , drop = FALSE]
     values[[stage]] <- get_policy_value(
@@ -208,6 +371,12 @@ get_policy <- function(data, outcome, treatment, propensity, time, unit, policy,
       stabilize = stabilize, fixed_prob = fixed_prob,
       conf_level = conf_level, keep = "all"
     )
+    if (!is.null(mean_lower) && any(values[[stage]]$horizon_estimate < mean_lower)) {
+      stop(sprintf(
+        "No policy satisfying `mean_lower` was returned at horizon %d (minimum stage mean %.8g, required %.8g). Try another initial value.",
+        stage, min(values[[stage]]$horizon_estimate), mean_lower
+      ), call. = FALSE)
+    }
     convergence$code[stage] <- optimized$convergence
     convergence$message[stage] <- if (is.null(optimized$message)) NA_character_ else
       optimized$message
@@ -221,8 +390,10 @@ get_policy <- function(data, outcome, treatment, propensity, time, unit, policy,
     time = time, unit = unit, policy = policy, horizon = horizon,
     requested_order = order, direction = direction, lower = lower, upper = upper,
     initial = initial, stabilize = stabilize, fixed_prob = fixed_prob,
-    conf_level = conf_level, value_lower = value_lower,
-    optimizer_control = optimizer_control, test_control = test_control
+    conf_level = conf_level,
+    mean_lower = mean_lower,
+    optimizer_control = optimizer_control, test_control = test_control,
+    n_starts = n_starts, start_control = start_control
   )
   out <- list(
     coefficients = coefficient,
@@ -235,6 +406,25 @@ get_policy <- function(data, outcome, treatment, propensity, time, unit, policy,
     call = match.call()
   )
   class(out) <- c("policy_fit", "list")
+  out
+}
+
+.policy_start_control <- function(control) {
+  if (!is.list(control) ||
+      (length(control) && (is.null(names(control)) ||
+                          any(!names(control) %in% c("scale", "seed"))))) {
+    stop("`start_control` must be a list with `scale` and/or `seed`.", call. = FALSE)
+  }
+  out <- utils::modifyList(list(scale = 1, seed = NULL), control)
+  if (!is.numeric(out$scale) || length(out$scale) != 1L ||
+      !is.finite(out$scale) || out$scale <= 0) {
+    stop("`start_control$scale` must be a positive finite number.", call. = FALSE)
+  }
+  if (!is.null(out$seed) && (!is.numeric(out$seed) || length(out$seed) != 1L ||
+      !is.finite(out$seed) || out$seed < 0 || out$seed > .Machine$integer.max ||
+      out$seed != floor(out$seed))) {
+    stop("`start_control$seed` must be NULL or a nonnegative integer.", call. = FALSE)
+  }
   out
 }
 

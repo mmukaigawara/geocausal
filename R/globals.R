@@ -7,4 +7,5 @@ utils::globalVariables(c("x", "y", "z", "value", ".data", "count",
                          "fx", "hi", "lo", "mmean", "obs", "r", "W_mask",
                          ".geocausal_cluster", "difference", "estimate",
                          "horizon", "probability", "stage", "treatment",
-                         "variable", "weight"))
+                         "variable", "weight", "expected_outcome", "conf_low", "conf_high",
+                         "allocation"))

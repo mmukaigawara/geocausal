@@ -153,3 +153,101 @@ test_that("automatic order diagnostics reuse the requested seed by horizon", {
 
   expect_equal(vapply(fit$order_test, `[[`, numeric(1), "seed"), c(42, 42))
 })
+
+test_that("zero hard bounds use the internal margin without a soft penalty", {
+  skip_if_not_installed("nloptr")
+  data <- data.frame(time = 1:8, unit = "u1", ps = .5,
+    treatment = rep(c(0, 1), 4), outcome = rep(c(1, -1), 4))
+  arguments <- list(data = data, outcome = "outcome", treatment = "treatment",
+    propensity = "ps", time = "time", unit = "unit", policy = ~ 1,
+    lower = -3, upper = 3, stabilize = "none")
+  mean_fit <- do.call(get_policy, c(arguments, list(mean_lower = 0)))
+  # Mean constraint reaches the internal margin.
+  expect_lt(abs(mean_fit$value[[1]]$estimate - 1e-6), 2e-8)
+  expect_true(grepl("NLOPT", mean_fit$convergence$message))
+  unconstrained <- do.call(get_policy, arguments)
+  expect_lt(unconstrained$value[[1]]$estimate, 0)
+  expect_false(grepl("NLOPT", unconstrained$convergence$message))
+})
+
+test_that("infeasible mean constraints are not returned as fitted policies", {
+  skip_if_not_installed("nloptr")
+  data <- data.frame(time = 1:8, unit = "u1", ps = .5,
+                      treatment = rep(c(0, 1), 4), outcome = 0)
+  expect_error(get_policy(data, "outcome", "treatment", "ps", "time", "unit", ~ 1,
+                           lower = -3, upper = 3, mean_lower = 1e-6,
+                           optimizer_control = list(maxeval = 50)),
+                 "No policy satisfying `mean_lower` was returned", fixed = TRUE)
+})
+
+test_that("hard bounds apply at all four fitted horizons", {
+  skip_if_not_installed("nloptr")
+  data <- data.frame(time = 1:8, unit = "u1", ps = .5,
+                      treatment = rep(c(0, 1), 4), outcome = 1)
+  fit <- get_policy(data, "outcome", "treatment", "ps", "time", "unit", ~ 1,
+                      horizon = 4, lower = -2, upper = 2, stabilize = "normalize",
+                      mean_lower = .1)
+  expect_equal(dim(fit$coefficients), c(4, 1))
+  expect_true(all(fit$convergence$code == 0))
+  expect_equal(vapply(fit$value, `[[`, numeric(1), "estimate"), as.numeric(1:4))
+  expect_true(all(vapply(fit$value, function(x) all(x$horizon_estimate >= .1), logical(1))))
+})
+
+test_that("mean bounds reject invalid options", {
+  data <- make_unit_data()
+  for (bound in list(NA_real_, Inf, -Inf, c(0, 1), "0")) {
+    expect_error(get_policy(data, "outcome", "treatment", "ps", "time", "unit",
+                             ~ x, mean_lower = bound),
+                   "`mean_lower` must be NULL or a finite number", fixed = TRUE)
+  }
+})
+
+test_that("hard stage bounds match an analytical optimum without a penalty", {
+  skip_if_not_installed("nloptr")
+  data <- data.frame(time = 1:8, unit = "u1", ps = .5,
+    treatment = rep(c(0, 1), 4), outcome = rep(c(1, -1), 4))
+  for (algorithm in c("NLOPT_LN_COBYLA", "NLOPT_LD_SLSQP")) {
+    fit <- get_policy(data, "outcome", "treatment", "ps", "time", "unit", ~ 1,
+      lower = -3, upper = 3, stabilize = "none", mean_lower = .1,
+      optimizer_control = list(algorithm = algorithm))
+    expect_equal(fit$convergence$code, 0L)
+    expect_gte(unname(fit$value[[1]]$horizon_estimate), .1)
+    expect_equal(fit$value[[1]]$estimate, .1, tolerance = 1e-5)
+    expect_equal(unname(fit$coefficients[1, 1]), qlogis((1 - .100001) / 2),
+      tolerance = 1e-5)
+    expect_equal(fit$specification$mean_lower, .1)
+  }
+})
+
+test_that("stage bounds are checked for every component at each horizon", {
+  skip_if_not_installed("nloptr")
+  data <- make_unit_data(n_time = 8)
+  fit <- get_policy(data, "outcome", "treatment", "ps", "time", "unit", ~ x,
+    horizon = 4, lower = -1, upper = 1, stabilize = "normalize",
+    mean_lower = 0)
+  for (M in 1:4) {
+    expect_length(fit$value[[M]]$horizon_estimate, M)
+    expect_true(all(fit$value[[M]]$horizon_estimate >= 0))
+  }
+  # A zero outcome cannot satisfy a positive stage lower bound.
+  data$outcome <- 0
+  expect_error(get_policy(data, "outcome", "treatment", "ps", "time", "unit", ~ x,
+    lower = -1, upper = 1, mean_lower = .1,
+    optimizer_control = list(maxeval = 50)),
+    "No policy satisfying `mean_lower` was returned", fixed = TRUE)
+})
+
+test_that("mean bounds apply to each stage rather than their positive sum", {
+  skip_if_not_installed("nloptr")
+  data <- data.frame(time = 1:3, unit = "u1", treatment = 0, ps = .5,
+    outcome = c(-5, -5, 30))
+  arguments <- list(data = data, outcome = "outcome", treatment = "treatment",
+    propensity = "ps", time = "time", unit = "unit", policy = ~ 1,
+    horizon = 2, lower = -1, upper = 1, stabilize = "normalize")
+  fit <- do.call(get_policy, arguments)
+  expect_gt(fit$value[[2]]$estimate, 0)
+  expect_lt(min(fit$value[[2]]$horizon_estimate), 0)
+  expect_error(do.call(get_policy, c(arguments, list(mean_lower = 0,
+    optimizer_control = list(maxeval = 50)))),
+    "No policy satisfying `mean_lower` was returned at horizon 2", fixed = TRUE)
+})

@@ -14,7 +14,7 @@
 #'   period must contain at least one observed outcome.
 #' @param treatment a character string giving the name of the treatment column
 #'   in `data`. The column must contain only 0 and 1.
-#' @param propensity the probability of each observed treatment assignment.
+#' @param propensity the conditional probability of treatment (`treatment = 1`).
 #'   Supply either the name of a numeric column in `data`, a numeric vector in
 #'   the original row order of `data`, a matrix with one row per time period and
 #'   one column per unit, or an object returned by [get_unit_ps()]. Every
@@ -29,8 +29,8 @@
 #'   by [stats::model.matrix()].
 #' @param order order of the linearized inverse-probability weight, either 1 or
 #'   2.
-#' @param stabilize weight stabilization method: `"mixed"` reproduces the
-#'   smooth mixture of normalized and recentered weights, `"normalize"` divides
+#' @param stabilize weight stabilization method: `"mixed"` uses an adaptive
+#'   mixture of normalized and recentered weights, `"normalize"` divides
 #'   by the mean time weight, and `"none"` leaves weights unchanged.
 #' @param fixed_prob optional numeric vector of policy probabilities for units
 #'   whose treatment probability is fixed. A named vector may contain a subset
@@ -39,6 +39,8 @@
 #'   should be averaged. Policy weights are still constructed from every unit.
 #'   The default uses all units. This is useful for evaluating a learned policy
 #'   for one unit or a group of units without changing the policy weights.
+#'   Adaptive mixing is computed from the mean outcome across all units and
+#'   reused for these summaries.
 #' @param conf_level confidence level for the normal approximation interval.
 #' @param keep amount of intermediate information to retain. `"standard"`
 #'   omits unit likelihood ratios. `"all"` retains them for diagnostics and
@@ -63,6 +65,10 @@
 #' For a multi-stage policy, row 1 of `policy_coef` describes the latest stage
 #' and the last row describes the earliest stage in each evaluation window.
 #' Stage weights are multiplied recursively to represent the policy history.
+#'
+#' With `stabilize = "mixed"`, the mixing fraction is estimated from all units
+#' and reused for unit and group outcome summaries. This keeps their time
+#' weights common.
 #'
 #' @seealso [get_unit_ps()], [get_policy()]
 #' @family unit-level policy functions
@@ -189,7 +195,7 @@ get_policy_value <- function(data, outcome, treatment, propensity, time, unit,
 
 .evaluate_unit_policy <- function(data_info, outcome, treatment, propensity, design,
                                   coefficient, order, stabilize, fixed_prob,
-                                  outcome_index) {
+                                  outcome_index, unit_summary = TRUE) {
   horizon <- nrow(coefficient)
   n_eval <- data_info$n_time - horizon + 1L
   probability <- array(
@@ -206,17 +212,9 @@ get_policy_value <- function(data, outcome, treatment, propensity, time, unit,
   )
 
   for (stage in seq_len(horizon)) {
-    policy_probability <- matrix(
-      NA_real_, nrow = data_info$n_time, ncol = data_info$n_unit
-    )
-    for (time_index in seq_len(data_info$n_time)) {
-      rows <- (time_index - 1L) * data_info$n_unit + seq_len(data_info$n_unit)
-      linear_predictor <- as.numeric(
-        design[rows, , drop = FALSE] %*% coefficient[stage, ]
-      )
-      policy_probability[time_index, ] <-
-        (1 + exp(-linear_predictor))^(-1)
-    }
+    linear_predictor <- as.numeric(design %*% coefficient[stage, ])
+    policy_probability <- matrix((1 + exp(-linear_predictor))^(-1),
+      nrow = data_info$n_time, ncol = data_info$n_unit, byrow = TRUE)
     fixed_units <- which(!is.na(fixed_prob))
     if (length(fixed_units)) {
       policy_probability[, fixed_units] <- rep(fixed_prob[fixed_units],
@@ -240,35 +238,38 @@ get_policy_value <- function(data, outcome, treatment, propensity, time, unit,
         cumulative_weight[stage + 1L, ]
     }
   }
-  stabilized <- .stabilize_ipw(cumulative_weight, stabilize)
-  time_weight <- stabilized$weight
-
   outcome_by_stage_unit <- array(
     NA_real_, dim = c(horizon, n_eval, data_info$n_unit),
-    dimnames = c(dimnames(time_weight), list(data_info$unit_levels))
+    dimnames = c(dimnames(cumulative_weight), list(data_info$unit_levels))
   )
   for (stage in seq_len(horizon)) {
     rows <- (horizon - stage + 1L):(data_info$n_time - stage + 1L)
     outcome_by_stage_unit[stage, , ] <- outcome[rows, , drop = FALSE]
   }
+  all_outcome_by_stage <- matrix(
+    apply(outcome_by_stage_unit, c(1, 2), mean, na.rm = TRUE),
+    nrow = horizon, ncol = n_eval, dimnames = dimnames(cumulative_weight)
+  )
   outcome_by_stage <- apply(
     outcome_by_stage_unit[, , outcome_index, drop = FALSE],
     c(1, 2), mean, na.rm = TRUE
   )
   outcome_by_stage <- matrix(
     outcome_by_stage, nrow = horizon, ncol = n_eval,
-    dimnames = dimnames(time_weight)
+    dimnames = dimnames(cumulative_weight)
   )
   if (any(!is.finite(outcome_by_stage))) {
     stop("Every evaluated time period must contain at least one observed outcome.",
          call. = FALSE)
   }
+  stabilized <- .stabilize_ipw(cumulative_weight, stabilize, all_outcome_by_stage)
+  time_weight <- stabilized$weight
 
   overall <- .policy_outcome_moments(
     outcome_by_stage, time_weight, stabilized$mixing, stabilize
   )
   unit_estimate <- unit_variance <- rep(NA_real_, data_info$n_unit)
-  for (unit_index in seq_len(data_info$n_unit)) {
+  for (unit_index in if (unit_summary) seq_len(data_info$n_unit) else integer(0)) {
     unit_outcome <- matrix(
       outcome_by_stage_unit[, , unit_index, drop = FALSE],
       nrow = horizon, ncol = n_eval,

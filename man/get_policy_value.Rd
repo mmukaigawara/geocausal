@@ -23,7 +23,8 @@ get_policy_value(
 }
 \arguments{
 \item{data}{a data frame in long format with one row for every combination
-of time period and unit. It must be a complete time-by-unit data frame. It is not an array.}
+of time period and unit. It must form a complete time-by-unit data frame.
+It is not an array.}
 
 \item{outcome}{a character string giving the name of the numeric outcome
 column in `data`. Missing outcomes are allowed, but every evaluated time
@@ -32,7 +33,7 @@ period must contain at least one observed outcome.}
 \item{treatment}{a character string giving the name of the treatment column
 in `data`. The column must contain only 0 and 1.}
 
-\item{propensity}{the probability of each observed treatment assignment.
+\item{propensity}{the conditional probability of treatment (\code{treatment = 1}).
 Supply either the name of a numeric column in `data`, a numeric vector in
 the original row order of `data`, a matrix with one row per time period and
 one column per unit, or an object returned by [get_unit_ps()]. Every
@@ -53,8 +54,8 @@ by [stats::model.matrix()].}
 \item{order}{order of the linearized inverse-probability weight, either 1 or
 2.}
 
-\item{stabilize}{weight stabilization method: `"mixed"` reproduces the
-smooth mixture of normalized and recentered weights, `"normalize"` divides
+\item{stabilize}{weight stabilization method: `"mixed"` uses an adaptive
+mixture of normalized and recentered weights, `"normalize"` divides
 by the mean time weight, and `"none"` leaves weights unchanged.}
 
 \item{fixed_prob}{optional numeric vector of policy probabilities for units
@@ -64,14 +65,15 @@ of units. An unnamed vector must contain one value per unit.}
 \item{outcome_units}{optional character vector of unit IDs whose outcomes
 should be averaged. Policy weights are still constructed from every unit.
 The default uses all units. This is useful for evaluating a learned policy
-for one unit or a group of units without changing the policy weights.}
+for one unit or a group of units without changing the policy weights.
+Adaptive mixing is computed from the mean outcome across all units and
+reused for these summaries.}
 
 \item{conf_level}{confidence level for the normal approximation interval.}
 
 \item{keep}{amount of intermediate information to retain. `"standard"`
 omits unit likelihood ratios. `"all"` retains them for diagnostics and
 exact replication work.}
-
 }
 \value{
 An object of class `policy_value`, a list containing the overall and
@@ -99,6 +101,10 @@ pair product and is evaluated as
 For a multi-stage policy, row 1 of `policy_coef` describes the latest stage
 and the last row describes the earliest stage in each evaluation window.
 Stage weights are multiplied recursively to represent the policy history.
+
+With `stabilize = "mixed"`, the mixing fraction is estimated from all units
+and reused for unit and group outcome summaries. This keeps their time
+weights common.
 }
 \examples{
 data <- expand.grid(time = 1:6, unit = letters[1:4])
@@ -117,9 +123,5 @@ print(value)
 }
 \seealso{
 [get_unit_ps()], [get_policy()]
-
-Other unit-level policy functions:
-\code{\link{get_policy}()},
-\code{\link{get_unit_ps}()}
 }
 \concept{unit-level policy functions}

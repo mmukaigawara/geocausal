@@ -39,6 +39,7 @@ Suggests:
     geepack,
     gridExtra,
     knitr,
+    nloptr,
     readr,
     gridGraphics,
     testthat (>= 3.0.0)
